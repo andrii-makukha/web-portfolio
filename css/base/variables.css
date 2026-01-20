@@ -1,0 +1,15 @@
+:root {
+    --bg-dark: #03060d;
+    --bg-panel: rgba(15, 18, 27, 0.9);
+    --bg-light: rgba(255, 255, 255, 0.08);
+
+    --white: #f6f7fb;
+    --gray: #9aa1b5;
+    --muted: rgba(255, 255, 255, 0.55);
+
+    --accent: #6ef5ff;
+    --accent-strong: #41b9ff;
+
+    --border: rgba(255, 255, 255, 0.12);
+    --tag-bg: rgba(255, 255, 255, 0.08);
+}

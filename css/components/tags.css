@@ -1,0 +1,22 @@
+.tag-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    padding: 8px 18px;
+    border-radius: 999px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+.pill {
+    padding: 12px 26px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    white-space: nowrap;
+    font-weight: 500;
+}

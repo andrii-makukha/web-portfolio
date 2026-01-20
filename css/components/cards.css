@@ -1,0 +1,37 @@
+.card,
+.stat-card,
+.project-card,
+.goal-card,
+.language-card,
+.info-card,
+.highlight {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 20px;
+}
+
+.card h3,
+.project-card h3,
+.language-card h4 {
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.project-card {
+    border-radius: 26px;
+    padding: 40px;
+    margin-top: 30px;
+}
+
+.stat-card span {
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.stat-card strong {
+    font-size: 1.5rem;
+}

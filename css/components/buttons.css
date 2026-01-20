@@ -1,0 +1,36 @@
+.soft-button,
+.ghost-button {
+    padding: 16px 42px;
+    border-radius: 999px;
+    font-size: 1rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+}
+
+.soft-button {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    color: #020305;
+    background: linear-gradient(120deg, #d6faff, #6ef5ff, #d6faff);
+    background-size: 200% 200%;
+    animation: shimmer 4s ease infinite;
+    box-shadow: 0 20px 40px rgba(110, 245, 255, 0.25);
+}
+
+.soft-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: translateX(-100%);
+    animation: gleam 2.2s linear infinite;
+}
+
+.ghost-button {
+    border: 1px solid var(--border);
+    color: var(--white);
+    background: transparent;
+}

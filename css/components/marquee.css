@@ -1,0 +1,14 @@
+.marquee {
+    position: relative;
+    overflow: hidden;
+    margin-top: 40px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+}
+
+.marquee-track {
+    display: flex;
+    gap: 18px;
+    padding: 18px 0;
+    animation: marquee 22s linear infinite;
+}
