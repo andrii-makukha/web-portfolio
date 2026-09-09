@@ -211,6 +211,44 @@ async function runPage(browser, locale, viewport) {
     }
   }
 
+  if (viewport.width > 900) {
+    const editorialOverlaps = await page.evaluate(() => {
+      const pairs = [
+        [".profile__display", ".profile__lead"],
+        [".foundation__display", ".foundation__lead"],
+        [".capabilities__display", ".capabilities__lead"],
+        [".ai__display", ".ai__lead"],
+        [".work__display", ".work__lead"],
+        [".journey__display", ".journey__lead"],
+        [".languages__display", ".languages__lead"]
+      ];
+      const overlaps = [];
+      for (const [headlineSelector, leadSelector] of pairs) {
+        const headline = document.querySelector(headlineSelector);
+        const lead = document.querySelector(leadSelector);
+        if (!headline || !lead) continue;
+        const a = headline.getBoundingClientRect();
+        const b = lead.getBoundingClientRect();
+        const x = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+        const y = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+        if (x > 1 && y > 1) {
+          overlaps.push({
+            headlineSelector,
+            leadSelector,
+            intersectionWidth: Math.round(x),
+            intersectionHeight: Math.round(y),
+            headline: { left: Math.round(a.left), right: Math.round(a.right), top: Math.round(a.top), bottom: Math.round(a.bottom) },
+            lead: { left: Math.round(b.left), right: Math.round(b.right), top: Math.round(b.top), bottom: Math.round(b.bottom) }
+          });
+        }
+      }
+      return overlaps;
+    });
+    if (editorialOverlaps.length) {
+      recordFailure(scope, "Editorial heading/lead overlap", editorialOverlaps);
+    }
+  }
+
   if (viewport.width <= 1180) {
     const toggle = page.locator(".site-nav__menu-toggle");
     if (!(await toggle.isVisible())) {
@@ -237,6 +275,9 @@ async function runPage(browser, locale, viewport) {
         toggleText: (document.querySelector(".site-nav__menu-toggle")?.textContent || "").trim(),
         closeLabel: document.querySelector(".site-nav__menu-toggle")?.dataset.closeLabel || ""
       }));
+      if (viewport.name === "mobile" && menuClickWorked) {
+        await page.screenshot({ path: path.join(OUTPUT, `${locale}-mobile-menu-open.png`), fullPage: false });
+      }
       if (menuClickWorked && (
         openState.expanded !== "true" ||
         openState.hidden ||
@@ -302,7 +343,7 @@ async function runPage(browser, locale, viewport) {
   }
 
   // Chapter-state regression check: verify rail + nav theme in both scroll directions.
-  if (locale === "de" && (viewport.name === "desktop" || viewport.name === "mobile")) {
+  if (viewport.name === "desktop" || viewport.name === "mobile") {
     const chapterOrder = [...coreIds, ...coreIds.slice().reverse()];
     for (const id of chapterOrder) {
       await page.evaluate(sectionId => {
