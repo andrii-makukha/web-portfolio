@@ -3324,3 +3324,19 @@ body.menu-open {
     transform: none;
   }
 }
+
+
+/* Russian landscape transition containment */
+@media (min-width: 561px) and (max-width: 900px) {
+  html[lang="ru"] .foundation__closing {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(3.25rem, 11.5vw, 6.1rem);
+  }
+
+  html[lang="ru"] .foundation__closing strong,
+  html[lang="ru"] .foundation__closing span {
+    max-width: 100%;
+  }
+}
