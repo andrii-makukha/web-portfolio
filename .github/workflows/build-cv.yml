@@ -36,10 +36,21 @@ jobs:
 
       - name: Verify PDFs
         run: |
+          mkdir -p cv-qa
           for file in assets/cv/*.pdf; do
             test "$(pdfinfo "$file" | awk '/^Pages:/ {print $2}')" = "1"
             pdftotext "$file" - | grep -q "ANDRII MAKUKHA"
+            name="$(basename "$file" .pdf)"
+            pdftoppm -png -singlefile -r 150 "$file" "cv-qa/$name"
+            pdftotext -layout "$file" "cv-qa/$name.txt"
           done
+
+      - name: Upload CV QA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: multilingual-cv-qa
+          path: cv-qa/
+          retention-days: 14
 
       - name: Commit generated PDFs
         run: |
