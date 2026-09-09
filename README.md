@@ -1,69 +1,100 @@
-Persönliches Web-Portfolio
+# Andrii Makukha — Interactive Professional Profile
 
-Dieses Projekt ist ein modernes, minimalistisches Web-Portfolio zur Präsentation meiner Fähigkeiten als Frontend- und Full-Stack-Entwickler. Der Fokus liegt auf sauberem Code, klarer Struktur, hoher Performance und einer durchdachten Benutzererfahrung.
+A multilingual personal portfolio built as an **interactive professional profile**, not as a conventional developer portfolio or a web version of a CV.
 
-Ziel des Projekts
+The site presents a professional foundation in music, leadership and organisation, then shows how that experience is extended through modern digital tools and AI-assisted workflows.
 
-Das Portfolio dient als zentrale Anlaufstelle, um:
-•	technische Fähigkeiten und Projekterfahrung zu zeigen
-•	Designverständnis (UI/UX, Typografie, Layout) zu demonstrieren
-•	eine klare Entwickleridentität aufzubauen
-•	reale Projekte strukturiert und professionell zu präsentieren
+## Concept
 
-Das Projekt ist bewusst ohne Frameworks umgesetzt, um ein tiefes Verständnis von HTML, CSS und moderner Webarchitektur zu zeigen.
+**CRAFT → AUGMENTED**
 
-Technologien
-•	HTML5 – semantische, zugängliche Struktur
-•	CSS3 (Custom Properties) – modernes Styling mit Variablen, Animationen und Responsive Design
-•	Google Fonts – Inter & Space Grotesk
-•	Keine JavaScript-Bibliotheken oder Frameworks
+The narrative moves from professional craft and responsibility to modern tools:
 
-Design-Prinzipien
-•	Dark UI mit subtilen Glaseffekten (Glassmorphism)
-•	Konsistentes Spacing und klare visuelle Hierarchie
-•	Fokus auf Lesbarkeit und Ruhe
-•	Responsive Design für Desktop, Tablet und Mobile
-•	Wiederverwendbare UI-Komponenten (Cards, Buttons, Panels)
-Projektstruktur:
-/css
-├── variables.css      // Farbpalette, Typografie, Design-Tokens
-├── base.css           // Reset, globale Styles
-├── layout.css         // Grid, Sections, Panels
-├── components.css    // Buttons, Cards, Tags, Pills
-├── sections/
-│     ├── hero.css
-│     ├── about.css
-│     ├── projects.css
-│     ├── timeline.css
-│     └── footer.css
-├── animations.css    // Keyframes & Motion
-└── responsive.css    // Media Queries
+- music, precision and live performance
+- leadership and team coordination
+- organisation, customers and budgets
+- continuous learning
+- AI-assisted research, structuring, creation and review
+- selected work and digital explorations
 
-Diese Struktur erleichtert Wartung, Skalierung und spätere Erweiterungen.
+The central idea is simple: **technology does not replace experience or judgement; it expands what can be learned, structured and delivered.**
 
-Inhalte
-•	Hero-Sektion mit persönlichem Statement
-•	Über mich – Erfahrung, Fokus, Arbeitsweise
-•	Skills & Technologien
-•	Projekte mit Beschreibung, Tech-Stack und Links
-•	Timeline (Ausbildung & Entwicklung)
-•	Ziele & Interessen
-•	Kontaktinformationen
+## Languages
 
-Philosophie
+The portfolio has three independent language versions:
 
-Dieses Portfolio ist nicht nur eine Visitenkarte, sondern ein technisches Statement:
-•	verständlicher Code ist wichtiger als Abkürzungen
-•	Design dient der Funktion, nicht dem Selbstzweck
-•	Details machen den Unterschied
+- German — `/de/`
+- English — `/en/`
+- Russian — `/ru/`
 
-Jede Komponente wurde bewusst entworfen und kann problemlos erweitert oder angepasst werden.
+German is the default version. Language switching preserves the current chapter/hash.
 
-Status
+## Technology
 
-Projekt in aktiver Weiterentwicklung.
-Neue Sektionen, Projekte und Optimierungen werden schrittweise ergänzt.
+The implementation is intentionally lightweight:
 
-⸻
+- semantic HTML
+- modern CSS
+- small, dependency-free JavaScript
+- static hosting
+- progressive enhancement
+- no frontend framework required for the public experience
 
-© Andrii Makukha
+The production pages load no third-party runtime resources.
+
+## Motion & accessibility
+
+Motion is used as part of the narrative rather than as decoration:
+
+- reveal transitions
+- chapter/theme changes
+- AI workflow progression
+- active journey states
+- opening scroll transformation
+- page progress
+
+The site also includes:
+
+- `prefers-reduced-motion` support
+- no-JavaScript content fallback
+- keyboard focus states
+- responsive navigation
+- mobile touch targets
+- semantic headings and landmarks
+
+## Browser QA
+
+The repository includes an automated Playwright/Chromium QA workflow.
+
+It currently verifies:
+
+- DE / EN / RU
+- 1440 × 900 desktop
+- 1280 × 800 laptop
+- 1024 × 900 tablet
+- 360 × 800 mobile
+- horizontal overflow
+- internal anchors and IDs
+- image loading
+- console/page errors
+- responsive menu behaviour
+- touch targets
+- language switching with hash preservation
+- chapter state and navigation theme in both scroll directions
+- reduced-motion fallback
+- cumulative layout shift
+- unexpected external runtime requests
+
+Screenshots and a JSON QA report are stored as GitHub Actions artifacts.
+
+## AI transparency
+
+AI is used as a working tool for research, exploration, implementation assistance, iteration and quality review. Direction, factual decisions, evaluation and final responsibility remain human-led.
+
+The portfolio does not present AI-assisted implementation as professional software-development experience.
+
+## Status
+
+Portfolio v2 is in final quality review before release.
+
+© 2026 Andrii Makukha
