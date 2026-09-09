@@ -12,16 +12,37 @@
   const journeyCurrent = document.querySelector('[data-journey-current]');
   const menuToggle = document.querySelector('.site-nav__menu-toggle');
   const mobileMenu = document.querySelector('.mobile-menu');
+  const menuLabel = menuToggle?.querySelector('span');
+  const mainContent = document.querySelector('#main-content');
+  const skipLink = document.querySelector('.skip-link');
   const openingName = document.querySelector('.opening__name');
   const openingEyebrow = document.querySelector('.opening__eyebrow');
   const openingMeta = document.querySelector('.opening__meta');
   const openingScroll = document.querySelector('.opening__scroll');
+
+  const setBackgroundInteractive = (interactive) => {
+    if (!mainContent) return;
+    mainContent.inert = !interactive;
+    if (interactive) {
+      mainContent.removeAttribute('aria-hidden');
+    } else {
+      mainContent.setAttribute('aria-hidden', 'true');
+    }
+  };
+
+  const setMenuLabel = (isOpen) => {
+    if (!menuToggle || !menuLabel) return;
+    const label = isOpen ? menuToggle.dataset.closeLabel : menuToggle.dataset.openLabel;
+    if (label) menuLabel.textContent = label;
+  };
 
   const closeMenu = ({ restoreFocus = false } = {}) => {
     if (!menuToggle || !mobileMenu) return;
     menuToggle.setAttribute('aria-expanded', 'false');
     mobileMenu.hidden = true;
     body.classList.remove('menu-open');
+    setBackgroundInteractive(true);
+    setMenuLabel(false);
     if (restoreFocus) menuToggle.focus({ preventScroll: true });
   };
 
@@ -30,6 +51,8 @@
     menuToggle.setAttribute('aria-expanded', 'true');
     mobileMenu.hidden = false;
     body.classList.add('menu-open');
+    setBackgroundInteractive(false);
+    setMenuLabel(true);
     const firstLink = mobileMenu.querySelector('a');
     if (firstLink) requestAnimationFrame(() => firstLink.focus({ preventScroll: true }));
   };
@@ -52,6 +75,12 @@
 
     window.addEventListener('resize', () => {
       if (window.innerWidth > 1180 && body.classList.contains('menu-open')) closeMenu();
+    });
+  }
+
+  if (skipLink && mainContent) {
+    skipLink.addEventListener('click', () => {
+      requestAnimationFrame(() => mainContent.focus({ preventScroll: true }));
     });
   }
 

@@ -3114,3 +3114,41 @@ main,
     word-break: normal;
   }
 }
+
+
+/* Accessibility navigation hardening */
+.skip-link {
+  position: fixed;
+  top: .75rem;
+  left: .75rem;
+  z-index: 120;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1rem;
+  border: 1px solid var(--brass);
+  border-radius: 999px;
+  background: var(--paper-soft);
+  color: var(--ink);
+  font-size: .76rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  transform: translateY(calc(-100% - 2rem));
+  transition: transform .2s var(--ease-out);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+#main-content:focus {
+  outline: none;
+}
+
+.mobile-menu[hidden] {
+  display: none !important;
+}
+
+body.menu-open {
+  overscroll-behavior: none;
+}

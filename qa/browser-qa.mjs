@@ -94,6 +94,9 @@ async function runPage(browser, locale, viewport) {
       return !rel.includes("noopener");
     }).map(a => a.href);
     const h1s = document.querySelectorAll("h1").length;
+    const skipLink = document.querySelector(".skip-link");
+    const mainContent = document.querySelector("#main-content");
+    const mobileCapabilitiesLink = document.querySelector('.mobile-menu a[href="#capabilities"]');
     const externalResources = performance.getEntriesByType("resource")
       .map(entry => entry.name)
       .filter(url => {
@@ -103,6 +106,13 @@ async function runPage(browser, locale, viewport) {
       title: document.title,
       lang: document.documentElement.lang,
       h1s,
+      skipNavigation: {
+        exists: Boolean(skipLink),
+        href: skipLink?.getAttribute("href") || null,
+        mainExists: Boolean(mainContent),
+        mainTabIndex: mainContent?.getAttribute("tabindex") || null
+      },
+      mobileCapabilitiesLink: Boolean(mobileCapabilitiesLink),
       missingCoreIds: expectedIds.filter(id => !document.getElementById(id)),
       duplicateIds: [...new Set(duplicateIds)],
       missingAnchors: [...new Set(missingAnchors)],
@@ -177,6 +187,10 @@ async function runPage(browser, locale, viewport) {
   }, coreIds);
 
   if (base.h1s !== 1) recordFailure(scope, "Expected exactly one H1", base.h1s);
+  if (!base.skipNavigation.exists || !base.skipNavigation.mainExists || base.skipNavigation.href !== "#main-content" || base.skipNavigation.mainTabIndex !== "-1") {
+    recordFailure(scope, "Skip navigation is incomplete", base.skipNavigation);
+  }
+  if (!base.mobileCapabilitiesLink) recordFailure(scope, "Mobile navigation is missing the capabilities chapter");
   if (base.missingCoreIds.length) recordFailure(scope, "Missing core section IDs", base.missingCoreIds);
   if (base.duplicateIds.length) recordFailure(scope, "Duplicate IDs", base.duplicateIds);
   if (base.missingAnchors.length) recordFailure(scope, "Broken internal anchors", base.missingAnchors);
@@ -217,9 +231,20 @@ async function runPage(browser, locale, viewport) {
         hidden: document.querySelector(".mobile-menu")?.hidden,
         bodyOpen: document.body.classList.contains("menu-open"),
         activeTag: document.activeElement?.tagName,
-        activeHref: document.activeElement?.getAttribute?.("href")
+        activeHref: document.activeElement?.getAttribute?.("href"),
+        mainInert: document.querySelector("#main-content")?.inert || false,
+        mainAriaHidden: document.querySelector("#main-content")?.getAttribute("aria-hidden") || null,
+        toggleText: (document.querySelector(".site-nav__menu-toggle")?.textContent || "").trim(),
+        closeLabel: document.querySelector(".site-nav__menu-toggle")?.dataset.closeLabel || ""
       }));
-      if (menuClickWorked && (openState.expanded !== "true" || openState.hidden || !openState.bodyOpen)) {
+      if (menuClickWorked && (
+        openState.expanded !== "true" ||
+        openState.hidden ||
+        !openState.bodyOpen ||
+        !openState.mainInert ||
+        openState.mainAriaHidden !== "true" ||
+        openState.toggleText !== openState.closeLabel
+      )) {
         recordFailure(scope, "Responsive menu did not open correctly", openState);
       }
       if (menuClickWorked) await page.keyboard.press("Escape");
@@ -228,9 +253,21 @@ async function runPage(browser, locale, viewport) {
         expanded: document.querySelector(".site-nav__menu-toggle")?.getAttribute("aria-expanded"),
         hidden: document.querySelector(".mobile-menu")?.hidden,
         bodyOpen: document.body.classList.contains("menu-open"),
-        focusOnToggle: document.activeElement === document.querySelector(".site-nav__menu-toggle")
+        focusOnToggle: document.activeElement === document.querySelector(".site-nav__menu-toggle"),
+        mainInert: document.querySelector("#main-content")?.inert || false,
+        mainAriaHidden: document.querySelector("#main-content")?.getAttribute("aria-hidden") || null,
+        toggleText: (document.querySelector(".site-nav__menu-toggle")?.textContent || "").trim(),
+        openLabel: document.querySelector(".site-nav__menu-toggle")?.dataset.openLabel || ""
       }));
-      if (menuClickWorked && (closeState.expanded !== "false" || !closeState.hidden || closeState.bodyOpen || !closeState.focusOnToggle)) {
+      if (menuClickWorked && (
+        closeState.expanded !== "false" ||
+        !closeState.hidden ||
+        closeState.bodyOpen ||
+        !closeState.focusOnToggle ||
+        closeState.mainInert ||
+        closeState.mainAriaHidden !== null ||
+        closeState.toggleText !== closeState.openLabel
+      )) {
         recordFailure(scope, "Responsive menu did not close/focus correctly", closeState);
       }
 
@@ -328,6 +365,47 @@ async function runPage(browser, locale, viewport) {
   if (endState.cls > 0.12) recordFailure(scope, "Cumulative Layout Shift exceeded 0.12", endState.cls);
   if (endState.scrollWidth > endState.clientWidth + 1) recordFailure(scope, "Horizontal overflow at end of page", endState);
 
+  const performanceState = await page.evaluate(() => {
+    const navigation = performance.getEntriesByType("navigation")[0];
+    const resources = performance.getEntriesByType("resource").filter(entry => {
+      try { return new URL(entry.name).origin === location.origin; } catch { return false; }
+    });
+    const encodedBytes =
+      (navigation?.encodedBodySize || 0) +
+      resources.reduce((sum, entry) => sum + (entry.encodedBodySize || 0), 0);
+    const transferBytes =
+      (navigation?.transferSize || 0) +
+      resources.reduce((sum, entry) => sum + (entry.transferSize || 0), 0);
+    const portrait = document.querySelector(".portrait-frame img");
+    const portraitRect = portrait?.getBoundingClientRect();
+    return {
+      encodedBytes,
+      transferBytes,
+      resourceCount: resources.length,
+      domNodes: document.getElementsByTagName("*").length,
+      portrait: portrait ? {
+        naturalWidth: portrait.naturalWidth,
+        naturalHeight: portrait.naturalHeight,
+        renderedWidth: Math.round(portraitRect?.width || 0),
+        renderedHeight: Math.round(portraitRect?.height || 0)
+      } : null
+    };
+  });
+
+  if (performanceState.encodedBytes > 256000) {
+    recordFailure(scope, "Performance budget exceeded", performanceState);
+  }
+  if (performanceState.domNodes > 1200) {
+    recordFailure(scope, "DOM complexity budget exceeded", performanceState);
+  }
+  if (
+    performanceState.portrait &&
+    performanceState.portrait.renderedWidth > 0 &&
+    performanceState.portrait.naturalWidth < performanceState.portrait.renderedWidth
+  ) {
+    recordFailure(scope, "Portrait is being upscaled beyond its natural width", performanceState.portrait);
+  }
+
   if (consoleErrors.length) recordFailure(scope, "Console errors", consoleErrors);
   if (pageErrors.length) recordFailure(scope, "Page errors", pageErrors);
   if (badResponses.length) recordFailure(scope, "Bad same-origin responses", badResponses);
@@ -350,7 +428,7 @@ async function runPage(browser, locale, viewport) {
     }
   }
 
-  results.push({ scope, base, endState, consoleErrors, pageErrors, badResponses, failedRequests });
+  results.push({ scope, base, endState, performanceState, consoleErrors, pageErrors, badResponses, failedRequests });
   await context.close();
 }
 
