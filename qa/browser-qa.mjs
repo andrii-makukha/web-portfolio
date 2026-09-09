@@ -1113,6 +1113,72 @@ await runMotionStress("mobile", 390, 844, true);
   await context.close();
 }
 
+/* === CV release gate === */
+{
+  const scope = "release/cv";
+  const expected = {
+    de: "andrii-makukha-de.pdf",
+    en: "andrii-makukha-en.pdf",
+    ru: "andrii-makukha-ru.pdf"
+  };
+  const checks = [];
+
+  for (const locale of locales) {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await context.newPage();
+    await page.goto(`${ORIGIN}/${locale}/`, { waitUntil: "networkidle" });
+
+    const pageState = await page.evaluate((filename) => {
+      const links = [...document.querySelectorAll('a[download][href$=".pdf"]')].map(a => ({
+        href: a.getAttribute("href"),
+        text: (a.textContent || "").trim()
+      }));
+      const stale = [...document.querySelectorAll("[aria-disabled='true']")]
+        .map(el => (el.textContent || "").trim())
+        .filter(text => /CV|Lebenslauf|Резюме/i.test(text));
+      return {
+        filename,
+        links,
+        matchingLinks: links.filter(link => link.href?.endsWith("/" + filename)).length,
+        wrongPdfLinks: links.filter(link => !link.href?.endsWith("/" + filename)),
+        stale
+      };
+    }, expected[locale]);
+
+    const url = `${ORIGIN}/assets/cv/${expected[locale]}`;
+    const response = await page.request.get(url);
+    const body = await response.body();
+    const contentType = response.headers()["content-type"] || "";
+    const signature = body.subarray(0, 5).toString("ascii");
+    const check = {
+      locale,
+      ...pageState,
+      status: response.status(),
+      ok: response.ok(),
+      contentType,
+      bytes: body.length,
+      signature
+    };
+    checks.push(check);
+
+    if (
+      pageState.matchingLinks < 4 ||
+      pageState.wrongPdfLinks.length ||
+      pageState.stale.length ||
+      !response.ok() ||
+      !contentType.includes("application/pdf") ||
+      body.length < 15000 ||
+      signature !== "%PDF-"
+    ) {
+      recordFailure(scope, "CV integration is incomplete or invalid", check);
+    }
+
+    await context.close();
+  }
+
+  results.push({ scope, checks });
+}
+
 /* === External link health gate === */
 {
   const scope = "release/external-links";
