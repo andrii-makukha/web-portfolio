@@ -3340,3 +3340,19 @@ body.menu-open {
     max-width: 100%;
   }
 }
+
+
+/* Russian landscape foundation containment */
+@media (min-width: 700px) and (max-width: 900px) and (max-height: 600px) {
+  html[lang="ru"] .foundation__closing {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(3.2rem, 11vw, 5.8rem);
+    line-height: .88;
+  }
+
+  html[lang="ru"] .foundation__closing strong {
+    max-width: 100%;
+  }
+}
