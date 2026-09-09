@@ -76,7 +76,7 @@ button:focus-visible {
   width: 100%;
   padding: 1.15rem var(--page-pad);
   color: var(--paper-soft);
-  pointer-events: none;
+  pointer-events: auto;
   transition: color .35s ease, background-color .35s ease, border-color .35s ease;
 }
 
@@ -2863,5 +2863,23 @@ body:not(.is-ready) .journey-event {
   .contact__footer a,
   .opening__scroll {
     min-height: 44px;
+  }
+}
+
+
+/* Responsive nav hit-testing fix */
+.site-nav__languages,
+.site-nav__menu-toggle {
+  position: relative;
+  z-index: 3;
+}
+
+.site-nav__menu-toggle {
+  pointer-events: auto;
+}
+
+@media (max-width: 1180px) {
+  .site-nav {
+    column-gap: .65rem;
   }
 }
