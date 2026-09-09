@@ -6,12 +6,24 @@
   <meta name="theme-color" content="#0b0c0d">
   <meta name="description" content="Professional portfolio of Andrii Makukha — a background in music, leadership and organisation, extended through modern digital and AI-assisted workflows.">
   <title>Andrii Makukha — Professional Portfolio</title>
+  <meta name="robots" content="index,follow">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Andrii Makukha — Professional Portfolio">
+  <meta property="og:description" content="Professional portfolio of Andrii Makukha — a background in music, leadership and organisation, extended through modern digital and AI-assisted workflows.">
+  <meta property="og:url" content="https://andrii-makukha.github.io/web-portfolio/en/">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="Andrii Makukha">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Andrii Makukha — Professional Portfolio">
+  <meta name="twitter:description" content="Professional portfolio of Andrii Makukha — a background in music, leadership and organisation, extended through modern digital and AI-assisted workflows.">
   <link rel="canonical" href="https://andrii-makukha.github.io/web-portfolio/en/">
   <link rel="alternate" hreflang="de" href="https://andrii-makukha.github.io/web-portfolio/de/">
   <link rel="alternate" hreflang="en" href="https://andrii-makukha.github.io/web-portfolio/en/">
   <link rel="alternate" hreflang="ru" href="https://andrii-makukha.github.io/web-portfolio/ru/">
   <link rel="alternate" hreflang="x-default" href="https://andrii-makukha.github.io/web-portfolio/de/">
   <link rel="stylesheet" href="../css/v2.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Andrii Makukha","url":"https://andrii-makukha.github.io/web-portfolio/en/","sameAs":["https://github.com/andrii-makukha"],"address":{"@type":"PostalAddress","addressLocality":"Bernau am Chiemsee","addressCountry":"DE"}}</script>
 </head>
 <body>
   <nav class="site-nav" aria-label="Main navigation">
@@ -26,6 +38,21 @@
     </div>
     <div class="site-nav__languages" aria-label="Choose language">
       <a href="../de/" data-lang="de">DE</a><a href="../en/" data-lang="en" aria-current="page">EN</a><a href="../ru/" data-lang="ru">RU</a>
+    </div>
+    <button class="site-nav__menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">
+      <span>Menu</span>
+    </button>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <div class="mobile-menu__inner">
+        <a href="#profile">02 · Profile</a>
+        <a href="#foundation">03 · Experience</a>
+        <a href="#ai">05 · AI</a>
+        <a href="#work">06 · Work</a>
+        <a href="#journey">07 · Journey</a>
+        <a href="#languages">08 · Languages</a>
+        <a href="#contact">09 · Contact</a>
+        <span aria-disabled="true">CV · soon</span>
+      </div>
     </div>
     <span class="site-nav__progress" aria-hidden="true"></span>
   </nav>
@@ -68,7 +95,7 @@
     <section class="identity" id="identity" data-chapter data-nav="dark">
       <div class="identity__grid">
         <figure class="portrait-frame">
-          <img src="../assets/portrait.webp" alt="Portrait of Andrii Makukha in a dark suit against a neutral background" width="720" height="1080" loading="eager" decoding="async">
+          <img src="../assets/portrait.webp" alt="Portrait of Andrii Makukha in a dark suit against a neutral background" width="720" height="1080" loading="lazy" decoding="async" fetchpriority="low">
         </figure>
 
         <div class="identity__content">
