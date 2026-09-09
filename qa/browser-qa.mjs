@@ -246,9 +246,18 @@ async function runPage(browser, locale, viewport) {
 
 const browser = await chromium.launch({ headless: true });
 
+async function runPageSafe(locale, viewport) {
+  try {
+    await runPage(browser, locale, viewport);
+  } catch (error) {
+    recordFailure(`${locale}/${viewport.name}`, "Unhandled browser QA exception", String(error?.stack || error));
+    results.push({ scope: `${locale}/${viewport.name}`, unhandledError: String(error?.stack || error) });
+  }
+}
+
 for (const locale of locales) {
   for (const viewport of viewports) {
-    await runPage(browser, locale, viewport);
+    await runPageSafe(locale, viewport);
   }
 }
 
