@@ -6,6 +6,10 @@ on:
       - portfolio-v2
   workflow_dispatch:
 
+concurrency:
+  group: portfolio-v2-browser-qa
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
