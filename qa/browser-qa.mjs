@@ -667,6 +667,54 @@ async function runMotionStress(viewportName, width, height, isMobile = false) {
     }
   }
 
+  // 3b) Visual settle state after CSS transitions.
+  for (const target of [
+    { selector: '[data-workflow-step="4"]', type: "workflow" },
+    { selector: '[data-workflow-step="7"]', type: "workflow" },
+    { selector: '[data-journey-event]', type: "journey", index: Math.floor(journeyCount / 2) }
+  ]) {
+    await page.evaluate(({ selector, index }) => {
+      const nodes = document.querySelectorAll(selector);
+      const el = Number.isInteger(index) ? nodes[index] : nodes[0];
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      window.scrollTo(0, Math.max(0, rect.top + window.scrollY - (window.innerHeight - rect.height) / 2));
+    }, target);
+
+    // Long enough for the 450-500ms production transition to complete.
+    await page.waitForTimeout(650);
+
+    const visual = await page.evaluate(({ selector, type, index }) => {
+      const nodes = document.querySelectorAll(selector);
+      const el = Number.isInteger(index) ? nodes[index] : nodes[0];
+      if (!el) return { missing: true, selector, type, index };
+      const style = getComputedStyle(el);
+      const rect = el.getBoundingClientRect();
+      return {
+        missing: false,
+        selector,
+        type,
+        index: Number.isInteger(index) ? index : null,
+        active: el.classList.contains("is-active"),
+        opacity: Number(style.opacity),
+        transform: style.transform,
+        top: Math.round(rect.top),
+        bottom: Math.round(rect.bottom),
+        viewportHeight: window.innerHeight
+      };
+    }, target);
+
+    if (
+      visual.missing ||
+      !visual.active ||
+      !Number.isFinite(visual.opacity) ||
+      visual.opacity < 0.99 ||
+      visual.transform !== "none"
+    ) {
+      recordFailure(scope, "Active motion element did not visually settle after transition", visual);
+    }
+  }
+
   // 4) Frame pacing under deterministic scroll animation.
   const pacing = await page.evaluate(async () => {
     const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
