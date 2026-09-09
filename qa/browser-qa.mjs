@@ -669,8 +669,9 @@ async function runMotionStress(viewportName, width, height, isMobile = false) {
 
   // 3b) Visual settle state after CSS transitions.
   for (const target of [
-    { selector: '[data-workflow-step="4"]', type: "workflow" },
-    { selector: '[data-workflow-step="7"]', type: "workflow" },
+    { selector: '[data-workflow-step="0"]', type: "workflow" },
+    { selector: '[data-workflow-step="3"]', type: "workflow" },
+    { selector: '[data-workflow-step="6"]', type: "workflow" },
     { selector: '[data-journey-event]', type: "journey", index: Math.floor(journeyCount / 2) }
   ]) {
     await page.evaluate(({ selector, index }) => {
