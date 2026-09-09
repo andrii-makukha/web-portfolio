@@ -221,6 +221,38 @@ async function runPage(browser, locale, viewport) {
     if (!centerVisible) recordFailure(scope, "Desktop navigation unexpectedly hidden");
   }
 
+  // Chapter-state regression check: verify rail + nav theme in both scroll directions.
+  if (locale === "de" && (viewport.name === "desktop" || viewport.name === "mobile")) {
+    const chapterOrder = [...coreIds, ...coreIds.slice().reverse()];
+    for (const id of chapterOrder) {
+      await page.evaluate(sectionId => {
+        const el = document.getElementById(sectionId);
+        if (!el) return;
+        const navOffset = 74;
+        window.scrollTo(0, Math.max(0, el.getBoundingClientRect().top + window.scrollY - navOffset));
+      }, id);
+      await page.waitForTimeout(45);
+
+      const chapterState = await page.evaluate(sectionId => {
+        const section = document.getElementById(sectionId);
+        return {
+          current: document.querySelector("[data-rail][aria-current='true']")?.getAttribute("href") || null,
+          expectedTheme: section?.dataset.nav || "dark",
+          navIsLight: document.querySelector(".site-nav")?.classList.contains("is-light") || false
+        };
+      }, id);
+
+      if (chapterState.current !== "#" + id) {
+        recordFailure(scope, "Active chapter did not follow scroll position", { id, ...chapterState });
+      }
+
+      const shouldBeLight = chapterState.expectedTheme === "light";
+      if (chapterState.navIsLight !== shouldBeLight) {
+        recordFailure(scope, "Navigation theme did not match active chapter", { id, ...chapterState });
+      }
+    }
+  }
+
   const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
   const step = Math.max(320, Math.floor(viewport.height * 0.78));
   let overflowDuringScroll = null;
