@@ -5,6 +5,7 @@
   const sections = [...document.querySelectorAll('[data-chapter]')];
   const railLinks = [...document.querySelectorAll('[data-rail]')];
   const langLinks = [...document.querySelectorAll('[data-lang]')];
+  const nav = document.querySelector('.site-nav');
 
   requestAnimationFrame(() => body.classList.add('is-ready'));
 
@@ -30,6 +31,8 @@
 
       if (!visible) return;
       const id = visible.target.id;
+      const navTheme = visible.target.dataset.nav || 'dark';
+      if (nav) nav.classList.toggle('is-light', navTheme === 'light');
       railLinks.forEach((link) => {
         link.setAttribute('aria-current', link.getAttribute('href') === '#' + id ? 'true' : 'false');
       });
@@ -74,6 +77,10 @@
         item.style.transform = `translate3d(0, ${local * -14}px, 0)`;
       });
 
+      const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      document.documentElement.style.setProperty('--page-progress', String(window.scrollY / maxScroll));
+      if (nav) nav.classList.toggle('is-scrolled', window.scrollY > 24);
+
       ticking = false;
     };
 
@@ -86,5 +93,13 @@
     paintOpening();
     window.addEventListener('scroll', requestPaint, { passive: true });
     window.addEventListener('resize', requestPaint);
+  } else {
+    const updateStaticProgress = () => {
+      const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      document.documentElement.style.setProperty('--page-progress', String(window.scrollY / maxScroll));
+      if (nav) nav.classList.toggle('is-scrolled', window.scrollY > 24);
+    };
+    updateStaticProgress();
+    window.addEventListener('scroll', updateStaticProgress, { passive: true });
   }
 })();
