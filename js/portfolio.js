@@ -12,12 +12,17 @@
   const journeyCurrent = document.querySelector('[data-journey-current]');
   const menuToggle = document.querySelector('.site-nav__menu-toggle');
   const mobileMenu = document.querySelector('.mobile-menu');
+  const openingName = document.querySelector('.opening__name');
+  const openingEyebrow = document.querySelector('.opening__eyebrow');
+  const openingMeta = document.querySelector('.opening__meta');
+  const openingScroll = document.querySelector('.opening__scroll');
 
-  const closeMenu = () => {
+  const closeMenu = ({ restoreFocus = false } = {}) => {
     if (!menuToggle || !mobileMenu) return;
     menuToggle.setAttribute('aria-expanded', 'false');
     mobileMenu.hidden = true;
     body.classList.remove('menu-open');
+    if (restoreFocus) menuToggle.focus({ preventScroll: true });
   };
 
   const openMenu = () => {
@@ -34,13 +39,17 @@
       const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
       isOpen ? closeMenu() : openMenu();
     });
-    mobileMenu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => closeMenu());
+    });
+
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && body.classList.contains('menu-open')) {
-        closeMenu();
-        menuToggle.focus({ preventScroll: true });
+        closeMenu({ restoreFocus: true });
       }
     });
+
     window.addEventListener('resize', () => {
       if (window.innerWidth > 1180 && body.classList.contains('menu-open')) closeMenu();
     });
@@ -62,32 +71,12 @@
     revealItems.forEach((item) => item.classList.add('is-visible'));
   }
 
-  if ('IntersectionObserver' in window && sections.length) {
-    const sectionObserver = new IntersectionObserver((entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-      if (!visible) return;
-      const id = visible.target.id;
-      const navTheme = visible.target.dataset.nav || 'dark';
-      if (nav) nav.classList.toggle('is-light', navTheme === 'light');
-      railLinks.forEach((link) => {
-        link.setAttribute('aria-current', link.getAttribute('href') === '#' + id ? 'true' : 'false');
-      });
-    }, {
-      threshold: [0.25, 0.5, 0.75],
-      rootMargin: '-12% 0px -22% 0px'
-    });
-
-    sections.forEach((section) => sectionObserver.observe(section));
-  }
-
   if ('IntersectionObserver' in window && workflowSteps.length) {
     const workflowObserver = new IntersectionObserver((entries) => {
       const active = entries
         .filter((entry) => entry.isIntersecting)
         .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
       if (!active) return;
       const index = active.target.dataset.workflowStep;
       workflowSteps.forEach((step) => step.classList.toggle('is-active', step.dataset.workflowStep === index));
@@ -104,10 +93,11 @@
       const active = entries
         .filter((entry) => entry.isIntersecting)
         .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
       if (!active) return;
       journeyEvents.forEach((event) => event.classList.toggle('is-active', event === active.target));
       if (journeyCurrent) journeyCurrent.textContent = active.target.dataset.journeyYear || '';
-    }, { threshold: [0.3,0.55,0.75], rootMargin: '-18% 0px -18% 0px' });
+    }, { threshold: [0.3, 0.55, 0.75], rootMargin: '-18% 0px -18% 0px' });
 
     journeyEvents.forEach((event) => journeyObserver.observe(event));
   } else {
@@ -124,52 +114,84 @@
     });
   });
 
-  if (!reducedMotion) {
-    const name = document.querySelector('.opening__name');
-    const eyebrow = document.querySelector('.opening__eyebrow');
-    const meta = document.querySelector('.opening__meta');
-    const scrollHint = document.querySelector('.opening__scroll');
-    let ticking = false;
+  const updateActiveChapter = () => {
+    if (!sections.length) return;
 
-    const paintOpening = () => {
-      const viewport = Math.max(window.innerHeight, 1);
-      const progress = Math.max(0, Math.min(1, window.scrollY / (viewport * 0.78)));
+    const navHeight = nav ? nav.getBoundingClientRect().height : 0;
+    const probe = Math.min(
+      window.innerHeight * 0.5,
+      Math.max(navHeight + 24, window.innerHeight * 0.32)
+    );
 
-      if (name) {
-        name.style.transform = `translate3d(${progress * -2.4}vw, ${progress * -3.4}vh, 0) scale(${1 - progress * 0.035})`;
-        name.style.opacity = String(1 - progress * 0.32);
+    let activeSection = sections.find((section) => {
+      const rect = section.getBoundingClientRect();
+      return rect.top <= probe && rect.bottom > probe;
+    });
+
+    if (!activeSection) {
+      activeSection = sections.reduce((closest, section) => {
+        const distance = Math.abs(section.getBoundingClientRect().top - probe);
+        if (!closest || distance < closest.distance) return { section, distance };
+        return closest;
+      }, null)?.section || sections[0];
+    }
+
+    const id = activeSection.id;
+    const navTheme = activeSection.dataset.nav || 'dark';
+
+    if (nav) nav.classList.toggle('is-light', navTheme === 'light');
+
+    railLinks.forEach((link) => {
+      const isActive = link.getAttribute('href') === '#' + id;
+      if (isActive) {
+        link.setAttribute('aria-current', 'true');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  };
+
+  let ticking = false;
+
+  const paintScrollState = () => {
+    const scrollY = window.scrollY;
+    const viewport = Math.max(window.innerHeight, 1);
+    const openingProgress = Math.max(0, Math.min(1, scrollY / (viewport * 0.78)));
+
+    if (!reducedMotion) {
+      if (openingName) {
+        openingName.style.transform =
+          `translate3d(${openingProgress * -2.4}vw, ${openingProgress * -3.4}vh, 0) scale(${1 - openingProgress * 0.035})`;
+        openingName.style.opacity = String(1 - openingProgress * 0.32);
       }
 
-      [eyebrow, meta, scrollHint].forEach((item, index) => {
+      [openingEyebrow, openingMeta, openingScroll].forEach((item, index) => {
         if (!item) return;
-        const local = Math.max(0, Math.min(1, progress * (1.25 + index * 0.08)));
+        const local = Math.max(0, Math.min(1, openingProgress * (1.25 + index * 0.08)));
         item.style.opacity = String(1 - local * 0.9);
         item.style.transform = `translate3d(0, ${local * -14}px, 0)`;
       });
+    }
 
-      const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-      document.documentElement.style.setProperty('--page-progress', String(window.scrollY / maxScroll));
-      if (nav) nav.classList.toggle('is-scrolled', window.scrollY > 24);
+    const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    document.documentElement.style.setProperty(
+      '--page-progress',
+      String(Math.max(0, Math.min(1, scrollY / maxScroll)))
+    );
 
-      ticking = false;
-    };
+    if (nav) nav.classList.toggle('is-scrolled', scrollY > 24);
+    updateActiveChapter();
+    ticking = false;
+  };
 
-    const requestPaint = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(paintOpening);
-    };
+  const requestPaint = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(paintScrollState);
+  };
 
-    paintOpening();
-    window.addEventListener('scroll', requestPaint, { passive: true });
-    window.addEventListener('resize', requestPaint);
-  } else {
-    const updateStaticProgress = () => {
-      const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-      document.documentElement.style.setProperty('--page-progress', String(window.scrollY / maxScroll));
-      if (nav) nav.classList.toggle('is-scrolled', window.scrollY > 24);
-    };
-    updateStaticProgress();
-    window.addEventListener('scroll', updateStaticProgress, { passive: true });
-  }
+  paintScrollState();
+  window.addEventListener('scroll', requestPaint, { passive: true });
+  window.addEventListener('resize', requestPaint);
+  window.addEventListener('orientationchange', requestPaint);
 })();
