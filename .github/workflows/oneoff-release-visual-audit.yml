@@ -44,8 +44,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p release-review assets
-          cat > /tmp/release-visual-audit.mjs <<'JS'
+          cat > release-visual-audit.mjs <<'JS'
           import { chromium } from 'playwright';
+          import fs from 'node:fs';
+
           const browser = await chromium.launch({ headless: true });
 
           const local = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
@@ -73,9 +75,9 @@ jobs:
           }
           await external.close();
           await browser.close();
-          await import('node:fs').then(fs => fs.writeFileSync('release-review/report.json', JSON.stringify(report, null, 2)));
+          fs.writeFileSync('release-review/report.json', JSON.stringify(report, null, 2));
           JS
-          node /tmp/release-visual-audit.mjs
+          node release-visual-audit.mjs
 
       - name: Add social-preview metadata
         shell: bash
