@@ -6,6 +6,8 @@
   const railLinks = [...document.querySelectorAll('[data-rail]')];
   const langLinks = [...document.querySelectorAll('[data-lang]')];
   const nav = document.querySelector('.site-nav');
+  const workflowSteps = [...document.querySelectorAll('[data-workflow-step]')];
+  const workflowMarkers = [...document.querySelectorAll('[data-workflow-marker]')];
 
   requestAnimationFrame(() => body.classList.add('is-ready'));
 
@@ -42,6 +44,22 @@
     });
 
     sections.forEach((section) => sectionObserver.observe(section));
+  }
+
+  if ('IntersectionObserver' in window && workflowSteps.length) {
+    const workflowObserver = new IntersectionObserver((entries) => {
+      const active = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!active) return;
+      const index = active.target.dataset.workflowStep;
+      workflowSteps.forEach((step) => step.classList.toggle('is-active', step.dataset.workflowStep === index));
+      workflowMarkers.forEach((marker) => marker.classList.toggle('is-active', marker.dataset.workflowMarker === index));
+    }, { threshold: [0.3, 0.55, 0.75], rootMargin: '-18% 0px -18% 0px' });
+
+    workflowSteps.forEach((step) => workflowObserver.observe(step));
+  } else {
+    workflowSteps.forEach((step) => step.classList.add('is-active'));
   }
 
   langLinks.forEach((link) => {
