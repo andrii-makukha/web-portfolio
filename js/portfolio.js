@@ -100,38 +100,50 @@
     revealItems.forEach((item) => item.classList.add('is-visible'));
   }
 
-  if ('IntersectionObserver' in window && workflowSteps.length) {
-    const workflowObserver = new IntersectionObserver((entries) => {
-      const active = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+  const findActiveByProbe = (items, probe) => {
+    if (!items.length) return null;
 
-      if (!active) return;
-      const index = active.target.dataset.workflowStep;
-      workflowSteps.forEach((step) => step.classList.toggle('is-active', step.dataset.workflowStep === index));
-      workflowMarkers.forEach((marker) => marker.classList.toggle('is-active', marker.dataset.workflowMarker === index));
-    }, { threshold: [0.3, 0.55, 0.75], rootMargin: '-18% 0px -18% 0px' });
+    const containing = items.find((item) => {
+      const rect = item.getBoundingClientRect();
+      return rect.top <= probe && rect.bottom > probe;
+    });
+    if (containing) return containing;
 
-    workflowSteps.forEach((step) => workflowObserver.observe(step));
-  } else {
-    workflowSteps.forEach((step) => step.classList.add('is-active'));
-  }
+    return items.reduce((closest, item) => {
+      const rect = item.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const distance = Math.abs(center - probe);
+      if (!closest || distance < closest.distance) return { item, distance };
+      return closest;
+    }, null)?.item || items[0];
+  };
 
-  if ('IntersectionObserver' in window && journeyEvents.length) {
-    const journeyObserver = new IntersectionObserver((entries) => {
-      const active = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+  const updateWorkflowState = () => {
+    if (!workflowSteps.length) return;
+    const probe = window.innerHeight * 0.5;
+    const active = findActiveByProbe(workflowSteps, probe);
+    if (!active) return;
 
-      if (!active) return;
-      journeyEvents.forEach((event) => event.classList.toggle('is-active', event === active.target));
-      if (journeyCurrent) journeyCurrent.textContent = active.target.dataset.journeyYear || '';
-    }, { threshold: [0.3, 0.55, 0.75], rootMargin: '-18% 0px -18% 0px' });
+    const index = active.dataset.workflowStep;
+    workflowSteps.forEach((step) => {
+      step.classList.toggle('is-active', step === active);
+    });
+    workflowMarkers.forEach((marker) => {
+      marker.classList.toggle('is-active', marker.dataset.workflowMarker === index);
+    });
+  };
 
-    journeyEvents.forEach((event) => journeyObserver.observe(event));
-  } else {
-    journeyEvents.forEach((event) => event.classList.add('is-active'));
-  }
+  const updateJourneyState = () => {
+    if (!journeyEvents.length) return;
+    const probe = window.innerHeight * 0.5;
+    const active = findActiveByProbe(journeyEvents, probe);
+    if (!active) return;
+
+    journeyEvents.forEach((event) => {
+      event.classList.toggle('is-active', event === active);
+    });
+    if (journeyCurrent) journeyCurrent.textContent = active.dataset.journeyYear || '';
+  };
 
   langLinks.forEach((link) => {
     link.addEventListener('click', (event) => {
@@ -210,6 +222,8 @@
 
     if (nav) nav.classList.toggle('is-scrolled', scrollY > 24);
     updateActiveChapter();
+    updateWorkflowState();
+    updateJourneyState();
     ticking = false;
   };
 
