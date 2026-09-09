@@ -3192,3 +3192,23 @@ body.menu-open {
     max-width: 100%;
   }
 }
+
+
+/* Locale-specific desktop headline optics */
+@media (min-width: 901px) {
+  html[lang="ru"] .capabilities__display {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(3.7rem, 6.15vw, 6.6rem);
+    line-height: .84;
+  }
+
+  html[lang="ru"] .work__display {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(3.5rem, 5.75vw, 6.15rem);
+    line-height: .86;
+  }
+}

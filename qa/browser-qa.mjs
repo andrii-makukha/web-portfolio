@@ -247,6 +247,36 @@ async function runPage(browser, locale, viewport) {
     if (editorialOverlaps.length) {
       recordFailure(scope, "Editorial heading/lead overlap", editorialOverlaps);
     }
+
+    const headlineOverflow = await page.evaluate(() => {
+      const selectors = [
+        ".profile__display",
+        ".foundation__display",
+        ".capabilities__display",
+        ".ai__display",
+        ".work__display",
+        ".journey__display",
+        ".languages__display"
+      ];
+      return selectors.flatMap(selector => {
+        const headline = document.querySelector(selector);
+        if (!headline) return [];
+        const available = headline.clientWidth;
+        return [...headline.querySelectorAll(":scope > span")]
+          .map((line, index) => ({
+            selector,
+            index,
+            text: (line.textContent || "").trim(),
+            available,
+            scrollWidth: line.scrollWidth,
+            clientWidth: line.clientWidth
+          }))
+          .filter(line => line.scrollWidth > available + 2);
+      });
+    });
+    if (headlineOverflow.length) {
+      recordFailure(scope, "Editorial headline line exceeds its column", headlineOverflow);
+    }
   }
 
   if (viewport.width <= 1180) {
