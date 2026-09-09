@@ -3152,3 +3152,27 @@ main,
 body.menu-open {
   overscroll-behavior: none;
 }
+
+
+/* Languages desktop containment */
+@media (min-width: 901px) {
+  .languages__heading-row {
+    grid-template-columns: minmax(0, 1fr) minmax(19rem, .68fr);
+    gap: clamp(3rem, 6vw, 7rem);
+  }
+
+  .languages__display {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(3.8rem, 6.5vw, 7rem);
+  }
+
+  .languages__display span {
+    max-width: 100%;
+  }
+
+  .languages__lead {
+    min-width: 0;
+  }
+}
