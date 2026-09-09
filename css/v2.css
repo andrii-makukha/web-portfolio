@@ -3084,3 +3084,33 @@ main,
     max-width: 100%;
   }
 }
+
+
+/* Final mobile headline containment */
+@media (max-width: 560px) {
+  .opening__name {
+    font-size: clamp(3.45rem, 16.3vw, 5.1rem);
+    letter-spacing: -.07em;
+  }
+
+  .foundation__closing,
+  .capabilities__bridge,
+  .journey-ending {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(2.4rem, 10.8vw, 4rem);
+    line-height: .9;
+    text-wrap: balance;
+  }
+
+  .foundation__closing span,
+  .foundation__closing strong,
+  .capabilities__bridge span,
+  .capabilities__bridge strong,
+  .journey-ending span {
+    max-width: 100%;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+}
