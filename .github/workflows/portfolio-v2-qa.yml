@@ -6,6 +6,7 @@ on:
       - portfolio-v2
     paths:
       - "index.html"
+      - "vercel.json"
       - "de/**"
       - "en/**"
       - "ru/**"
