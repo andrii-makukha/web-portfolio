@@ -748,49 +748,71 @@ async function runMotionStress(viewportName, width, height, isMobile = false) {
 await runMotionStress("desktop", 1440, 900, false);
 await runMotionStress("mobile", 390, 844, true);
 
-// 6) Resize/orientation stress from portrait -> landscape -> desktop-ish -> portrait.
+// 6) Resize/orientation stress using isolated contexts per viewport.
 {
   const scope = "motion/resize-orientation";
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: false, hasTouch: true });
-  const page = await context.newPage();
-  const pageErrors = [];
-  page.on("pageerror", err => pageErrors.push(String(err)));
-  await page.goto(`${ORIGIN}/de/#work`, { waitUntil: "networkidle" });
-  await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
-  await settle(page);
-
   const sizes = [
-    { width: 844, height: 390 },
-    { width: 1024, height: 768 },
-    { width: 1180, height: 820 },
-    { width: 1280, height: 800 },
-    { width: 390, height: 844 }
+    { name: "portrait-mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
+    { name: "landscape-mobile", width: 844, height: 390, isMobile: true, hasTouch: true },
+    { name: "tablet", width: 1024, height: 768, isMobile: false, hasTouch: true },
+    { name: "desktop-breakpoint", width: 1180, height: 820, isMobile: false, hasTouch: false },
+    { name: "desktop", width: 1280, height: 800, isMobile: false, hasTouch: false }
   ];
   const states = [];
+
   for (const size of sizes) {
-    await page.setViewportSize(size);
-    await page.waitForTimeout(120);
+    const context = await browser.newContext({
+      viewport: { width: size.width, height: size.height },
+      isMobile: size.isMobile,
+      hasTouch: size.hasTouch,
+      reducedMotion: "no-preference"
+    });
+    const page = await context.newPage();
+    const pageErrors = [];
+    page.on("pageerror", err => pageErrors.push(String(err)));
+
+    await page.goto(`${ORIGIN}/de/#work`, { waitUntil: "networkidle" });
+    await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
+    await settle(page);
+
     const state = await page.evaluate(() => {
       const progress = Number(getComputedStyle(document.documentElement).getPropertyValue("--page-progress").trim());
+      const vv = window.visualViewport;
       return {
-        width: window.innerWidth,
-        height: window.innerHeight,
-        scrollWidth: document.documentElement.scrollWidth,
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+        visualWidth: vv?.width || null,
+        visualHeight: vv?.height || null,
         clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        bodyScrollWidth: document.body.scrollWidth,
         progress,
         menuOpen: document.body.classList.contains("menu-open"),
         activeRails: document.querySelectorAll("[data-rail][aria-current='true']").length
       };
     });
-    states.push(state);
-    if (state.scrollWidth > state.clientWidth + 1 || !Number.isFinite(state.progress) ||
-        state.progress < -0.001 || state.progress > 1.001 || state.menuOpen || state.activeRails !== 1) {
-      recordFailure(scope, "Invalid state after viewport resize/orientation change", state);
+
+    states.push({ ...size, ...state, pageErrors });
+
+    const effectiveViewport = Math.round(state.visualWidth || state.clientWidth || size.width);
+    const overflow = Math.max(state.scrollWidth, state.bodyScrollWidth) - effectiveViewport;
+
+    if (
+      overflow > 1 ||
+      !Number.isFinite(state.progress) ||
+      state.progress < -0.001 ||
+      state.progress > 1.001 ||
+      state.menuOpen ||
+      state.activeRails !== 1 ||
+      pageErrors.length
+    ) {
+      recordFailure(scope, "Invalid isolated viewport/orientation state", { size, state, effectiveViewport, overflow, pageErrors });
     }
+
+    await context.close();
   }
-  if (pageErrors.length) recordFailure(scope, "Page errors during resize/orientation stress", pageErrors);
-  results.push({ scope, states, pageErrors });
-  await context.close();
+
+  results.push({ scope, states });
 }
 
 {
