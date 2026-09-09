@@ -19,5 +19,7 @@ It currently covers:
 - keyboard accessibility
 - axe-core WCAG A/AA checks
 - release-facing external link checks
+- curated live-project links: a public Live link is kept only after visual release review
+- social-preview metadata and a 1200 × 630 portfolio preview image as part of the release surface
 
 A release candidate is not considered ready while any gate reports a failure.
