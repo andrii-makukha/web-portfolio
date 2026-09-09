@@ -456,7 +456,7 @@ async function runPage(browser, locale, viewport) {
   await page.waitForTimeout(40);
   await page.screenshot({ path: path.join(OUTPUT, `${locale}-${viewport.name}-top.png`), fullPage: false });
 
-  if (locale === "de" && (viewport.name === "desktop" || viewport.name === "mobile")) {
+  if (viewport.name === "desktop" || viewport.name === "mobile") {
     for (const id of ["identity", "profile", "foundation", "capabilities", "ai", "work", "journey", "languages", "contact"]) {
       await page.evaluate(sectionId => {
         const el = document.getElementById(sectionId);
