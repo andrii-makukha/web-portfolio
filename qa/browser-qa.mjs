@@ -520,6 +520,278 @@ for (const locale of locales) {
   }
 }
 
+
+/* === Motion stress gate === */
+async function runMotionStress(viewportName, width, height, isMobile = false) {
+  const scope = `motion/${viewportName}`;
+  const context = await browser.newContext({
+    viewport: { width, height },
+    deviceScaleFactor: 1,
+    isMobile,
+    hasTouch: isMobile,
+    reducedMotion: "no-preference"
+  });
+  const page = await context.newPage();
+  const consoleErrors = [];
+  const pageErrors = [];
+  page.on("console", msg => { if (msg.type() === "error") consoleErrors.push(msg.text()); });
+  page.on("pageerror", err => pageErrors.push(String(err)));
+
+  await page.goto(`${ORIGIN}/de/`, { waitUntil: "networkidle", timeout: 30000 });
+  await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
+  await settle(page);
+
+  // 1) Aggressive bidirectional chapter scrolling.
+  const chapterSequence = [
+    "top","profile","ai","contact","foundation","work","identity","journey",
+    "capabilities","languages","top","contact","ai","profile","journey","top"
+  ];
+
+  for (const id of chapterSequence) {
+    await page.evaluate(sectionId => {
+      const el = document.getElementById(sectionId);
+      if (!el) return;
+      const nav = document.querySelector(".site-nav");
+      const navHeight = nav?.getBoundingClientRect().height || 0;
+      const target = Math.max(0, el.getBoundingClientRect().top + window.scrollY - navHeight - 18);
+      window.scrollTo(0, target);
+    }, id);
+    await page.waitForTimeout(35);
+
+    const state = await page.evaluate(sectionId => {
+      const nav = document.querySelector(".site-nav");
+      const navHeight = nav?.getBoundingClientRect().height || 0;
+      const probe = Math.min(
+        window.innerHeight * 0.5,
+        Math.max(navHeight + 24, window.innerHeight * 0.32)
+      );
+      const sections = [...document.querySelectorAll("[data-chapter]")];
+      let expected = sections.find(section => {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= probe && rect.bottom > probe;
+      });
+      if (!expected) {
+        expected = sections.reduce((closest, section) => {
+          const distance = Math.abs(section.getBoundingClientRect().top - probe);
+          if (!closest || distance < closest.distance) return { section, distance };
+          return closest;
+        }, null)?.section || null;
+      }
+      const progress = Number(getComputedStyle(document.documentElement).getPropertyValue("--page-progress").trim());
+      const activeRails = [...document.querySelectorAll("[data-rail][aria-current='true']")].map(a => a.getAttribute("href"));
+      const expectedTheme = expected?.dataset.nav || "dark";
+      const openingName = document.querySelector(".opening__name");
+      const openingStyle = openingName?.getAttribute("style") || "";
+      return {
+        requested: sectionId,
+        expected: expected?.id || null,
+        activeRails,
+        navLight: nav?.classList.contains("is-light") || false,
+        expectedTheme,
+        progress,
+        scrollY: window.scrollY,
+        maxScroll: Math.max(document.documentElement.scrollHeight - window.innerHeight, 0),
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        openingStyle
+      };
+    }, id);
+
+    if (state.activeRails.length !== 1 || state.activeRails[0] !== "#" + state.expected) {
+      recordFailure(scope, "Chapter state desynchronised during rapid bidirectional scroll", state);
+    }
+    if (state.navLight !== (state.expectedTheme === "light")) {
+      recordFailure(scope, "Navigation theme desynchronised during rapid bidirectional scroll", state);
+    }
+    if (!Number.isFinite(state.progress) || state.progress < -0.001 || state.progress > 1.001) {
+      recordFailure(scope, "Page progress became invalid during motion", state);
+    }
+    if (state.scrollWidth > state.clientWidth + 1) {
+      recordFailure(scope, "Horizontal overflow appeared during motion stress", state);
+    }
+    if (/NaN|undefined|null/.test(state.openingStyle)) {
+      recordFailure(scope, "Opening motion produced an invalid inline style", state.openingStyle);
+    }
+  }
+
+  // 2) Workflow 01 -> 07 -> 01, including abrupt direction changes.
+  const workflowOrder = ["1","2","3","4","5","6","7","6","4","2","1","3","7","1"];
+  for (const index of workflowOrder) {
+    await page.evaluate(stepIndex => {
+      const el = document.querySelector(`[data-workflow-step="${stepIndex}"]`);
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      window.scrollTo(0, Math.max(0, rect.top + window.scrollY - (window.innerHeight - rect.height) / 2));
+    }, index);
+    await page.waitForTimeout(115);
+    const state = await page.evaluate(expectedIndex => {
+      const activeSteps = [...document.querySelectorAll("[data-workflow-step].is-active")].map(el => el.dataset.workflowStep);
+      const activeMarkers = [...document.querySelectorAll("[data-workflow-marker].is-active")].map(el => el.dataset.workflowMarker);
+      return { expectedIndex, activeSteps, activeMarkers };
+    }, index);
+    if (state.activeSteps.length !== 1 || state.activeSteps[0] !== index ||
+        state.activeMarkers.length !== 1 || state.activeMarkers[0] !== index) {
+      recordFailure(scope, "Workflow active state did not settle on the targeted step", state);
+    }
+  }
+
+  // 3) Journey forward/backward and sticky-year synchronisation.
+  const journeyCount = await page.locator("[data-journey-event]").count();
+  const journeyOrder = [
+    ...Array.from({length: journeyCount}, (_, i) => i),
+    ...Array.from({length: journeyCount}, (_, i) => journeyCount - 1 - i),
+    0, Math.max(0, journeyCount - 1), Math.floor(journeyCount / 2)
+  ];
+  for (const itemIndex of journeyOrder) {
+    await page.evaluate(index => {
+      const el = document.querySelectorAll("[data-journey-event]")[index];
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      window.scrollTo(0, Math.max(0, rect.top + window.scrollY - (window.innerHeight - rect.height) / 2));
+    }, itemIndex);
+    await page.waitForTimeout(115);
+    const state = await page.evaluate(expectedIndex => {
+      const events = [...document.querySelectorAll("[data-journey-event]")];
+      const active = events.map((el, index) => ({ index, active: el.classList.contains("is-active"), year: el.dataset.journeyYear }))
+        .filter(x => x.active);
+      return {
+        expectedIndex,
+        expectedYear: events[expectedIndex]?.dataset.journeyYear || null,
+        active,
+        currentYear: document.querySelector("[data-journey-current]")?.textContent?.trim() || null
+      };
+    }, itemIndex);
+    if (state.active.length !== 1 || state.active[0].index !== itemIndex || state.currentYear !== state.expectedYear) {
+      recordFailure(scope, "Journey active state/year did not settle correctly", state);
+    }
+  }
+
+  // 4) Frame pacing under deterministic scroll animation.
+  const pacing = await page.evaluate(async () => {
+    const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    const frames = [];
+    let previous = performance.now();
+    const samples = 180;
+    for (let i = 0; i < samples; i++) {
+      await new Promise(resolve => requestAnimationFrame(now => {
+        const delta = now - previous;
+        previous = now;
+        frames.push(delta);
+        const phase = i / (samples - 1);
+        const triangular = phase <= .5 ? phase * 2 : (1 - phase) * 2;
+        window.scrollTo(0, max * triangular);
+        resolve();
+      }));
+    }
+    const sorted = frames.slice(5).sort((a,b) => a-b);
+    const p95 = sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * .95))] || 0;
+    const p99 = sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * .99))] || 0;
+    const maxGap = Math.max(...sorted, 0);
+    const over50 = sorted.filter(x => x > 50).length;
+    return {
+      sampleCount: sorted.length,
+      p95: Number(p95.toFixed(2)),
+      p99: Number(p99.toFixed(2)),
+      maxGap: Number(maxGap.toFixed(2)),
+      over50
+    };
+  });
+  // CI is not a real device benchmark; gate only pathological stalls.
+  if (pacing.maxGap > 220 || pacing.over50 > 8) {
+    recordFailure(scope, "Pathological frame stalls detected during deterministic scroll", pacing);
+  }
+
+  // 5) Menu must not disturb scroll state when opened mid-page.
+  if (width <= 1180) {
+    await page.evaluate(() => {
+      const el = document.getElementById("ai");
+      if (el) window.scrollTo(0, el.offsetTop + 300);
+    });
+    await page.waitForTimeout(80);
+    const beforeMenu = await page.evaluate(() => ({
+      y: window.scrollY,
+      active: document.querySelector("[data-rail][aria-current='true']")?.getAttribute("href") || null
+    }));
+    const toggle = page.locator(".site-nav__menu-toggle");
+    await toggle.click();
+    await page.waitForTimeout(80);
+    const open = await page.evaluate(() => ({
+      y: window.scrollY,
+      bodyOpen: document.body.classList.contains("menu-open"),
+      overflow: getComputedStyle(document.body).overflow,
+      mainInert: document.querySelector("#main-content")?.inert || false
+    }));
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(80);
+    const closed = await page.evaluate(() => ({
+      y: window.scrollY,
+      bodyOpen: document.body.classList.contains("menu-open"),
+      expanded: document.querySelector(".site-nav__menu-toggle")?.getAttribute("aria-expanded"),
+      focusOnToggle: document.activeElement === document.querySelector(".site-nav__menu-toggle")
+    }));
+    if (!open.bodyOpen || open.overflow !== "hidden" || !open.mainInert) {
+      recordFailure(scope, "Mid-scroll mobile menu did not lock background correctly", { beforeMenu, open, closed });
+    }
+    if (Math.abs(beforeMenu.y - open.y) > 2 || Math.abs(beforeMenu.y - closed.y) > 2 ||
+        closed.bodyOpen || closed.expanded !== "false" || !closed.focusOnToggle) {
+      recordFailure(scope, "Mobile menu changed scroll/focus state when opened mid-page", { beforeMenu, open, closed });
+    }
+  }
+
+  if (consoleErrors.length) recordFailure(scope, "Console errors during motion stress", consoleErrors);
+  if (pageErrors.length) recordFailure(scope, "Page errors during motion stress", pageErrors);
+  results.push({ scope, pacing, consoleErrors, pageErrors });
+  await context.close();
+}
+
+await runMotionStress("desktop", 1440, 900, false);
+await runMotionStress("mobile", 390, 844, true);
+
+// 6) Resize/orientation stress from portrait -> landscape -> desktop-ish -> portrait.
+{
+  const scope = "motion/resize-orientation";
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const page = await context.newPage();
+  const pageErrors = [];
+  page.on("pageerror", err => pageErrors.push(String(err)));
+  await page.goto(`${ORIGIN}/de/#work`, { waitUntil: "networkidle" });
+  await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
+  await settle(page);
+
+  const sizes = [
+    { width: 844, height: 390 },
+    { width: 1024, height: 768 },
+    { width: 1180, height: 820 },
+    { width: 1280, height: 800 },
+    { width: 390, height: 844 }
+  ];
+  const states = [];
+  for (const size of sizes) {
+    await page.setViewportSize(size);
+    await page.waitForTimeout(120);
+    const state = await page.evaluate(() => {
+      const progress = Number(getComputedStyle(document.documentElement).getPropertyValue("--page-progress").trim());
+      return {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+        progress,
+        menuOpen: document.body.classList.contains("menu-open"),
+        activeRails: document.querySelectorAll("[data-rail][aria-current='true']").length
+      };
+    });
+    states.push(state);
+    if (state.scrollWidth > state.clientWidth + 1 || !Number.isFinite(state.progress) ||
+        state.progress < -0.001 || state.progress > 1.001 || state.menuOpen || state.activeRails !== 1) {
+      recordFailure(scope, "Invalid state after viewport resize/orientation change", state);
+    }
+  }
+  if (pageErrors.length) recordFailure(scope, "Page errors during resize/orientation stress", pageErrors);
+  results.push({ scope, states, pageErrors });
+  await context.close();
+}
+
 {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const page = await context.newPage();
