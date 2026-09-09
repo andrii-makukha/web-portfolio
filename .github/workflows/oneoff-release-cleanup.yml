@@ -1,0 +1,56 @@
+name: One-off release cleanup
+
+on:
+  push:
+    branches:
+      - portfolio-v2
+    paths:
+      - ".github/workflows/oneoff-release-cleanup.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2
+          fetch-depth: 0
+
+      - name: Remove weak live link and temporary release workflows
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          live_url = 'https://automobilanwendung.vercel.app/contact'
+          for locale in ('de', 'en', 'ru'):
+              path = Path(locale) / 'index.html'
+              lines = path.read_text().splitlines(True)
+              matches = [line for line in lines if live_url in line]
+              if len(matches) != 1:
+                  raise SystemExit(f'{path}: expected exactly one Automobilanwendung Live link, found {len(matches)}')
+              path.write_text(''.join(line for line in lines if live_url not in line))
+
+          qa = Path('qa/browser-qa.mjs')
+          lines = qa.read_text().splitlines(True)
+          matches = [line for line in lines if live_url in line]
+          if len(matches) != 1:
+              raise SystemExit(f'{qa}: expected exactly one external-link gate entry, found {len(matches)}')
+          qa.write_text(''.join(line for line in lines if live_url not in line))
+          PY
+
+          rm -f .github/workflows/oneoff-release-visual-audit.yml
+          rm -f .github/workflows/oneoff-release-cleanup.yml
+
+      - name: Commit curated release surface
+        shell: bash
+        run: |
+          git config user.name "portfolio-v2-release"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "Curate release links and remove temporary workflows"
+          git push origin HEAD:portfolio-v2
