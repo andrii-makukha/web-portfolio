@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://andrii-makukha.github.io/web-portfolio/de/</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://andrii-makukha.github.io/web-portfolio/de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://andrii-makukha.github.io/web-portfolio/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://andrii-makukha.github.io/web-portfolio/ru/"/>
+  </url>
+  <url><loc>https://andrii-makukha.github.io/web-portfolio/en/</loc></url>
+  <url><loc>https://andrii-makukha.github.io/web-portfolio/ru/</loc></url>
+</urlset>
