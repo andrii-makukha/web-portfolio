@@ -535,7 +535,7 @@ for (const locale of locales) {
   const page = await context.newPage();
   const pageErrors = [];
   page.on("pageerror", err => pageErrors.push(String(err)));
-  await page.goto(\`\${ORIGIN}/de/\`, { waitUntil: "networkidle", timeout: 30000 });
+  await page.goto(`${ORIGIN}/de/`, { waitUntil: "networkidle", timeout: 30000 });
   await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
   await settle(page);
 
