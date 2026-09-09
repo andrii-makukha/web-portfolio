@@ -76,8 +76,37 @@ button:focus-visible {
   width: 100%;
   padding: 1.15rem var(--page-pad);
   color: var(--paper-soft);
-  mix-blend-mode: difference;
   pointer-events: none;
+  transition: color .35s ease, background-color .35s ease, border-color .35s ease;
+}
+
+.site-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(11, 12, 13, .72);
+  border-bottom: 1px solid rgba(250, 248, 243, .07);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  transition: opacity .35s ease, background .35s ease, border-color .35s ease;
+}
+
+.site-nav.is-scrolled::before {
+  opacity: 1;
+}
+
+.site-nav.is-light {
+  color: var(--ink);
+}
+
+.site-nav.is-light::before {
+  background: rgba(242, 239, 232, .84);
+  border-color: rgba(11, 12, 13, .08);
+}
+
+.site-nav__center span[aria-disabled="true"] {
+  opacity: .38;
 }
 
 .site-nav a,
@@ -181,6 +210,10 @@ button:focus-visible {
   display: block;
 }
 
+.opening__name span:last-child {
+  margin-left: clamp(1rem, 8vw, 8rem);
+}
+
 .opening__bottom {
   position: relative;
   z-index: 2;
@@ -231,6 +264,7 @@ button:focus-visible {
 
 .portrait-frame {
   position: relative;
+  margin: 0;
   min-height: min(76svh, 860px);
   overflow: hidden;
   background: var(--navy);
@@ -262,7 +296,7 @@ button:focus-visible {
   height: 100%;
   min-height: inherit;
   object-fit: cover;
-  object-position: center 34%;
+  object-position: center 30%;
   display: block;
   filter: saturate(.8) contrast(1.03);
   transform: scale(1.025);
@@ -372,6 +406,14 @@ button:focus-visible {
 
 .profile__display span {
   display: block;
+}
+
+.profile__display span:nth-child(3) {
+  margin-top: .26em;
+}
+
+.profile__display span:last-child {
+  color: var(--brass);
 }
 
 .profile__lead {
@@ -489,13 +531,14 @@ button:focus-visible {
   border-radius: 50%;
   color: rgba(255,255,255,.35);
   font-size: .58rem;
-  mix-blend-mode: difference;
-  transition: color .25s ease, border-color .25s ease;
+  transition: color .25s ease, border-color .25s ease, background .25s ease;
+  background: rgba(11, 12, 13, .08);
 }
 
 .chapter-rail a[aria-current="true"] {
-  color: white;
-  border-color: rgba(255,255,255,.55);
+  color: var(--paper-soft);
+  border-color: rgba(250,248,243,.55);
+  background: rgba(11,12,13,.55);
 }
 
 [data-reveal] {
@@ -529,6 +572,10 @@ button:focus-visible {
   .opening__name {
     font-size: clamp(4.1rem, 20vw, 8.5rem);
     line-height: .82;
+  }
+
+  .opening__name span:last-child {
+    margin-left: 0;
   }
 
   .opening__eyebrow > span:last-child {
@@ -572,7 +619,11 @@ button:focus-visible {
   }
 
   .profile__display {
-    font-size: clamp(3.6rem, 17vw, 6.4rem);
+    font-size: clamp(3.35rem, 16vw, 6.4rem);
+  }
+
+  .profile__display span:nth-child(3) {
+    margin-top: .34em;
   }
 
   .next-chapter__inner {
@@ -636,5 +687,54 @@ button:focus-visible {
   .portrait-frame {
     clip-path: none;
     opacity: 1;
+  }
+}
+
+
+/* Slice polish: controlled spatial rhythm and scroll progress */
+.site-nav__mark,
+.site-nav__center,
+.site-nav__languages {
+  position: relative;
+  z-index: 1;
+}
+
+.site-nav__progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 1px;
+  transform: scaleX(var(--page-progress, 0));
+  transform-origin: left center;
+  background: var(--brass);
+  opacity: .72;
+  pointer-events: none;
+}
+
+.identity__content::before {
+  content: "01";
+  display: block;
+  margin-bottom: clamp(2rem, 5vh, 4rem);
+  color: rgba(250,248,243,.18);
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: 520;
+  line-height: .8;
+  letter-spacing: -.07em;
+}
+
+.profile::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--page-pad);
+  right: var(--page-pad);
+  height: 1px;
+  background: rgba(11,12,13,.08);
+}
+
+@media (max-width: 900px) {
+  .identity__content::before {
+    margin-bottom: 2rem;
   }
 }
