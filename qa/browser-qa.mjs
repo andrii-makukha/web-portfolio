@@ -109,7 +109,26 @@ async function runPage(browser, locale, viewport) {
       targetBlankWithoutRel,
       externalResources,
       scrollWidth: document.documentElement.scrollWidth,
-      clientWidth: document.documentElement.clientWidth
+      clientWidth: document.documentElement.clientWidth,
+      overflowOffenders: [...document.querySelectorAll("body *")]
+        .filter(el => {
+          const style = getComputedStyle(el);
+          if (style.position === "fixed" && style.display === "none") return false;
+          const rect = el.getBoundingClientRect();
+          return rect.width > 0 && (rect.left < -1 || rect.right > document.documentElement.clientWidth + 1);
+        })
+        .slice(0, 20)
+        .map(el => {
+          const rect = el.getBoundingClientRect();
+          return {
+            tag: el.tagName,
+            className: typeof el.className === "string" ? el.className : "",
+            text: (el.textContent || "").trim().replace(/\s+/g, " ").slice(0, 120),
+            left: Math.round(rect.left),
+            right: Math.round(rect.right),
+            width: Math.round(rect.width)
+          };
+        })
     };
   }, coreIds);
 
@@ -120,7 +139,11 @@ async function runPage(browser, locale, viewport) {
   if (base.blankButtons) recordFailure(scope, "Buttons without accessible text", base.blankButtons);
   if (base.targetBlankWithoutRel.length) recordFailure(scope, "target=_blank links without noopener", base.targetBlankWithoutRel);
   if (base.externalResources.length) recordFailure(scope, "Unexpected third-party runtime resources", base.externalResources);
-  if (base.scrollWidth > base.clientWidth + 1) recordFailure(scope, "Horizontal overflow at initial render", { scrollWidth: base.scrollWidth, clientWidth: base.clientWidth });
+  if (base.scrollWidth > base.clientWidth + 1) recordFailure(scope, "Horizontal overflow at initial render", {
+    scrollWidth: base.scrollWidth,
+    clientWidth: base.clientWidth,
+    offenders: base.overflowOffenders
+  });
 
   for (const image of base.images) {
     if (!image.alt) recordFailure(scope, "Image missing alt text", image.src);
@@ -136,7 +159,13 @@ async function runPage(browser, locale, viewport) {
     } else {
       const box = await toggle.boundingBox();
       if (!box || box.height < 44) recordFailure(scope, "Menu toggle touch target is below 44px", box);
-      await toggle.click();
+      let menuClickWorked = true;
+      try {
+        await toggle.click({ timeout: 4000 });
+      } catch (error) {
+        menuClickWorked = false;
+        recordFailure(scope, "Responsive menu click was blocked", String(error));
+      }
       await settle(page);
       const openState = await page.evaluate(() => ({
         expanded: document.querySelector(".site-nav__menu-toggle")?.getAttribute("aria-expanded"),
@@ -145,10 +174,10 @@ async function runPage(browser, locale, viewport) {
         activeTag: document.activeElement?.tagName,
         activeHref: document.activeElement?.getAttribute?.("href")
       }));
-      if (openState.expanded !== "true" || openState.hidden || !openState.bodyOpen) {
+      if (menuClickWorked && (openState.expanded !== "true" || openState.hidden || !openState.bodyOpen)) {
         recordFailure(scope, "Responsive menu did not open correctly", openState);
       }
-      await page.keyboard.press("Escape");
+      if (menuClickWorked) await page.keyboard.press("Escape");
       await settle(page);
       const closeState = await page.evaluate(() => ({
         expanded: document.querySelector(".site-nav__menu-toggle")?.getAttribute("aria-expanded"),
@@ -156,7 +185,7 @@ async function runPage(browser, locale, viewport) {
         bodyOpen: document.body.classList.contains("menu-open"),
         focusOnToggle: document.activeElement === document.querySelector(".site-nav__menu-toggle")
       }));
-      if (closeState.expanded !== "false" || !closeState.hidden || closeState.bodyOpen || !closeState.focusOnToggle) {
+      if (menuClickWorked && (closeState.expanded !== "false" || !closeState.hidden || closeState.bodyOpen || !closeState.focusOnToggle)) {
         recordFailure(scope, "Responsive menu did not close/focus correctly", closeState);
       }
 
@@ -228,15 +257,19 @@ async function runPage(browser, locale, viewport) {
   if (failedRequests.length) recordFailure(scope, "Failed requests", failedRequests);
 
   await page.evaluate(() => window.scrollTo(0, 0));
-  await settle(page);
+  await page.waitForTimeout(40);
   await page.screenshot({ path: path.join(OUTPUT, `${locale}-${viewport.name}-top.png`), fullPage: false });
 
   if (locale === "de" && (viewport.name === "desktop" || viewport.name === "mobile")) {
-    for (const id of ["profile", "ai", "work", "journey", "contact"]) {
-      const locator = page.locator(`#${id}`);
-      await locator.scrollIntoViewIfNeeded();
-      await page.waitForTimeout(60);
-      await locator.screenshot({ path: path.join(OUTPUT, `${locale}-${viewport.name}-${id}.png`) });
+    for (const id of ["identity", "profile", "foundation", "capabilities", "ai", "work", "journey", "languages", "contact"]) {
+      await page.evaluate(sectionId => {
+        const el = document.getElementById(sectionId);
+        if (!el) return;
+        const navOffset = 74;
+        window.scrollTo(0, Math.max(0, el.getBoundingClientRect().top + window.scrollY - navOffset));
+      }, id);
+      await page.waitForTimeout(80);
+      await page.screenshot({ path: path.join(OUTPUT, `${locale}-${viewport.name}-${id}-view.png`), fullPage: false });
     }
   }
 
