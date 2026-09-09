@@ -9,7 +9,7 @@ from pathlib import Path
 OUT = Path("assets/cv")
 OUT.mkdir(parents=True, exist_ok=True)
 REG="/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"
-MED="/usr/share/fonts/truetype/noto/NotoSans-Medium.ttf"
+MED=REG
 BOLD="/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf"
 pdfmetrics.registerFont(TTFont("Noto", REG))
 pdfmetrics.registerFont(TTFont("NotoMed", MED))
