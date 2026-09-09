@@ -11,6 +11,7 @@ const viewports = [
   { name: "desktop", width: 1440, height: 900 },
   { name: "laptop", width: 1280, height: 800 },
   { name: "tablet", width: 1024, height: 900 },
+  { name: "landscape", width: 844, height: 390, hasTouch: true },
   { name: "mobile", width: 360, height: 800, isMobile: true, hasTouch: true }
 ];
 const coreIds = ["top", "identity", "profile", "foundation", "capabilities", "ai", "work", "journey", "languages", "contact"];
