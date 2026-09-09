@@ -2883,3 +2883,109 @@ body:not(.is-ready) .journey-event {
     column-gap: .65rem;
   }
 }
+
+
+/* Mobile typography and navigation stabilization */
+.mobile-menu__languages {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .site-nav {
+    grid-template-columns: 1fr auto;
+  }
+
+  .site-nav__languages {
+    display: none;
+  }
+
+  .mobile-menu__languages {
+    min-height: 4rem;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    border-bottom: 1px solid var(--hairline-dark);
+  }
+
+  .mobile-menu__languages a {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(250,248,243,.16);
+    border-radius: 999px;
+    color: rgba(250,248,243,.46);
+    font-size: .72rem;
+    letter-spacing: .12em;
+  }
+
+  .mobile-menu__languages a[aria-current="page"] {
+    color: var(--paper-soft);
+    border-color: rgba(250,248,243,.55);
+  }
+
+  .profile__display,
+  .foundation__display,
+  .capabilities__display,
+  .ai__display,
+  .work__display,
+  .journey__display,
+  .languages__display {
+    max-width: 100%;
+    font-size: clamp(2.55rem, 11.5vw, 4.4rem);
+    line-height: .88;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  .workflow-step h3 {
+    max-width: 100%;
+    font-size: clamp(2.55rem, 11.5vw, 4.8rem);
+    line-height: .9;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  .capability-row__evidence strong {
+    max-width: 100%;
+    font-size: clamp(2.25rem, 10.5vw, 4.3rem);
+    line-height: .94;
+    overflow-wrap: anywhere;
+  }
+
+  .capability-row__result h3 {
+    max-width: 100%;
+    font-size: clamp(2.15rem, 9.8vw, 3.8rem);
+    line-height: .96;
+    overflow-wrap: anywhere;
+  }
+
+  .work-case__story h3,
+  .symbioz-grid__story h3,
+  .case-study__title,
+  .journey-event__content h3,
+  .digital-card h4,
+  .journey-education > h3 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .identity__meta,
+  .workflow-step__meta,
+  .work-case__meta,
+  .journey-event__meta {
+    overflow-wrap: anywhere;
+  }
+
+  .proof,
+  .case-study__content,
+  .capability-row > *,
+  .work-case__story > *,
+  .digital-card,
+  .journey-event__content,
+  .contact__links,
+  .contact__identity {
+    min-width: 0;
+  }
+}
