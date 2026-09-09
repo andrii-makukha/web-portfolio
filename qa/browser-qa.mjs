@@ -491,6 +491,7 @@ await browser.close();
 
 const report = {
   generatedAt: new Date().toISOString(),
+  commitSha: process.env.GITHUB_SHA || null,
   origin: ORIGIN,
   testedLocales: locales,
   testedViewports: viewports,
