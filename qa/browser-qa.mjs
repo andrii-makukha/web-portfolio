@@ -324,7 +324,7 @@ for (const locale of locales) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
   await page.goto(`${ORIGIN}/de/#foundation`, { waitUntil: "networkidle" });
-  await page.locator('a[data-lang="en"]').click();
+  await page.locator('.site-nav__languages a[data-lang="en"]').click();
   await page.waitForURL(url => url.pathname.endsWith("/en/") && url.hash === "#foundation", { timeout: 10000 });
   const switched = new URL(page.url());
   if (!switched.pathname.endsWith("/en/") || switched.hash !== "#foundation") {
