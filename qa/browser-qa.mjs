@@ -1,4 +1,5 @@
 import { chromium } from "playwright";
+import AxeBuilder from "@axe-core/playwright";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -668,6 +669,70 @@ for (const locale of locales) {
   await context.close();
 }
 
+/* === Axe WCAG gate === */
+async function runAxeGate(locale, viewportName, width, height, isMobile=false) {
+  const scope = `accessibility/axe/${locale}/${viewportName}`;
+  const context = await browser.newContext({
+    viewport: { width, height },
+    isMobile,
+    hasTouch: isMobile,
+    reducedMotion: "reduce"
+  });
+  const page = await context.newPage();
+  await page.goto(`${ORIGIN}/${locale}/`, { waitUntil: "networkidle", timeout: 30000 });
+  await settle(page);
+
+  const analysis = await new AxeBuilder({ page })
+    .withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa","wcag22aa"])
+    .analyze();
+
+  const violations = analysis.violations.map(v => ({
+    id: v.id,
+    impact: v.impact,
+    description: v.description,
+    help: v.help,
+    nodes: v.nodes.slice(0, 8).map(n => ({
+      target: n.target,
+      html: n.html.slice(0, 300),
+      summary: n.failureSummary
+    }))
+  }));
+
+  if (violations.length) {
+    recordFailure(scope, "Axe WCAG A/AA violations", violations);
+  }
+
+  results.push({ scope, violationCount: violations.length, violations });
+  await context.close();
+}
+
+for (const locale of locales) {
+  await runAxeGate(locale, "desktop", 1440, 900, false);
+  await runAxeGate(locale, "mobile", 390, 844, true);
+}
+
+// Open-dialog accessibility state gets its own axe pass.
+{
+  const scope = "accessibility/axe/mobile-menu-open";
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const page = await context.newPage();
+  await page.goto(`${ORIGIN}/de/`, { waitUntil: "networkidle", timeout: 30000 });
+  await page.locator(".site-nav__menu-toggle").click();
+  await page.waitForTimeout(80);
+  const analysis = await new AxeBuilder({ page })
+    .withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa","wcag22aa"])
+    .analyze();
+  const violations = analysis.violations.map(v => ({
+    id: v.id,
+    impact: v.impact,
+    help: v.help,
+    nodes: v.nodes.slice(0, 8).map(n => ({ target:n.target, html:n.html.slice(0,300), summary:n.failureSummary }))
+  }));
+  if (violations.length) recordFailure(scope, "Axe violations with mobile navigation open", violations);
+  results.push({scope,violationCount:violations.length,violations});
+  await context.close();
+}
+
 /* === Motion stress gate === */
 async function runMotionStress(viewportName, width, height, isMobile = false) {
   const scope = `motion/${viewportName}`;
@@ -1046,6 +1111,44 @@ await runMotionStress("mobile", 390, 844, true);
   }
   results.push({ scope: "language-switch", url: page.url() });
   await context.close();
+}
+
+/* === External link health gate === */
+{
+  const scope = "release/external-links";
+  const urls = [
+    "https://aurum-clean.vercel.app/de/site",
+    "https://github.com/andrii-makukha/Aurum",
+    "https://automobilanwendung.vercel.app/contact",
+    "https://github.com/andrii-makukha/automobilanwendung",
+    "https://github.com/andrii-makukha"
+  ];
+  const checks=[];
+
+  for (const url of urls) {
+    let last=null;
+    for (let attempt=1; attempt<=3; attempt++) {
+      try {
+        const response=await fetch(url,{
+          method:"GET",
+          redirect:"follow",
+          headers:{"user-agent":"portfolio-v2-release-qa/1.0"},
+          signal:AbortSignal.timeout(12000)
+        });
+        last={url,status:response.status,ok:response.ok,finalUrl:response.url,attempt};
+        if(response.ok) break;
+        if(response.status>=400 && response.status<500) break;
+      } catch(error) {
+        last={url,status:null,ok:false,error:String(error),attempt};
+      }
+      await new Promise(resolve=>setTimeout(resolve,400*attempt));
+    }
+    checks.push(last);
+    if(!last?.ok){
+      recordFailure(scope,"External portfolio link is not healthy",last);
+    }
+  }
+  results.push({scope,checks});
 }
 
 await browser.close();

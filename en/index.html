@@ -39,17 +39,17 @@
       <span aria-disabled="true">CV · soon</span>
     </div>
     <div class="site-nav__languages" aria-label="Choose language">
-      <a href="../de/" data-lang="de">DE</a><a href="../en/" data-lang="en" aria-current="page">EN</a><a href="../ru/" data-lang="ru">RU</a>
+      <a href="../de/" data-lang="de" hreflang="de" lang="de" aria-label="German">DE</a><a href="../en/" data-lang="en" hreflang="en" lang="en" aria-label="English" aria-current="page">EN</a><a href="../ru/" data-lang="ru" hreflang="ru" lang="ru" aria-label="Russian">RU</a>
     </div>
-    <button class="site-nav__menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-open-label="Menu" data-close-label="Close">
+    <button class="site-nav__menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-haspopup="dialog" data-open-label="Menu" data-close-label="Close">
       <span>Menu</span>
     </button>
     <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation" hidden>
       <div class="mobile-menu__inner">
         <div class="mobile-menu__languages" aria-label="Choose language">
-          <a href="../de/" data-lang="de">DE</a>
-          <a href="../en/" data-lang="en" aria-current="page">EN</a>
-          <a href="../ru/" data-lang="ru">RU</a>
+          <a href="../de/" data-lang="de" hreflang="de" lang="de" aria-label="German">DE</a>
+          <a href="../en/" data-lang="en" hreflang="en" lang="en" aria-label="English" aria-current="page">EN</a>
+          <a href="../ru/" data-lang="ru" hreflang="ru" lang="ru" aria-label="Russian">RU</a>
         </div>
         <a href="#profile">02 · Profile</a>
         <a href="#foundation">03 · Experience</a>
@@ -66,16 +66,16 @@
   </nav>
 
   <aside class="chapter-rail" aria-label="Chapters">
-    <a href="#top" data-rail aria-current="true">00</a>
-    <a href="#identity" data-rail>01</a>
-    <a href="#profile" data-rail>02</a>
-    <a href="#foundation" data-rail>03</a>
-    <a href="#capabilities" data-rail>04</a>
-    <a href="#ai" data-rail>05</a>
-    <a href="#work" data-rail>06</a>
-    <a href="#journey" data-rail>07</a>
-    <a href="#languages" data-rail>08</a>
-    <a href="#contact" data-rail>09</a>
+    <a href="#top" data-rail aria-label="00 · Opening" aria-current="true">00</a>
+    <a href="#identity" data-rail aria-label="01 · Identity">01</a>
+    <a href="#profile" data-rail aria-label="02 · Profile">02</a>
+    <a href="#foundation" data-rail aria-label="03 · Professional Foundation">03</a>
+    <a href="#capabilities" data-rail aria-label="04 · Capabilities">04</a>
+    <a href="#ai" data-rail aria-label="05 · AI and Digital">05</a>
+    <a href="#work" data-rail aria-label="06 · Selected Work">06</a>
+    <a href="#journey" data-rail aria-label="07 · Journey and Education">07</a>
+    <a href="#languages" data-rail aria-label="08 · Languages">08</a>
+    <a href="#contact" data-rail aria-label="09 · Contact">09</a>
   </aside>
 
   <main id="main-content" tabindex="-1">
@@ -522,8 +522,8 @@
               <h4>Aurum</h4>
               <p>Multilingual website with a request flow, email notifications and rate limiting.</p>
               <div class="digital-card__links">
-                <a href="https://aurum-clean.vercel.app/de/site" target="_blank" rel="noopener noreferrer">Live ↗</a>
-                <a href="https://github.com/andrii-makukha/Aurum" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <a href="https://aurum-clean.vercel.app/de/site" target="_blank" rel="noopener noreferrer" aria-label="Aurum – open live website in a new tab">Live ↗</a>
+                <a href="https://github.com/andrii-makukha/Aurum" target="_blank" rel="noopener noreferrer" aria-label="Aurum – open GitHub repository in a new tab">GitHub ↗</a>
               </div>
             </article>
 
@@ -539,8 +539,8 @@
               <h4>Automobilanwendung</h4>
               <p>Multilingual React application with a vehicle catalogue, detail views, routing and state management.</p>
               <div class="digital-card__links">
-                <a href="https://automobilanwendung.vercel.app/contact" target="_blank" rel="noopener noreferrer">Live ↗</a>
-                <a href="https://github.com/andrii-makukha/automobilanwendung" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <a href="https://automobilanwendung.vercel.app/contact" target="_blank" rel="noopener noreferrer" aria-label="Automobilanwendung – open live website in a new tab">Live ↗</a>
+                <a href="https://github.com/andrii-makukha/automobilanwendung" target="_blank" rel="noopener noreferrer" aria-label="Automobilanwendung – open GitHub repository in a new tab">GitHub ↗</a>
               </div>
             </article>
           </div>
@@ -753,7 +753,7 @@
               <span>Phone</span>
               <strong>+49 151 25233241 ↗</strong>
             </a>
-            <a href="https://github.com/andrii-makukha" target="_blank" rel="noopener noreferrer" data-reveal>
+            <a href="https://github.com/andrii-makukha" target="_blank" rel="noopener noreferrer" aria-label="Open Andrii Makukha’s GitHub profile in a new tab" data-reveal>
               <span>GitHub</span>
               <strong>andrii-makukha ↗</strong>
             </a>
