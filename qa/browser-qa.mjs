@@ -1119,7 +1119,6 @@ await runMotionStress("mobile", 390, 844, true);
   const urls = [
     "https://aurum-clean.vercel.app/de/site",
     "https://github.com/andrii-makukha/Aurum",
-    "https://automobilanwendung.vercel.app/contact",
     "https://github.com/andrii-makukha/automobilanwendung",
     "https://github.com/andrii-makukha"
   ];
