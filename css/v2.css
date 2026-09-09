@@ -2809,7 +2809,7 @@ body.menu-open .site-nav__menu-toggle {
   }
 
   .site-nav__languages a {
-    min-width: 38px;
+    min-width: 44px;
     padding-inline: .2rem;
   }
 
@@ -2842,5 +2842,26 @@ body.menu-open .site-nav__menu-toggle {
   .opening__scroll {
     transform: none !important;
     opacity: 1 !important;
+  }
+}
+
+
+/* Interaction resilience */
+.opening__scroll {
+  min-height: 44px;
+}
+
+body:not(.is-ready) .workflow-step,
+body:not(.is-ready) .journey-event {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .text-link,
+  .digital-card__links a,
+  .contact__footer a,
+  .opening__scroll {
+    min-height: 44px;
   }
 }
