@@ -1,0 +1,54 @@
+name: Build Portfolio CV PDFs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - portfolio-v2
+    paths:
+      - "scripts/build_cv.py"
+      - ".github/workflows/build-cv.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build-cv:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PDF dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-core poppler-utils
+          python -m pip install --upgrade pip
+          python -m pip install reportlab
+
+      - name: Build CV PDFs
+        run: python scripts/build_cv.py
+
+      - name: Verify PDFs
+        run: |
+          for file in assets/cv/*.pdf; do
+            test "$(pdfinfo "$file" | awk '/^Pages:/ {print $2}')" = "1"
+            pdftotext "$file" - | grep -q "ANDRII MAKUKHA"
+          done
+
+      - name: Commit generated PDFs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/cv/*.pdf
+          if git diff --cached --quiet; then
+            echo "CV PDFs already current."
+          else
+            git commit -m "Generate multilingual CV PDFs"
+            git push origin HEAD:portfolio-v2
+          fi
