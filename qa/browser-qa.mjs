@@ -112,6 +112,48 @@ async function runPage(browser, locale, viewport) {
       externalResources,
       scrollWidth: document.documentElement.scrollWidth,
       clientWidth: document.documentElement.clientWidth,
+      overflowDiagnostics: {
+        html: {
+          clientWidth: document.documentElement.clientWidth,
+          scrollWidth: document.documentElement.scrollWidth,
+          offsetWidth: document.documentElement.offsetWidth
+        },
+        body: {
+          clientWidth: document.body.clientWidth,
+          scrollWidth: document.body.scrollWidth,
+          offsetWidth: document.body.offsetWidth,
+          rectWidth: Math.round(document.body.getBoundingClientRect().width)
+        },
+        main: (() => {
+          const el = document.querySelector("main");
+          return el ? {
+            clientWidth: el.clientWidth,
+            scrollWidth: el.scrollWidth,
+            offsetWidth: el.offsetWidth,
+            rectWidth: Math.round(el.getBoundingClientRect().width)
+          } : null;
+        })(),
+        sections: [...document.querySelectorAll("[data-chapter]")].map(el => ({
+          id: el.id,
+          clientWidth: el.clientWidth,
+          scrollWidth: el.scrollWidth,
+          offsetWidth: el.offsetWidth,
+          rectWidth: Math.round(el.getBoundingClientRect().width),
+          overflowX: getComputedStyle(el).overflowX
+        })).filter(x => x.scrollWidth > x.clientWidth + 1),
+        internal: [...document.querySelectorAll("body *")].map(el => {
+          const rect = el.getBoundingClientRect();
+          return {
+            tag: el.tagName,
+            id: el.id || "",
+            className: typeof el.className === "string" ? el.className : "",
+            clientWidth: el.clientWidth,
+            scrollWidth: el.scrollWidth,
+            rectWidth: Math.round(rect.width),
+            overflowX: getComputedStyle(el).overflowX
+          };
+        }).filter(x => x.clientWidth > 0 && x.scrollWidth > x.clientWidth + 1).slice(0, 40)
+      },
       overflowOffenders: [...document.querySelectorAll("body *")]
         .filter(el => {
           const style = getComputedStyle(el);
@@ -144,7 +186,8 @@ async function runPage(browser, locale, viewport) {
   if (base.scrollWidth > base.clientWidth + 1) recordFailure(scope, "Horizontal overflow at initial render", {
     scrollWidth: base.scrollWidth,
     clientWidth: base.clientWidth,
-    offenders: base.overflowOffenders
+    offenders: base.overflowOffenders,
+    diagnostics: base.overflowDiagnostics
   });
 
   for (const image of base.images) {
