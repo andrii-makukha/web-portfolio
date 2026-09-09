@@ -6,12 +6,24 @@
   <meta name="theme-color" content="#0b0c0d">
   <meta name="description" content="Профессиональное портфолио Andrii Makukha: музыка, руководство, организация и современные цифровые и AI-assisted рабочие процессы.">
   <title>Andrii Makukha — Профессиональное портфолио</title>
+  <meta name="robots" content="index,follow">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Andrii Makukha — Профессиональное портфолио">
+  <meta property="og:description" content="Профессиональное портфолио Andrii Makukha: музыка, руководство, организация и современные цифровые и AI-assisted рабочие процессы.">
+  <meta property="og:url" content="https://andrii-makukha.github.io/web-portfolio/ru/">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Andrii Makukha">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Andrii Makukha — Профессиональное портфолио">
+  <meta name="twitter:description" content="Профессиональное портфолио Andrii Makukha: музыка, руководство, организация и современные цифровые и AI-assisted рабочие процессы.">
   <link rel="canonical" href="https://andrii-makukha.github.io/web-portfolio/ru/">
   <link rel="alternate" hreflang="de" href="https://andrii-makukha.github.io/web-portfolio/de/">
   <link rel="alternate" hreflang="en" href="https://andrii-makukha.github.io/web-portfolio/en/">
   <link rel="alternate" hreflang="ru" href="https://andrii-makukha.github.io/web-portfolio/ru/">
   <link rel="alternate" hreflang="x-default" href="https://andrii-makukha.github.io/web-portfolio/de/">
   <link rel="stylesheet" href="../css/v2.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Andrii Makukha","url":"https://andrii-makukha.github.io/web-portfolio/ru/","sameAs":["https://github.com/andrii-makukha"],"address":{"@type":"PostalAddress","addressLocality":"Bernau am Chiemsee","addressCountry":"DE"}}</script>
 </head>
 <body>
   <nav class="site-nav" aria-label="Основная навигация">
@@ -26,6 +38,21 @@
     </div>
     <div class="site-nav__languages" aria-label="Выбрать язык">
       <a href="../de/" data-lang="de">DE</a><a href="../en/" data-lang="en">EN</a><a href="../ru/" data-lang="ru" aria-current="page">RU</a>
+    </div>
+    <button class="site-nav__menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">
+      <span>Меню</span>
+    </button>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <div class="mobile-menu__inner">
+        <a href="#profile">02 · Профиль</a>
+        <a href="#foundation">03 · Опыт</a>
+        <a href="#ai">05 · AI</a>
+        <a href="#work">06 · Work</a>
+        <a href="#journey">07 · Путь</a>
+        <a href="#languages">08 · Языки</a>
+        <a href="#contact">09 · Контакт</a>
+        <span aria-disabled="true">CV · скоро</span>
+      </div>
     </div>
     <span class="site-nav__progress" aria-hidden="true"></span>
   </nav>
@@ -68,7 +95,7 @@
     <section class="identity" id="identity" data-chapter data-nav="dark">
       <div class="identity__grid">
         <figure class="portrait-frame">
-          <img src="../assets/portrait.webp" alt="Портрет Andrii Makukha в тёмном костюме на нейтральном фоне" width="720" height="1080" loading="eager" decoding="async">
+          <img src="../assets/portrait.webp" alt="Портрет Andrii Makukha в тёмном костюме на нейтральном фоне" width="720" height="1080" loading="lazy" decoding="async" fetchpriority="low">
         </figure>
 
         <div class="identity__content">
