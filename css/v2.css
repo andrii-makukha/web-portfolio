@@ -3212,3 +3212,22 @@ body.menu-open {
     line-height: .86;
   }
 }
+
+
+/* Measured locale line containment */
+@media (min-width: 901px) {
+  html[lang="de"] .profile__display {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(3.8rem, 7.85vw, 8.4rem);
+  }
+
+  html[lang="de"] .languages__display {
+    font-size: clamp(3.65rem, 6.02vw, 6.6rem);
+  }
+
+  html[lang="ru"] .languages__display {
+    font-size: clamp(3.5rem, 5.82vw, 6.35rem);
+  }
+}
