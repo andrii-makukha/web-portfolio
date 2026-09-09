@@ -21,5 +21,7 @@ It currently covers:
 - release-facing external link checks
 - curated live-project links: a public Live link is kept only after visual release review
 - social-preview metadata and a 1200 × 630 portfolio preview image as part of the release surface
+- multilingual CV integration: locale-specific DE / EN / RU PDF download links, valid PDF responses and no stale placeholders
+- reproducible one-page ATS-friendly CV generation with visual PNG and extracted-text QA artifacts
 
 A release candidate is not considered ready while any gate reports a failure.
