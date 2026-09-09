@@ -66,6 +66,8 @@ async function runPage(browser, locale, viewport) {
   });
 
   const response = await page.goto(`${ORIGIN}/${locale}/`, { waitUntil: "networkidle", timeout: 30000 });
+  // qa-deterministic-scroll: this affects the automated browser only, not production CSS.
+  await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
   if (!response || !response.ok()) {
     recordFailure(scope, "Document did not return a successful response", response?.status() ?? null);
   }
