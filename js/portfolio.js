@@ -30,6 +30,39 @@
     }
   };
 
+  const getMenuFocusable = () => {
+    if (!mobileMenu) return [];
+    return [...mobileMenu.querySelectorAll(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )].filter((element) => {
+      const style = window.getComputedStyle(element);
+      return !element.hidden &&
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        !element.hasAttribute('disabled') &&
+        element.getAttribute('aria-hidden') !== 'true';
+    });
+  };
+
+  const trapMenuFocus = (event) => {
+    if (event.key !== 'Tab' || !body.classList.contains('menu-open') || !mobileMenu) return;
+    const focusable = getMenuFocusable();
+    if (!focusable.length) {
+      event.preventDefault();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || !mobileMenu.contains(active))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (active === last || !mobileMenu.contains(active))) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   const setMenuLabel = (isOpen) => {
     if (!menuToggle || !menuLabel) return;
     const label = isOpen ? menuToggle.dataset.closeLabel : menuToggle.dataset.openLabel;
@@ -68,9 +101,12 @@
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && body.classList.contains('menu-open')) {
+      if (!body.classList.contains('menu-open')) return;
+      if (event.key === 'Escape') {
         closeMenu({ restoreFocus: true });
+        return;
       }
+      trapMenuFocus(event);
     });
 
     window.addEventListener('resize', () => {

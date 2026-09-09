@@ -522,6 +522,152 @@ for (const locale of locales) {
 }
 
 
+
+/* === Accessibility keyboard gate === */
+{
+  const scope = "accessibility/keyboard";
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: false,
+    reducedMotion: "no-preference"
+  });
+  const page = await context.newPage();
+  const pageErrors = [];
+  page.on("pageerror", err => pageErrors.push(String(err)));
+  await page.goto(\`\${ORIGIN}/de/\`, { waitUntil: "networkidle", timeout: 30000 });
+  await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
+  await settle(page);
+
+  await page.keyboard.press("Tab");
+  const firstFocus = await page.evaluate(() => ({
+    className: document.activeElement?.className || "",
+    href: document.activeElement?.getAttribute?.("href") || null
+  }));
+  if (!String(firstFocus.className).includes("skip-link") || firstFocus.href !== "#main-content") {
+    recordFailure(scope, "Skip link is not first in keyboard focus order", firstFocus);
+  } else {
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(60);
+    const skipState = await page.evaluate(() => ({
+      mainFocused: document.activeElement === document.querySelector("#main-content"),
+      hash: location.hash
+    }));
+    if (!skipState.mainFocused) recordFailure(scope, "Skip link did not move keyboard focus to main content", skipState);
+  }
+
+  const toggle = page.locator(".site-nav__menu-toggle");
+  await toggle.focus();
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(80);
+
+  const menuOpenState = await page.evaluate(() => {
+    const menu = document.querySelector(".mobile-menu");
+    return {
+      open: document.body.classList.contains("menu-open"),
+      expanded: document.querySelector(".site-nav__menu-toggle")?.getAttribute("aria-expanded"),
+      focusInside: Boolean(menu?.contains(document.activeElement)),
+      activeText: (document.activeElement?.textContent || "").trim()
+    };
+  });
+  if (!menuOpenState.open || menuOpenState.expanded !== "true" || !menuOpenState.focusInside) {
+    recordFailure(scope, "Keyboard-opened mobile menu did not place focus inside dialog", menuOpenState);
+  }
+
+  const focusableCount = await page.evaluate(() => {
+    const menu = document.querySelector(".mobile-menu");
+    if (!menu) return 0;
+    return [...menu.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+      .filter(el => {
+        const s=getComputedStyle(el);
+        return s.display!=="none" && s.visibility!=="hidden" && !el.hidden;
+      }).length;
+  });
+
+  for (let i=0; i<focusableCount+3; i++) {
+    await page.keyboard.press("Tab");
+    const state=await page.evaluate(() => ({
+      inside: document.querySelector(".mobile-menu")?.contains(document.activeElement) || false,
+      tag: document.activeElement?.tagName || null,
+      text: (document.activeElement?.textContent || "").trim().slice(0,80)
+    }));
+    if(!state.inside){
+      recordFailure(scope, "Tab focus escaped the open modal navigation", {step:i,...state});
+      break;
+    }
+  }
+
+  const reverseWrap = await page.evaluate(() => {
+    const menu=document.querySelector(".mobile-menu");
+    const items=[...menu.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+      .filter(el => {
+        const s=getComputedStyle(el);
+        return s.display!=="none" && s.visibility!=="hidden" && !el.hidden;
+      });
+    items[0]?.focus();
+    return {count:items.length,lastText:(items.at(-1)?.textContent||"").trim()};
+  });
+  await page.keyboard.press("Shift+Tab");
+  const reverseState=await page.evaluate(() => ({
+    inside: document.querySelector(".mobile-menu")?.contains(document.activeElement) || false,
+    activeText:(document.activeElement?.textContent||"").trim()
+  }));
+  if(!reverseState.inside || reverseState.activeText!==reverseWrap.lastText){
+    recordFailure(scope,"Shift+Tab did not wrap to the final modal-menu focus target",{reverseWrap,reverseState});
+  }
+
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(60);
+  const escapeState=await page.evaluate(() => ({
+    closed: !document.body.classList.contains("menu-open"),
+    expanded: document.querySelector(".site-nav__menu-toggle")?.getAttribute("aria-expanded"),
+    toggleFocused: document.activeElement===document.querySelector(".site-nav__menu-toggle")
+  }));
+  if(!escapeState.closed || escapeState.expanded!=="false" || !escapeState.toggleFocused){
+    recordFailure(scope,"Escape did not close menu and restore focus",escapeState);
+  }
+
+  const summary=page.locator("summary").first();
+  if(await summary.count()){
+    await summary.focus();
+    const details=page.locator("details").first();
+    const before=await details.evaluate(el=>el.open);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(40);
+    const after=await details.evaluate(el=>el.open);
+    if(before===after) recordFailure(scope,"Details/summary did not toggle from keyboard",{before,after});
+  }
+
+  const a11yStatic=await page.evaluate(() => {
+    const headings=[...document.querySelectorAll("h1,h2,h3,h4,h5,h6")].map(el=>({
+      level:Number(el.tagName.slice(1)),
+      text:(el.textContent||"").trim().replace(/\s+/g," ").slice(0,120)
+    }));
+    const headingJumps=[];
+    for(let i=1;i<headings.length;i++){
+      if(headings[i].level-headings[i-1].level>1){
+        headingJumps.push({from:headings[i-1],to:headings[i]});
+      }
+    }
+    const focusables=[...document.querySelectorAll(
+      'a[href], button:not([disabled]), summary, input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )];
+    const unnamed=focusables.filter(el=>{
+      if(el.closest("[hidden]")) return false;
+      const text=(el.textContent||"").trim();
+      const label=el.getAttribute("aria-label")||el.getAttribute("aria-labelledby")||el.getAttribute("title")||"";
+      return !text && !label;
+    }).map(el=>({tag:el.tagName,className:typeof el.className==="string"?el.className:"",href:el.getAttribute("href")}));
+    return {headings,headingJumps,unnamed};
+  });
+  if(a11yStatic.headingJumps.length) recordFailure(scope,"Heading hierarchy skips a level",a11yStatic.headingJumps);
+  if(a11yStatic.unnamed.length) recordFailure(scope,"Focusable controls without accessible text/name",a11yStatic.unnamed);
+
+  if(pageErrors.length) recordFailure(scope,"Page errors during keyboard accessibility gate",pageErrors);
+  results.push({scope,firstFocus,menuOpenState,focusableCount,reverseWrap,reverseState,escapeState,a11yStatic,pageErrors});
+  await context.close();
+}
+
 /* === Motion stress gate === */
 async function runMotionStress(viewportName, width, height, isMobile = false) {
   const scope = `motion/${viewportName}`;
