@@ -615,7 +615,7 @@ async function runMotionStress(viewportName, width, height, isMobile = false) {
   }
 
   // 2) Workflow 01 -> 07 -> 01, including abrupt direction changes.
-  const workflowOrder = ["1","2","3","4","5","6","7","6","4","2","1","3","7","1"];
+  const workflowOrder = ["0","1","2","3","4","5","6","5","3","1","0","2","6","0"];
   for (const index of workflowOrder) {
     await page.evaluate(stepIndex => {
       const el = document.querySelector(`[data-workflow-step="${stepIndex}"]`);
@@ -750,7 +750,7 @@ await runMotionStress("mobile", 390, 844, true);
 // 6) Resize/orientation stress from portrait -> landscape -> desktop-ish -> portrait.
 {
   const scope = "motion/resize-orientation";
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: false, hasTouch: true });
   const page = await context.newPage();
   const pageErrors = [];
   page.on("pageerror", err => pageErrors.push(String(err)));
