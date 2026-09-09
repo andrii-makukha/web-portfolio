@@ -24,6 +24,7 @@
     <div class="site-nav__languages" aria-label="Choose language">
       <a href="../de/" data-lang="de">DE</a><a href="../en/" data-lang="en" aria-current="page">EN</a><a href="../ru/" data-lang="ru">RU</a>
     </div>
+    <span class="site-nav__progress" aria-hidden="true"></span>
   </nav>
 
   <aside class="chapter-rail" aria-label="Chapters">
@@ -33,7 +34,7 @@
   </aside>
 
   <main>
-    <section class="opening-shell" id="top" data-chapter>
+    <section class="opening-shell" id="top" data-chapter data-nav="dark">
       <div class="opening">
         <div class="opening__eyebrow">
           <span>Portfolio / 2026</span>
@@ -54,7 +55,7 @@
       </div>
     </section>
 
-    <section class="identity" id="identity" data-chapter>
+    <section class="identity" id="identity" data-chapter data-nav="dark">
       <div class="identity__grid">
         <figure class="portrait-frame">
           <img src="../assets/portrait.webp" alt="Portrait of Andrii Makukha in a dark suit against a neutral background" width="720" height="1080" loading="eager" decoding="async">
@@ -79,15 +80,17 @@
       </div>
     </section>
 
-    <section class="profile" id="profile" data-chapter>
+    <section class="profile" id="profile" data-chapter data-nav="light">
       <div class="profile__inner">
         <header class="profile__header">
           <h2 class="profile__display" data-reveal>
             <span>Experience</span>
+            <span>evolves.</span>
+            <span>Work ethic</span>
             <span>remains.</span>
           </h2>
 
-          <p class="profile__lead" data-reveal>Tools change. The way I take responsibility, think clearly and improve outcomes does not.</p>
+          <p class="profile__lead" data-reveal>New roles, new tools, new challenges. Precision, responsibility and the standard I set for the result remain consistent.</p>
         </header>
 
         <div class="profile__body">
