@@ -3176,3 +3176,19 @@ body.menu-open {
     min-width: 0;
   }
 }
+
+
+/* Russian mobile contact containment */
+@media (max-width: 560px) {
+  html[lang="ru"] .contact__display {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(3rem, 14vw, 5.4rem);
+    line-height: .86;
+  }
+
+  html[lang="ru"] .contact__display span {
+    max-width: 100%;
+  }
+}
