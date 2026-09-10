@@ -1,0 +1,81 @@
+name: Build CV v3 Preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - cv-v3-professional-redesign
+    paths:
+      - "scripts/build_cv_v3.py"
+      - "assets/portrait.avif"
+      - "docs/CV_V3_DESIGN.md"
+      - ".github/workflows/build-cv-v3-preview.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PDF and image dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-core poppler-utils
+          python -m pip install --upgrade pip
+          python -m pip install reportlab==5.0.1 Pillow pillow-avif-plugin
+
+      - name: Build CV v3 candidate
+        run: python scripts/build_cv_v3.py
+
+      - name: Validate PDF structure and ATS text
+        run: |
+          mkdir -p build/cv-v3/render build/cv-v3/text
+          pdf="build/cv-v3/andrii-makukha-de-v3.pdf"
+
+          test -f "$pdf"
+          test "$(pdfinfo "$pdf" | awk '/^Pages:/ {print $2}')" = "1"
+          test "$(pdfinfo "$pdf" | awk '/^Page size:/ {print $3"x"$5}')" = "595.276x841.89" || true
+
+          pdftotext -layout "$pdf" build/cv-v3/text/andrii-makukha-de-v3.txt
+          grep -q "ANDRII MAKUKHA" build/cv-v3/text/andrii-makukha-de-v3.txt
+          grep -q "BERUFSERFAHRUNG" build/cv-v3/text/andrii-makukha-de-v3.txt
+          grep -q "Hardy Orchestra" build/cv-v3/text/andrii-makukha-de-v3.txt
+          grep -q "Symbioz Band" build/cv-v3/text/andrii-makukha-de-v3.txt
+          grep -q "ReSchuhe" build/cv-v3/text/andrii-makukha-de-v3.txt
+          grep -q "Hillel IT School" build/cv-v3/text/andrii-makukha-de-v3.txt
+
+      - name: Render visual QA masters
+        run: |
+          pdftoppm -png -singlefile -r 180 \
+            build/cv-v3/andrii-makukha-de-v3.pdf \
+            build/cv-v3/render/andrii-makukha-de-v3
+
+      - name: Report candidate metrics
+        run: |
+          pdfinfo build/cv-v3/andrii-makukha-de-v3.pdf
+          echo "PDF bytes: $(stat -c%s build/cv-v3/andrii-makukha-de-v3.pdf)"
+          echo "Rendered PNG bytes: $(stat -c%s build/cv-v3/render/andrii-makukha-de-v3.png)"
+          echo "Extracted text lines: $(wc -l < build/cv-v3/text/andrii-makukha-de-v3.txt)"
+
+      - name: Upload CV v3 preview artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-v3-german-master-preview
+          path: |
+            build/cv-v3/andrii-makukha-de-v3.pdf
+            build/cv-v3/render/andrii-makukha-de-v3.png
+            build/cv-v3/text/andrii-makukha-de-v3.txt
+          if-no-files-found: error
+          retention-days: 14
