@@ -1,5 +1,6 @@
 name: Portfolio v2 Browser QA
 
+# Includes MacBook 14/16 and wide desktop regression coverage on the v2.1 hardening branch.
 on:
   push:
     branches:
