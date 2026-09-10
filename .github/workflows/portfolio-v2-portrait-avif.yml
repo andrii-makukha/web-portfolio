@@ -1,0 +1,43 @@
+name: Portfolio v2 Portrait AVIF Integration
+
+on:
+  push:
+    branches:
+      - portfolio-v2
+    paths:
+      - .github/workflows/portfolio-v2-portrait-avif.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout portfolio-v2
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2
+
+      - name: Integrate optimized portrait
+        shell: bash
+        run: |
+          base64 --decode assets/portrait-avif.b64 > assets/portrait.avif
+          test -s assets/portrait.avif
+          test "$(stat -c%s assets/portrait.avif)" -gt 10000
+          sed -i 's#src="../assets/portrait.webp"#src="../assets/portrait.avif"#g' de/index.html en/index.html ru/index.html
+          sed -i 's/width="720" height="1080" loading="lazy"/width="1000" height="1250" loading="lazy"/g' de/index.html en/index.html ru/index.html
+          sed -i 's/object-position: center 30%/object-position: center 31%/' css/v2.css
+          sed -i 's/filter: saturate(.8) contrast(1.03)/filter: saturate(.76) brightness(.88) contrast(1.04)/' css/v2.css
+          rm -f assets/portrait.webp
+          rm -f assets/portrait-avif.b64
+          rm -f .github/workflows/portfolio-v2-portrait-avif.yml
+
+      - name: Commit portrait integration
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Integrate optimized studio portrait"
+          git push origin HEAD:portfolio-v2
