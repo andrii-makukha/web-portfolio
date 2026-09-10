@@ -7,11 +7,12 @@ on:
       - portfolio-v2
       - main
     paths:
+      - "assets/cv/*.pdf"
       - "scripts/build_cv.py"
       - ".github/workflows/build-cv.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build-cv:
@@ -20,6 +21,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Snapshot committed CV PDFs
+        run: |
+          mkdir -p /tmp/cv-reference
+          cp assets/cv/*.pdf /tmp/cv-reference/
 
       - uses: actions/setup-python@v5
         with:
@@ -32,35 +38,37 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install reportlab
 
-      - name: Build CV PDFs
+      - name: Rebuild CV PDFs from source
         run: python scripts/build_cv.py
 
-      - name: Verify PDFs
+      - name: Verify reproducibility, ATS text and visual output
         run: |
-          mkdir -p cv-qa
+          mkdir -p cv-qa/generated cv-qa/reference
           for file in assets/cv/*.pdf; do
-            test "$(pdfinfo "$file" | awk '/^Pages:/ {print $2}')" = "1"
-            pdftotext "$file" - | grep -q "ANDRII MAKUKHA"
             name="$(basename "$file" .pdf)"
-            pdftoppm -png -singlefile -r 150 "$file" "cv-qa/$name"
-            pdftotext -layout "$file" "cv-qa/$name.txt"
+            reference="/tmp/cv-reference/$name.pdf"
+
+            test -f "$reference"
+            test "$(pdfinfo "$file" | awk '/^Pages:/ {print $2}')" = "1"
+            test "$(pdfinfo "$reference" | awk '/^Pages:/ {print $2}')" = "1"
+
+            pdftotext -layout "$file" "cv-qa/generated/$name.txt"
+            pdftotext -layout "$reference" "cv-qa/reference/$name.txt"
+            grep -q "ANDRII MAKUKHA" "cv-qa/generated/$name.txt"
+            cmp "cv-qa/generated/$name.txt" "cv-qa/reference/$name.txt"
+
+            pdftoppm -png -singlefile -r 150 "$file" "cv-qa/generated/$name"
+            pdftoppm -png -singlefile -r 150 "$reference" "cv-qa/reference/$name"
+            cmp "cv-qa/generated/$name.png" "cv-qa/reference/$name.png"
           done
 
       - name: Upload CV QA artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: multilingual-cv-qa
-          path: cv-qa/
+          path: |
+            cv-qa/
+            assets/cv/*.pdf
+          if-no-files-found: error
           retention-days: 14
-
-      - name: Commit generated PDFs
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/cv/*.pdf
-          if git diff --cached --quiet; then
-            echo "CV PDFs already current."
-          else
-            git commit -m "Generate multilingual CV PDFs"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
