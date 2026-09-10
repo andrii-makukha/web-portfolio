@@ -3377,16 +3377,7 @@ body.menu-open {
   .ai__display,
   .work__display,
   .journey__display,
-  .languages__display,
-  .workflow-step h3,
-  .capability-row__evidence strong,
-  .capability-row__result h3,
-  .work-case__story h3,
-  .symbioz-grid__story h3,
-  .case-study__title,
-  .journey-event__content h3,
-  .digital-card h4,
-  .journey-education > h3 {
+  .languages__display {
     overflow-wrap: normal;
     word-break: normal;
     hyphens: none;
