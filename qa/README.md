@@ -40,3 +40,5 @@ A release candidate is not considered ready while any gate reports a failure.
 Wide-screen fluid sizing rule: `vw`-driven `clamp()` values stop growing after the 1536px viewport layout ceiling, so typography and layout rhythm cannot continue scaling after the 1440px content columns have stopped growing. MacBook 16, Full HD and QHD containment checks are release-blocking regressions.
 
 Measured long-string regressions include German closing copy, DE/RU Journey titles, DE/RU AI workflow titles and multilingual work/capability headlines; their sizing is explicitly kept inside the available content column rather than relying on hidden overflow or arbitrary word breaking.
+
+Final text-flow calibration is measured against the full 320–1728 px matrix: semantic phrase grouping is preserved first, then locale-specific font sizing is adjusted only when the real rendered phrase exceeds its available column.
