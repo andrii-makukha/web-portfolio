@@ -49,7 +49,7 @@ Motion is used as part of the narrative rather than as decoration:
 - reveal transitions
 - chapter/theme changes
 - AI workflow progression
-- active journey states
+- active Journey states
 - opening scroll transformation
 - page progress
 
@@ -57,35 +57,56 @@ The site also includes:
 
 - `prefers-reduced-motion` support
 - no-JavaScript content fallback
-- keyboard focus states
-- responsive navigation
-- mobile touch targets
+- keyboard focus states and focus trapping
+- responsive navigation and mobile touch targets
 - semantic headings and landmarks
+- axe-core WCAG A/AA release checks
+
+## CV
+
+The repository contains locale-specific one-page CV PDFs:
+
+- German — `assets/cv/andrii-makukha-de.pdf`
+- English — `assets/cv/andrii-makukha-en.pdf`
+- Russian — `assets/cv/andrii-makukha-ru.pdf`
+
+The CVs are generated reproducibly from `scripts/build_cv.py`. The CV workflow verifies one-page output, extractable ATS text and creates PNG/text QA artifacts before generated PDFs are committed.
 
 ## Browser QA
 
-The repository includes an automated Playwright/Chromium QA workflow.
+The repository includes an automated Playwright/Chromium release gate covering:
 
-It currently verifies:
-
-- DE / EN / RU
+- DE / EN / RU production pages
 - 1440 × 900 desktop
 - 1280 × 800 laptop
 - 1024 × 900 tablet
+- 844 × 390 landscape
 - 360 × 800 mobile
-- horizontal overflow
+- horizontal overflow and editorial headline containment
 - internal anchors and IDs
-- image loading
-- console/page errors
-- responsive menu behaviour
-- touch targets
+- image loading, failed requests and console/page errors
+- responsive menu behaviour, focus handling and focus trapping
+- touch targets and keyboard interaction
 - language switching with hash preservation
 - chapter state and navigation theme in both scroll directions
-- reduced-motion fallback
-- cumulative layout shift
+- aggressive bidirectional scrolling
+- AI workflow and Journey state synchronisation
+- resize/orientation stress
+- reduced-motion and no-JavaScript fallbacks
+- cumulative layout shift and lightweight performance budgets
 - unexpected external runtime requests
+- axe-core WCAG A/AA checks
+- curated external project-link health
+- social-preview metadata
+- locale-specific CV download integration and PDF validation
 
-Screenshots and a JSON QA report are stored as GitHub Actions artifacts.
+Screenshots, JSON reports and CV visual/text QA outputs are stored as GitHub Actions artifacts.
+
+## Release & hosting
+
+GitHub Pages is the intended public host. Automatic Vercel Git deployments are disabled in `vercel.json` to avoid an unused parallel deployment path.
+
+The `portfolio-v2` branch is kept separate from `main` until explicit owner approval. The release pull request is intentionally draft; the preferred release strategy is a squash merge so the development history becomes one clean Portfolio v2 release commit on `main`.
 
 ## AI transparency
 
@@ -95,6 +116,6 @@ The portfolio does not present AI-assisted implementation as professional softwa
 
 ## Status
 
-Portfolio v2 is in final quality review before release.
+**Release candidate — quality gates passing. Awaiting owner approval for merge.**
 
 © 2026 Andrii Makukha
