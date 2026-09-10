@@ -73,6 +73,7 @@ jobs:
           QA_ORIGIN: http://127.0.0.1:4173
 
       - name: Run mobile typography regression QA
+        if: always()
         run: node qa/mobile-typography-qa.mjs
         env:
           QA_ORIGIN: http://127.0.0.1:4173
