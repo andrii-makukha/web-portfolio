@@ -1,0 +1,87 @@
+name: Portfolio v2 Final Polish
+
+on:
+  push:
+    branches:
+      - portfolio-v2
+    paths:
+      - .github/workflows/portfolio-v2-final-polish.yml
+
+permissions:
+  contents: write
+
+jobs:
+  polish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout portfolio-v2
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2
+
+      - name: Apply portrait metadata and multilingual copy polish
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              'de/index.html': [
+                  ('width="1000" height="1250"', 'width="1122" height="1402"'),
+                  ('Fullstack JavaScript Weiterbildung', 'Fullstack-JavaScript-Weiterbildung'),
+              ],
+              'en/index.html': [
+                  ('width="1000" height="1250"', 'width="1122" height="1402"'),
+                  ('A clear, useful and checked result does.', 'A clear, useful and verified result does.'),
+              ],
+              'ru/index.html': [
+                  ('width="1000" height="1250"', 'width="1122" height="1402"'),
+              ],
+          }
+
+          for filename, edits in replacements.items():
+              path = Path(filename)
+              text = path.read_text(encoding='utf-8')
+              for old, new in edits:
+                  if old not in text:
+                      raise SystemExit(f'Expected text not found in {filename}: {old}')
+                  text = text.replace(old, new)
+              path.write_text(text, encoding='utf-8')
+
+          qa = Path('qa/browser-qa.mjs')
+          text = qa.read_text(encoding='utf-8')
+          anchor = '''  for (const image of base.images) {
+    if (!image.alt) recordFailure(scope, "Image missing alt text", image.src);
+    if (!image.complete || image.naturalWidth <= 0 || image.naturalHeight <= 0) {
+      recordFailure(scope, "Image failed to load", image);
+    }
+  }
+'''
+          insert = anchor + '''
+  const identityPortrait = base.images.find(image => image.src?.includes("portrait.avif"));
+  if (!identityPortrait || identityPortrait.naturalWidth < 1122 || identityPortrait.naturalHeight < 1402) {
+    recordFailure(scope, "Identity portrait does not meet the high-resolution source gate", identityPortrait || null);
+  }
+'''
+          if anchor not in text:
+              raise SystemExit('Expected image QA block was not found')
+          qa.write_text(text.replace(anchor, insert, 1), encoding='utf-8')
+
+          readme = Path('qa/README.md')
+          text = readme.read_text(encoding='utf-8')
+          old = '- image loading, including the optimized identity portrait, console errors, failed requests and external runtime requests'
+          new = '- image loading, including a dedicated 1122 × 1402 minimum-resolution gate for the optimized identity portrait, console errors, failed requests and external runtime requests'
+          if old not in text:
+              raise SystemExit('Expected QA README portrait line was not found')
+          readme.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Remove one-time workflow
+        run: rm -f .github/workflows/portfolio-v2-final-polish.yml
+
+      - name: Commit final polish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Polish portrait metadata and multilingual copy"
+          git push origin HEAD:portfolio-v2
