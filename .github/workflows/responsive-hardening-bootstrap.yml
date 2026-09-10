@@ -1,0 +1,29 @@
+name: Responsive Hardening Bootstrap
+
+on:
+  push:
+    branches:
+      - portfolio-v2.1-responsive-hardening
+    paths:
+      - ".github/workflows/responsive-hardening-bootstrap.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2.1-responsive-hardening
+      - name: Apply QA viewport expansion
+        run: python3 qa/apply-responsive-qa-v21.py
+      - name: Commit QA expansion
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add qa/browser-qa.mjs
+          git diff --cached --quiet && exit 0
+          git commit -m "QA: cover MacBook and wide desktop viewports"
+          git push origin HEAD:portfolio-v2.1-responsive-hardening
