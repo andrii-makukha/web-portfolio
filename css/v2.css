@@ -3865,3 +3865,13 @@ main h4,
     font-size: clamp(3.2rem, 5.7vw, 4.05rem);
   }
 }
+
+
+/* v2.2.4 DE/EN work phrase fit */
+@media (min-width: 901px) {
+  /* Measured fit for the semantic conjunction+verb phrase on desktop columns. */
+  html[lang="de"] .work__display,
+  html[lang="en"] .work__display {
+    font-size: clamp(3.12rem, 5.92vw, 5.8rem);
+  }
+}
