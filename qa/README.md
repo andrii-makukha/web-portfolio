@@ -11,7 +11,7 @@ It currently covers:
 - chapter state and navigation theme in both scroll directions
 - responsive menu behaviour, focus handling and focus trapping
 - language switching with hash preservation
-- image loading, including the optimized identity portrait, console errors, failed requests and external runtime requests
+- image loading, including a dedicated 1122 × 1402 minimum-resolution gate for the optimized identity portrait, console errors, failed requests and external runtime requests
 - cumulative layout shift and lightweight performance budgets
 - reduced-motion and no-JavaScript fallbacks
 - no-JavaScript Opening visibility, usable language navigation and removal of the non-functional mobile menu toggle

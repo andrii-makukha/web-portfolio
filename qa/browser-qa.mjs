@@ -213,6 +213,11 @@ async function runPage(browser, locale, viewport) {
     }
   }
 
+  const identityPortrait = base.images.find(image => image.src?.includes("portrait.avif"));
+  if (!identityPortrait || identityPortrait.naturalWidth < 1122 || identityPortrait.naturalHeight < 1402) {
+    recordFailure(scope, "Identity portrait does not meet the high-resolution source gate", identityPortrait || null);
+  }
+
   if (viewport.width > 900) {
     const editorialOverlaps = await page.evaluate(() => {
       const pairs = [
