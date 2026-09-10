@@ -1,6 +1,6 @@
 name: Build Portfolio CV PDFs
 
-# Permanent release gate: rebuild from source and compare ATS text plus rendered output.
+# Permanent read-only release gate: rebuild committed CVs from source and compare ATS text plus rendered output.
 on:
   workflow_dispatch:
   push:
