@@ -8,9 +8,9 @@ from pathlib import Path
 
 OUT = Path("assets/cv")
 OUT.mkdir(parents=True, exist_ok=True)
-REG="/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"
-MED=REG
-BOLD="/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf"
+REG = "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"
+MED = REG
+BOLD = "/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf"
 pdfmetrics.registerFont(TTFont("Noto", REG))
 pdfmetrics.registerFont(TTFont("NotoMed", MED))
 pdfmetrics.registerFont(TTFont("NotoBold", BOLD))
@@ -42,14 +42,14 @@ DATA = {
         "profile": "Beruflicher Hintergrund in professioneller Musik, Führung und Organisation. Als erster Trompeter, Gruppenleiter und Gründer einer achtköpfigen Band habe ich Präzision, Verantwortung und Koordination unter realem Leistungsdruck entwickelt. Heute ergänze ich diese Erfahrung durch digitale Werkzeuge, Web-Grundlagen und KI-gestützte Arbeitsweisen.",
         "exp_title": "BERUFSERFAHRUNG",
         "experience": [
-            ("Hardy Orchestra", "Erster Trompeter & Gruppenleiter", "2017-2022", "Führung der Trompetensektion in komplexen Produktionen, u. a. Rammstein-Symphonien. Präzision und Belastbarkeit unter dem Druck von Live-Auftritten."),
+            ("Hardy Orchestra", "Erster Trompeter & Gruppenleiter", "2017-2022", "Führung der Trompetensektion in komplexen Produktionen, u. a. Rammstein-Symphonien. Präzision und Belastbarkeit bei Live-Auftritten."),
             ("Symbioz Band", "Gründer & Leiter", "09/2019-02/2022", "Leitung von 8 Musikern; Organisation von 80+ Veranstaltungen. Verantwortung für Projektplanung, Budget, Kundenakquise, Konfliktmanagement und Qualitätssicherung."),
             ("Gastronomie", "Kurier / Auslieferungsfahrer", "2022-2024", ""),
         ],
-        "dev_title": "AUSGEWÄHLTE ENTWICKLUNG",
+        "dev_title": "AUSGEWÄHLTE PROJEKTE",
         "dev": [
-            ("ReSchuhe", "Konzept · Marke · digitales Produkt", "2026 · in Entwicklung", "Geschäftsplanung, Markenentwicklung, Produktstruktur und KI-gestützte Umsetzung. Öffentliche Website und digitale Nutzererfahrung in Entwicklung."),
-            ("Portfolio v2", "Interaktives berufliches Profil", "2026", "Konzept, Struktur, Inhaltsrichtung, Designentscheidungen und finale Bewertung von mir gesteuert; KI-Unterstützung für Recherche, Variantenfindung, technische Umsetzung und QA."),
+            ("ReSchuhe", "Konzept · Marke · digitales Produkt", "2026 · in Entwicklung", "Geschäftsplanung, Markenentwicklung, Produktstruktur und KI-gestützte Umsetzung. Öffentliche Website und digitale Nutzerführung sind noch in Entwicklung."),
+            ("Portfolio v2", "Interaktives berufliches Profil", "2026", "Konzept, Struktur, inhaltliche Ausrichtung und Designentscheidungen von mir bestimmt; finale Prüfung ebenfalls bei mir. KI-Unterstützung für Recherche, Variantenfindung, technische Umsetzung und Qualitätssicherung."),
         ],
         "edu_title": "BILDUNG & WEITERBILDUNG",
         "education": [
@@ -62,7 +62,7 @@ DATA = {
             ("Führung & Verantwortung", "Leitung von 8 Musikern · Führung einer Trompetensektion"),
             ("Organisation & Planung", "80+ Veranstaltungen · Projektplanung · Budget"),
             ("Kommunikation", "Kundenakquise · Teamkoordination · Konfliktmanagement"),
-            ("Digitales Arbeiten & Lernen", "Web-Grundlagen · digitale Recherche · KI-gestützte Workflows"),
+            ("Digitales Arbeiten & Lernen", "Web-Grundlagen · Informationsrecherche · KI-gestützte Arbeitsabläufe"),
         ],
         "lang_title": "SPRACHEN",
         "langs": "Deutsch B2 · Ukrainisch Muttersprache · Russisch Muttersprache",
@@ -79,12 +79,12 @@ DATA = {
         "experience": [
             ("Hardy Orchestra", "First Trumpet & Section Leader", "2017-2022", "Led the trumpet section in complex productions, including Rammstein-Symphonien. Precision and resilience under live-performance pressure."),
             ("Symbioz Band", "Founder & Band Leader", "09/2019-02/2022", "Led 8 musicians and organised 80+ events. Responsible for project planning, budgets, client acquisition, conflict management and quality assurance."),
-            ("Gastronomy", "Courier / Delivery Driver", "2022-2024", ""),
+            ("Hospitality / Food Service", "Courier / Delivery Driver", "2022-2024", ""),
         ],
-        "dev_title": "SELECTED DEVELOPMENT",
+        "dev_title": "SELECTED PROJECTS",
         "dev": [
-            ("ReSchuhe", "Concept · brand · digital product", "2026 · in development", "Business planning, brand development, product structure and AI-assisted execution. Public website and customer-facing digital experience in development."),
-            ("Portfolio v2", "Interactive professional profile", "2026", "Concept, structure, content direction, design decisions and final evaluation directed by me; AI support for research, exploration, technical implementation and QA."),
+            ("ReSchuhe", "Concept · brand · digital product", "2026 · in development", "Business planning, brand development, product structure and AI-assisted execution. The public website and customer-facing digital experience are still in development."),
+            ("Portfolio v2", "Interactive professional profile", "2026", "I directed the concept, structure, content direction and design decisions, and made the final evaluation. AI supported research, exploration, technical implementation and quality assurance."),
         ],
         "edu_title": "EDUCATION & TRAINING",
         "education": [
@@ -97,7 +97,7 @@ DATA = {
             ("Leadership & responsibility", "Led 8 musicians · led a trumpet section"),
             ("Organisation & planning", "80+ events · project planning · budgets"),
             ("Communication", "Client acquisition · team coordination · conflict management"),
-            ("Digital & learning", "Web fundamentals · digital research · AI-assisted workflows"),
+            ("Digital tools & learning", "Web fundamentals · information research · AI-assisted workflows"),
         ],
         "lang_title": "LANGUAGES",
         "langs": "German B2 · Ukrainian native · Russian native",
@@ -112,14 +112,14 @@ DATA = {
         "profile": "Профессиональный опыт в музыке, руководстве и организации. Как первый трубач, руководитель секции и основатель группы из восьми музыкантов я развил точность, ответственность и навыки координации в условиях реальной сценической нагрузки. Сегодня я дополняю этот опыт цифровыми инструментами, веб-основами и рабочими процессами с поддержкой ИИ.",
         "exp_title": "ПРОФЕССИОНАЛЬНЫЙ ОПЫТ",
         "experience": [
-            ("Hardy Orchestra", "Первый трубач и руководитель секции", "2017-2022", "Руководство секцией труб в сложных постановках, включая Rammstein-Symphonien. Точность и выдержка под нагрузкой живых выступлений."),
+            ("Hardy Orchestra", "Первый трубач и руководитель секции", "2017-2022", "Руководство секцией труб в сложных постановках, включая Rammstein-Symphonien. Точность и выдержка в условиях живых выступлений."),
             ("Symbioz Band", "Основатель и руководитель", "09/2019-02/2022", "Руководство командой из 8 музыкантов; организация 80+ мероприятий. Ответственность за проектное планирование, бюджет, привлечение клиентов, решение конфликтов и контроль качества."),
-            ("Гастрономия", "Курьер / водитель доставки", "2022-2024", ""),
+            ("Сфера общественного питания", "Курьер / водитель доставки", "2022-2024", ""),
         ],
-        "dev_title": "ИЗБРАННОЕ РАЗВИТИЕ",
+        "dev_title": "ИЗБРАННЫЕ ПРОЕКТЫ",
         "dev": [
-            ("ReSchuhe", "Концепция · бренд · цифровой продукт", "2026 · в разработке", "Бизнес-планирование, развитие бренда, структура продукта и реализация с поддержкой ИИ. Публичный сайт и цифровой пользовательский опыт находятся в разработке."),
-            ("Portfolio v2", "Интерактивный профессиональный профиль", "2026", "Концепцию, структуру, направление контента, дизайн-решения и финальную оценку определял я; ИИ помогал с исследованием, поиском вариантов, технической реализацией и проверкой качества."),
+            ("ReSchuhe", "Концепция · бренд · цифровой продукт", "2026 · в разработке", "Бизнес-планирование, развитие бренда, структура продукта и реализация с поддержкой ИИ. Публичный сайт и цифровой пользовательский опыт всё ещё находятся в разработке."),
+            ("Portfolio v2", "Интерактивный профессиональный профиль", "2026", "Концепцию, структуру, направление контента и дизайн-решения определял я; финальная проверка также оставалась за мной. ИИ помогал с исследованием, поиском вариантов, технической реализацией и контролем качества."),
         ],
         "edu_title": "ОБРАЗОВАНИЕ И ОБУЧЕНИЕ",
         "education": [
@@ -132,7 +132,7 @@ DATA = {
             ("Руководство и ответственность", "Команда из 8 музыкантов · руководство секцией труб"),
             ("Организация и планирование", "80+ мероприятий · проектное планирование · бюджет"),
             ("Коммуникация", "Привлечение клиентов · координация команды · решение конфликтов"),
-            ("Цифровые инструменты и обучение", "Веб-основы · цифровое исследование · рабочие процессы с поддержкой ИИ"),
+            ("Цифровые инструменты и обучение", "Веб-основы · поиск и анализ информации · процессы с поддержкой ИИ"),
         ],
         "lang_title": "ЯЗЫКИ",
         "langs": "Немецкий B2 · Украинский родной · Русский родной",
@@ -154,7 +154,7 @@ def wrap(text, font, size, maxw):
         lines.append(cur)
     return lines
 
-def draw_wrapped(c, text, x, y, maxw, font="Noto", size=8, leading=10.5, color=GRAPH, max_lines=None):
+def draw_wrapped(c, text, x, y, maxw, font="Noto", size=8.35, leading=11.2, color=GRAPH, max_lines=None):
     c.setFillColor(color)
     c.setFont(font, size)
     lines = wrap(text, font, size, maxw)
@@ -167,29 +167,29 @@ def draw_wrapped(c, text, x, y, maxw, font="Noto", size=8, leading=10.5, color=G
 
 def label(c, text, x, y):
     c.setFillColor(BRASS)
-    c.setFont("NotoBold", 7.4)
+    c.setFont("NotoBold", 7.8)
     c.drawString(x, y, text)
     c.setStrokeColor(LINE)
     c.setLineWidth(.45)
-    c.line(x + 122, y + 2, W - 42, y + 2)
-    return y - 16
+    c.line(x + 130, y + 2, W - 42, y + 2)
+    return y - 18
 
 def entry(c, org, role, date, body, x, y, maxw, compact=False):
     c.setFillColor(INK)
-    c.setFont("NotoBold", 9.15)
+    c.setFont("NotoBold", 9.5)
     c.drawString(x, y, org)
     if date:
         c.setFillColor(MUTED)
-        c.setFont("NotoMed", 7.4)
+        c.setFont("NotoMed", 7.55)
         c.drawRightString(x + maxw, y, date)
-    y -= 11
+    y -= 12
     c.setFillColor(NAVY)
-    c.setFont("NotoMed", 8.05)
+    c.setFont("NotoMed", 8.3)
     c.drawString(x, y, role)
-    y -= 9.8
+    y -= 10.6
     if body:
-        y = draw_wrapped(c, body, x, y, maxw, "Noto", 7.45, 9.4, GRAPH)
-    return y - (3 if compact else 5)
+        y = draw_wrapped(c, body, x, y, maxw, "Noto", 7.8, 10.25, GRAPH)
+    return y - (4.5 if compact else 6.5)
 
 def make(data):
     path = OUT / data["filename"]
@@ -208,14 +208,14 @@ def make(data):
     c.setFont("NotoBold", 22)
     c.drawString(42, H - 47, "ANDRII MAKUKHA")
     c.setFillColor(BRASS)
-    c.setFont("NotoBold", 7.4)
+    c.setFont("NotoBold", 7.6)
     c.drawString(42, H - 67, data["subtitle"])
     c.setFillColor(PAPER)
-    c.setFont("Noto", 8.25)
+    c.setFont("Noto", 8.45)
     c.drawString(42, H - 85, data["tagline"])
 
     right = W - 42
-    c.setFont("Noto", 7.15)
+    c.setFont("Noto", 7.25)
     c.setFillColor(PAPER)
     for y, value in [
         (H - 45, data["location"]),
@@ -231,10 +231,10 @@ def make(data):
     c.linkURL("https://" + CONTACT["github"], (right - 165, H - 86, right, H - 76))
     c.linkURL("https://" + CONTACT["portfolio"], (right - 205, H - 98, right, H - 88))
 
-    x, maxw, y = 42, W - 84, H - 143
+    x, maxw, y = 42, W - 84, H - 145
     y = label(c, data["profile_title"], x, y)
-    y = draw_wrapped(c, data["profile"], x, y, maxw, "Noto", 8.05, 10.55, GRAPH)
-    y -= 8
+    y = draw_wrapped(c, data["profile"], x, y, maxw, "Noto", 8.35, 11.2, GRAPH)
+    y -= 10
 
     y = label(c, data["exp_title"], x, y)
     for item in data["experience"]:
@@ -247,39 +247,42 @@ def make(data):
     y = label(c, data["edu_title"], x, y)
     for name, org, date, body in data["education"]:
         c.setFillColor(INK)
-        c.setFont("NotoBold", 8.55)
+        c.setFont("NotoBold", 8.8)
         c.drawString(x, y, name)
         c.setFillColor(MUTED)
-        c.setFont("NotoMed", 7.35)
+        c.setFont("NotoMed", 7.5)
         c.drawRightString(x + maxw, y, date)
-        y -= 10
+        y -= 10.8
         c.setFillColor(GRAPH)
-        c.setFont("Noto", 7.45)
+        c.setFont("Noto", 7.65)
         c.drawString(x, y, org)
-        y -= 9.5
+        y -= 10.2
         if body:
-            y = draw_wrapped(c, body, x, y, maxw, "Noto", 7.3, 9.1, GRAPH)
-        y -= 4
+            y = draw_wrapped(c, body, x, y, maxw, "Noto", 7.55, 9.7, GRAPH)
+        y -= 5.2
 
     y = label(c, data["cap_title"], x, y)
     for capability, evidence in data["caps"]:
         c.setFillColor(INK)
-        c.setFont("NotoBold", 7.75)
+        c.setFont("NotoBold", 7.95)
         c.drawString(x, y, capability)
-        capw = stringWidth(capability, "NotoBold", 7.75)
+        capw = stringWidth(capability, "NotoBold", 7.95)
         c.setFillColor(GRAPH)
-        c.setFont("Noto", 7.2)
-        c.drawString(x + capw + 10, y, evidence)
-        y -= 13.5
+        c.setFont("Noto", 7.35)
+        c.drawString(x + capw + 11, y, evidence)
+        y -= 15
 
-    y -= 2
+    y -= 3
     y = label(c, data["lang_title"], x, y)
     c.setFillColor(GRAPH)
-    c.setFont("Noto", 7.6)
+    c.setFont("Noto", 7.9)
     c.drawString(x, y, data["langs"])
 
+    if y < 55:
+        raise RuntimeError(f"Content overflow in {data['filename']}: y={y:.1f}")
+
     c.setFillColor(MUTED)
-    c.setFont("Noto", 6.4)
+    c.setFont("Noto", 6.5)
     c.drawString(42, 22, "Human-directed · AI-assisted")
     c.drawRightString(W - 42, 22, "Portfolio · 2026")
     c.save()
