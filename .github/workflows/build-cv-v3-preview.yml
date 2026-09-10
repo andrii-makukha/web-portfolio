@@ -6,13 +6,14 @@ on:
     branches:
       - cv-v3-professional-redesign
     paths:
+      - "scripts/build_cv.py"
       - "scripts/build_cv_v3.py"
       - "assets/portrait.avif"
       - "docs/CV_V3_DESIGN.md"
       - ".github/workflows/build-cv-v3-preview.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-preview:
@@ -35,16 +36,16 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install reportlab==5.0.1 Pillow pillow-avif-plugin
 
-      - name: Build CV v3 candidates
-        run: python scripts/build_cv_v3.py
+      - name: Build production-named CV v3 candidates
+        run: python scripts/build_cv.py
 
       - name: Validate PDF structure and ATS text
         run: |
           mkdir -p build/cv-v3/render build/cv-v3/text
 
           for locale in de en ru; do
-            pdf="build/cv-v3/andrii-makukha-${locale}-v3.pdf"
-            text="build/cv-v3/text/andrii-makukha-${locale}-v3.txt"
+            pdf="assets/cv/andrii-makukha-${locale}.pdf"
+            text="build/cv-v3/text/andrii-makukha-${locale}.txt"
 
             test -f "$pdf"
             test "$(pdfinfo "$pdf" | awk '/^Pages:/ {print $2}')" = "1"
@@ -54,31 +55,45 @@ jobs:
             grep -q "Symbioz Band" "$text"
             grep -q "ReSchuhe" "$text"
             grep -q "Hillel IT School" "$text"
+            ! grep -q "�" "$text"
           done
 
-          grep -q "BERUFSERFAHRUNG" build/cv-v3/text/andrii-makukha-de-v3.txt
-          grep -q "PROFESSIONAL EXPERIENCE" build/cv-v3/text/andrii-makukha-en-v3.txt
-          grep -q "ПРОФЕССИОНАЛЬНЫЙ ОПЫТ" build/cv-v3/text/andrii-makukha-ru-v3.txt
+          grep -q "BERUFSERFAHRUNG" build/cv-v3/text/andrii-makukha-de.txt
+          grep -q "PROFESSIONAL EXPERIENCE" build/cv-v3/text/andrii-makukha-en.txt
+          grep -q "ПРОФЕССИОНАЛЬНЫЙ ОПЫТ" build/cv-v3/text/andrii-makukha-ru.txt
 
       - name: Render visual QA masters
         run: |
           for locale in de en ru; do
             pdftoppm -png -singlefile -r 200 \
-              "build/cv-v3/andrii-makukha-${locale}-v3.pdf" \
-              "build/cv-v3/render/andrii-makukha-${locale}-v3"
+              "assets/cv/andrii-makukha-${locale}.pdf" \
+              "build/cv-v3/render/andrii-makukha-${locale}"
           done
 
       - name: Report candidate metrics
         run: |
           for locale in de en ru; do
-            pdf="build/cv-v3/andrii-makukha-${locale}-v3.pdf"
-            png="build/cv-v3/render/andrii-makukha-${locale}-v3.png"
-            text="build/cv-v3/text/andrii-makukha-${locale}-v3.txt"
+            pdf="assets/cv/andrii-makukha-${locale}.pdf"
+            png="build/cv-v3/render/andrii-makukha-${locale}.png"
+            text="build/cv-v3/text/andrii-makukha-${locale}.txt"
             echo "=== ${locale^^} ==="
             pdfinfo "$pdf" | grep -E '^(Pages|Page size|File size|PDF version):'
             echo "Rendered PNG bytes: $(stat -c%s "$png")"
             echo "Extracted text lines: $(wc -l < "$text")"
           done
+
+      - name: Commit generated CV v3 PDFs to branch
+        run: |
+          if git diff --quiet -- assets/cv/andrii-makukha-de.pdf assets/cv/andrii-makukha-en.pdf assets/cv/andrii-makukha-ru.pdf; then
+            echo "Committed PDFs already match generated CV v3 output."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/cv/andrii-makukha-de.pdf assets/cv/andrii-makukha-en.pdf assets/cv/andrii-makukha-ru.pdf
+          git commit -m "CV v3: regenerate multilingual PDF masters"
+          git push origin HEAD:cv-v3-professional-redesign
 
       - name: Upload CV v3 preview artifact
         if: always()
@@ -86,7 +101,9 @@ jobs:
         with:
           name: cv-v3-multilingual-master-preview
           path: |
-            build/cv-v3/*.pdf
+            assets/cv/andrii-makukha-de.pdf
+            assets/cv/andrii-makukha-en.pdf
+            assets/cv/andrii-makukha-ru.pdf
             build/cv-v3/render/*.png
             build/cv-v3/text/*.txt
           if-no-files-found: error
