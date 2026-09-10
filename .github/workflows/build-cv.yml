@@ -1,7 +1,7 @@
 name: Build Portfolio CV PDFs
 
 # Permanent read-only release gate: rebuild committed CVs from source and compare
-# ATS text plus rendered output. CV v3 also verifies the shared portrait asset.
+# multilingual ATS text plus 200-dpi rendered output; CV v3 also verifies the shared portrait asset.
 on:
   workflow_dispatch:
   push:
