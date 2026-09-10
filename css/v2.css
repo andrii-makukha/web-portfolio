@@ -11,7 +11,7 @@
   --muted-light: rgba(11, 12, 13, 0.62);
   --hairline-dark: rgba(250, 248, 243, 0.16);
   --hairline-light: rgba(11, 12, 13, 0.16);
-  --page-pad: clamp(1.25rem, 3vw, 3rem);
+  --page-pad: clamp(1.25rem, min(3vw, 2.88rem), 3rem);
   --content: 1440px;
   --ease-out: cubic-bezier(.16, 1, .3, 1);
 }
@@ -208,7 +208,7 @@ button:focus-visible {
   margin: 0;
   max-width: 100%;
   color: var(--paper-soft);
-  font-size: clamp(4.4rem, 12.6vw, 12rem);
+  font-size: clamp(4.4rem, min(12.6vw, 12.096rem), 12rem);
   font-weight: 550;
   line-height: .78;
   letter-spacing: -.075em;
@@ -222,7 +222,7 @@ button:focus-visible {
 }
 
 .opening__name span:last-child {
-  margin-left: clamp(1rem, 8vw, 8rem);
+  margin-left: clamp(1rem, min(8vw, 7.68rem), 8rem);
 }
 
 .opening__bottom {
@@ -269,7 +269,7 @@ button:focus-visible {
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(20rem, .95fr);
-  gap: clamp(2rem, 6vw, 7rem);
+  gap: clamp(2rem, min(6vw, 5.76rem), 7rem);
   align-items: end;
 }
 
@@ -327,7 +327,7 @@ button:focus-visible {
 
 .identity__title {
   margin: 0;
-  font-size: clamp(2.8rem, 5.2vw, 5.6rem);
+  font-size: clamp(2.8rem, min(5.2vw, 4.992rem), 5.6rem);
   font-weight: 520;
   line-height: .94;
   letter-spacing: -.052em;
@@ -337,7 +337,7 @@ button:focus-visible {
   margin: clamp(2rem, 5vh, 4rem) 0 0;
   max-width: 36rem;
   color: rgba(250, 248, 243, .86);
-  font-size: clamp(1.25rem, 2vw, 1.8rem);
+  font-size: clamp(1.25rem, min(2vw, 1.92rem), 1.8rem);
   line-height: 1.32;
   letter-spacing: -.02em;
 }
@@ -402,13 +402,13 @@ button:focus-visible {
 .profile__header {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(19rem, .7fr);
-  gap: clamp(3rem, 8vw, 10rem);
+  gap: clamp(3rem, min(8vw, 7.68rem), 10rem);
   align-items: start;
 }
 
 .profile__display {
   margin: 0;
-  font-size: clamp(3.9rem, 8.5vw, 9rem);
+  font-size: clamp(3.9rem, min(8.5vw, 8.16rem), 9rem);
   font-weight: 540;
   line-height: .83;
   letter-spacing: -.075em;
@@ -430,7 +430,7 @@ button:focus-visible {
 .profile__lead {
   margin: .25rem 0 0;
   max-width: 32rem;
-  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  font-size: clamp(1.3rem, min(2.2vw, 2.112rem), 2rem);
   line-height: 1.3;
   letter-spacing: -.03em;
 }
@@ -439,7 +439,7 @@ button:focus-visible {
   margin-top: clamp(6rem, 13vh, 11rem);
   display: grid;
   grid-template-columns: .8fr 1.2fr;
-  gap: clamp(3rem, 10vw, 12rem);
+  gap: clamp(3rem, min(10vw, 9.6rem), 12rem);
   padding-top: 1.25rem;
   border-top: 1px solid var(--hairline-light);
 }
@@ -458,7 +458,7 @@ button:focus-visible {
 .profile__copy p {
   margin: 0;
   color: var(--graphite);
-  font-size: clamp(1.12rem, 1.55vw, 1.38rem);
+  font-size: clamp(1.12rem, min(1.55vw, 1.488rem), 1.38rem);
   line-height: 1.6;
 }
 
@@ -497,7 +497,7 @@ button:focus-visible {
 
 .next-chapter__title {
   margin: 0;
-  font-size: clamp(1.6rem, 3vw, 3rem);
+  font-size: clamp(1.6rem, min(3vw, 2.88rem), 3rem);
   font-weight: 520;
   letter-spacing: -.035em;
 }
@@ -581,7 +581,7 @@ button:focus-visible {
   }
 
   .opening__name {
-    font-size: clamp(4.1rem, 20vw, 8.5rem);
+    font-size: clamp(4.1rem, min(20vw, 19.2rem), 8.5rem);
     line-height: .82;
   }
 
@@ -630,7 +630,7 @@ button:focus-visible {
   }
 
   .profile__display {
-    font-size: clamp(3.35rem, 16vw, 6.4rem);
+    font-size: clamp(3.35rem, min(16vw, 15.36rem), 6.4rem);
   }
 
   .profile__display span:nth-child(3) {
@@ -728,7 +728,7 @@ button:focus-visible {
   display: block;
   margin-bottom: clamp(2rem, 5vh, 4rem);
   color: rgba(250,248,243,.18);
-  font-size: clamp(4rem, 8vw, 8rem);
+  font-size: clamp(4rem, min(8vw, 7.68rem), 8rem);
   font-weight: 520;
   line-height: .8;
   letter-spacing: -.07em;
@@ -780,14 +780,14 @@ button:focus-visible {
 .foundation__heading-row {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(19rem, .65fr);
-  gap: clamp(3rem, 8vw, 10rem);
+  gap: clamp(3rem, min(8vw, 7.68rem), 10rem);
   align-items: end;
 }
 
 .foundation__display {
   margin: 0;
   max-width: 11ch;
-  font-size: clamp(3.8rem, 8.2vw, 8.6rem);
+  font-size: clamp(3.8rem, min(8.2vw, 7.872rem), 8.6rem);
   font-weight: 540;
   line-height: .83;
   letter-spacing: -.072em;
@@ -806,7 +806,7 @@ button:focus-visible {
   margin: 0 0 .55rem;
   max-width: 34rem;
   color: var(--graphite);
-  font-size: clamp(1.16rem, 1.75vw, 1.55rem);
+  font-size: clamp(1.16rem, min(1.75vw, 1.68rem), 1.55rem);
   line-height: 1.48;
   letter-spacing: -.025em;
 }
@@ -820,8 +820,8 @@ button:focus-visible {
 }
 
 .proof {
-  min-height: clamp(15rem, 31vw, 27rem);
-  padding: clamp(1.5rem, 3vw, 3rem);
+  min-height: clamp(15rem, min(31vw, 29.76rem), 27rem);
+  padding: clamp(1.5rem, min(3vw, 2.88rem), 3rem);
   border-right: 1px solid var(--hairline-light);
   border-bottom: 1px solid var(--hairline-light);
   display: flex;
@@ -830,7 +830,7 @@ button:focus-visible {
 }
 
 .proof__value {
-  font-size: clamp(4.3rem, 10vw, 10.5rem);
+  font-size: clamp(4.3rem, min(10vw, 9.6rem), 10.5rem);
   font-weight: 530;
   line-height: .78;
   letter-spacing: -.075em;
@@ -839,7 +839,7 @@ button:focus-visible {
 .proof__label {
   margin: auto 0 0;
   padding-top: 3rem;
-  font-size: clamp(1.25rem, 2vw, 2rem);
+  font-size: clamp(1.25rem, min(2vw, 1.92rem), 2rem);
   font-weight: 540;
   letter-spacing: -.035em;
 }
@@ -859,7 +859,7 @@ button:focus-visible {
 .case-study {
   display: grid;
   grid-template-columns: minmax(13rem, .62fr) minmax(0, 1.38fr);
-  gap: clamp(3rem, 8vw, 9rem);
+  gap: clamp(3rem, min(8vw, 7.68rem), 9rem);
   padding: clamp(4rem, 9vh, 7rem) 0;
   border-top: 1px solid var(--hairline-light);
 }
@@ -904,7 +904,7 @@ button:focus-visible {
 
 .case-study__title {
   margin: 0;
-  font-size: clamp(3rem, 7vw, 7.2rem);
+  font-size: clamp(3rem, min(7vw, 6.72rem), 7.2rem);
   font-weight: 530;
   line-height: .88;
   letter-spacing: -.065em;
@@ -914,7 +914,7 @@ button:focus-visible {
   margin: clamp(2.5rem, 6vh, 4.5rem) 0 0;
   max-width: 48rem;
   color: var(--graphite);
-  font-size: clamp(1.13rem, 1.6vw, 1.4rem);
+  font-size: clamp(1.13rem, min(1.6vw, 1.536rem), 1.4rem);
   line-height: 1.62;
 }
 
@@ -951,7 +951,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   max-width: 14ch;
-  font-size: clamp(3.6rem, 8vw, 8.5rem);
+  font-size: clamp(3.6rem, min(8vw, 7.68rem), 8.5rem);
   font-weight: 530;
   line-height: .86;
   letter-spacing: -.07em;
@@ -986,7 +986,7 @@ button:focus-visible {
   }
 
   .foundation__display {
-    font-size: clamp(3.35rem, 15.5vw, 6.5rem);
+    font-size: clamp(3.35rem, min(15.5vw, 14.88rem), 6.5rem);
   }
 
   .proof-grid {
@@ -1003,11 +1003,11 @@ button:focus-visible {
   }
 
   .case-study__title {
-    font-size: clamp(3rem, 14vw, 5.7rem);
+    font-size: clamp(3rem, min(14vw, 13.44rem), 5.7rem);
   }
 
   .foundation__closing {
-    font-size: clamp(3.35rem, 15vw, 6.4rem);
+    font-size: clamp(3.35rem, min(15vw, 14.4rem), 6.4rem);
   }
 }
 
@@ -1021,7 +1021,7 @@ button:focus-visible {
   }
 
   .proof__value {
-    font-size: clamp(4.2rem, 23vw, 7rem);
+    font-size: clamp(4.2rem, min(23vw, 22.08rem), 7rem);
   }
 
   .case-study__facts > div {
@@ -1033,7 +1033,7 @@ button:focus-visible {
 
 .proof--compact .proof__value {
   max-width: 100%;
-  font-size: clamp(2.9rem, 5.7vw, 6.2rem);
+  font-size: clamp(2.9rem, min(5.7vw, 5.472rem), 6.2rem);
   line-height: .86;
 }
 
@@ -1066,13 +1066,13 @@ button:focus-visible {
 .capabilities__heading-row {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(19rem, .7fr);
-  gap: clamp(3rem, 8vw, 10rem);
+  gap: clamp(3rem, min(8vw, 7.68rem), 10rem);
   align-items: end;
 }
 
 .capabilities__display {
   margin: 0;
-  font-size: clamp(4rem, 8.5vw, 9rem);
+  font-size: clamp(4rem, min(8.5vw, 8.16rem), 9rem);
   font-weight: 540;
   line-height: .82;
   letter-spacing: -.075em;
@@ -1091,7 +1091,7 @@ button:focus-visible {
   margin: 0 0 .6rem;
   max-width: 34rem;
   color: var(--graphite);
-  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  font-size: clamp(1.2rem, min(1.8vw, 1.728rem), 1.6rem);
   line-height: 1.48;
   letter-spacing: -.025em;
 }
@@ -1100,7 +1100,7 @@ button:focus-visible {
   margin-top: clamp(7rem, 15vh, 11rem);
   display: grid;
   grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
-  gap: clamp(2rem, 8vw, 9rem);
+  gap: clamp(2rem, min(8vw, 7.68rem), 9rem);
   padding: 0 0 .9rem;
   border-bottom: 1px solid var(--hairline-light);
   color: var(--muted-light);
@@ -1117,7 +1117,7 @@ button:focus-visible {
   min-height: clamp(21rem, 48vh, 31rem);
   display: grid;
   grid-template-columns: minmax(0, .72fr) minmax(3rem, .08fr) minmax(0, 1.2fr);
-  gap: clamp(1.5rem, 4vw, 4rem);
+  gap: clamp(1.5rem, min(4vw, 3.84rem), 4rem);
   align-items: center;
   border-bottom: 1px solid var(--hairline-light);
 }
@@ -1136,7 +1136,7 @@ button:focus-visible {
 
 .capability-row__evidence strong {
   max-width: 12ch;
-  font-size: clamp(2.4rem, 5vw, 5.4rem);
+  font-size: clamp(2.4rem, min(5vw, 4.8rem), 5.4rem);
   font-weight: 530;
   line-height: .9;
   letter-spacing: -.06em;
@@ -1144,13 +1144,13 @@ button:focus-visible {
 
 .capability-row__arrow {
   color: var(--brass);
-  font-size: clamp(1.7rem, 3vw, 3rem);
+  font-size: clamp(1.7rem, min(3vw, 2.88rem), 3rem);
 }
 
 .capability-row__result h3 {
   margin: 0;
   max-width: 18ch;
-  font-size: clamp(2rem, 4vw, 4.3rem);
+  font-size: clamp(2rem, min(4vw, 3.84rem), 4.3rem);
   font-weight: 530;
   line-height: .95;
   letter-spacing: -.055em;
@@ -1160,7 +1160,7 @@ button:focus-visible {
   margin: clamp(1.3rem, 3vh, 2rem) 0 0;
   max-width: 40rem;
   color: var(--graphite);
-  font-size: clamp(1rem, 1.35vw, 1.22rem);
+  font-size: clamp(1rem, min(1.35vw, 1.296rem), 1.22rem);
   line-height: 1.62;
 }
 
@@ -1171,7 +1171,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   max-width: 15ch;
-  font-size: clamp(3.7rem, 8vw, 8.5rem);
+  font-size: clamp(3.7rem, min(8vw, 7.68rem), 8.5rem);
   font-weight: 530;
   line-height: .86;
   letter-spacing: -.07em;
@@ -1210,7 +1210,7 @@ button:focus-visible {
   }
 
   .capabilities__display {
-    font-size: clamp(3.35rem, 16vw, 6.5rem);
+    font-size: clamp(3.35rem, min(16vw, 15.36rem), 6.5rem);
   }
 
   .capabilities__labels {
@@ -1234,15 +1234,15 @@ button:focus-visible {
   }
 
   .capability-row__evidence strong {
-    font-size: clamp(2.8rem, 13vw, 5rem);
+    font-size: clamp(2.8rem, min(13vw, 12.48rem), 5rem);
   }
 
   .capability-row__result h3 {
-    font-size: clamp(2.35rem, 10vw, 4.2rem);
+    font-size: clamp(2.35rem, min(10vw, 9.6rem), 4.2rem);
   }
 
   .capabilities__bridge {
-    font-size: clamp(3.35rem, 15vw, 6.4rem);
+    font-size: clamp(3.35rem, min(15vw, 14.4rem), 6.4rem);
   }
 
   .case-study--reverse .case-study__aside,
@@ -1295,14 +1295,14 @@ button:focus-visible {
 .ai__heading-row {
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(19rem, .72fr);
-  gap: clamp(3rem, 8vw, 10rem);
+  gap: clamp(3rem, min(8vw, 7.68rem), 10rem);
   align-items: end;
 }
 
 .ai__display {
   margin: 0;
   max-width: 11ch;
-  font-size: clamp(3.8rem, 8.2vw, 8.7rem);
+  font-size: clamp(3.8rem, min(8.2vw, 7.872rem), 8.7rem);
   font-weight: 530;
   line-height: .83;
   letter-spacing: -.072em;
@@ -1324,7 +1324,7 @@ button:focus-visible {
 .ai__subheadline {
   margin: 0 0 1.8rem !important;
   color: var(--paper-soft) !important;
-  font-size: clamp(1.45rem, 2.4vw, 2.2rem) !important;
+  font-size: clamp(1.45rem, min(2.4vw, 2.304rem), 2.2rem) !important;
   line-height: 1.2 !important;
   letter-spacing: -.035em;
 }
@@ -1332,7 +1332,7 @@ button:focus-visible {
 .ai__intro p {
   margin: 0;
   color: rgba(250,248,243,.66);
-  font-size: clamp(1.08rem, 1.5vw, 1.3rem);
+  font-size: clamp(1.08rem, min(1.5vw, 1.44rem), 1.3rem);
   line-height: 1.62;
 }
 
@@ -1340,7 +1340,7 @@ button:focus-visible {
   margin-top: clamp(9rem, 20vh, 16rem);
   display: grid;
   grid-template-columns: minmax(14rem, .58fr) minmax(0, 1.42fr);
-  gap: clamp(3rem, 9vw, 11rem);
+  gap: clamp(3rem, min(9vw, 8.64rem), 11rem);
 }
 
 .workflow__aside {
@@ -1415,7 +1415,7 @@ button:focus-visible {
 
 .workflow-step h3 {
   margin: 1.2rem 0 0;
-  font-size: clamp(3.5rem, 8vw, 8rem);
+  font-size: clamp(3.5rem, min(8vw, 7.68rem), 8rem);
   font-weight: 520;
   line-height: .84;
   letter-spacing: -.07em;
@@ -1426,7 +1426,7 @@ button:focus-visible {
   margin: clamp(2rem, 5vh, 3.5rem) 0 0;
   max-width: 45rem;
   color: rgba(250,248,243,.76);
-  font-size: clamp(1.15rem, 1.75vw, 1.48rem);
+  font-size: clamp(1.15rem, min(1.75vw, 1.68rem), 1.48rem);
   line-height: 1.58;
 }
 
@@ -1443,7 +1443,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   max-width: 14ch;
-  font-size: clamp(3.7rem, 8.5vw, 9rem);
+  font-size: clamp(3.7rem, min(8.5vw, 8.16rem), 9rem);
   font-weight: 530;
   line-height: .84;
   letter-spacing: -.072em;
@@ -1471,7 +1471,7 @@ button:focus-visible {
 .ai-proof > h3 {
   margin: 0;
   max-width: 18ch;
-  font-size: clamp(2.5rem, 5vw, 5.2rem);
+  font-size: clamp(2.5rem, min(5vw, 4.8rem), 5.2rem);
   font-weight: 520;
   line-height: .94;
   letter-spacing: -.055em;
@@ -1584,7 +1584,7 @@ button:focus-visible {
   }
 
   .ai__display {
-    font-size: clamp(3.35rem, 15.5vw, 6.5rem);
+    font-size: clamp(3.35rem, min(15.5vw, 14.88rem), 6.5rem);
   }
 
   .workflow {
@@ -1607,11 +1607,11 @@ button:focus-visible {
   }
 
   .workflow-step h3 {
-    font-size: clamp(3.2rem, 15vw, 6.2rem);
+    font-size: clamp(3.2rem, min(15vw, 14.4rem), 6.2rem);
   }
 
   .ai-formula {
-    font-size: clamp(3.35rem, 15vw, 6.4rem);
+    font-size: clamp(3.35rem, min(15vw, 14.4rem), 6.4rem);
   }
 
   .ai-proof__grid {
@@ -1656,14 +1656,14 @@ button:focus-visible {
 .work__heading-row {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(19rem, .72fr);
-  gap: clamp(3rem, 8vw, 10rem);
+  gap: clamp(3rem, min(8vw, 7.68rem), 10rem);
   align-items: end;
 }
 
 .work__display {
   margin: 0;
   max-width: 12ch;
-  font-size: clamp(3.7rem, 8vw, 8.4rem);
+  font-size: clamp(3.7rem, min(8vw, 7.68rem), 8.4rem);
   font-weight: 535;
   line-height: .83;
   letter-spacing: -.07em;
@@ -1682,7 +1682,7 @@ button:focus-visible {
   margin: 0 0 .6rem;
   max-width: 35rem;
   color: var(--graphite);
-  font-size: clamp(1.15rem, 1.65vw, 1.5rem);
+  font-size: clamp(1.15rem, min(1.65vw, 1.584rem), 1.5rem);
   line-height: 1.55;
   letter-spacing: -.025em;
 }
@@ -1705,7 +1705,7 @@ button:focus-visible {
 
 .work-case__stage {
   margin-top: 2.3rem;
-  min-height: clamp(28rem, 62vw, 52rem);
+  min-height: clamp(28rem, min(62vw, 59.52rem), 52rem);
   position: relative;
   overflow: hidden;
 }
@@ -1740,10 +1740,10 @@ button:focus-visible {
 
 .reschuhe-stage__name {
   position: absolute;
-  left: clamp(1.5rem, 4vw, 4rem);
-  bottom: clamp(1.5rem, 4vw, 4rem);
+  left: clamp(1.5rem, min(4vw, 3.84rem), 4rem);
+  bottom: clamp(1.5rem, min(4vw, 3.84rem), 4rem);
   z-index: 2;
-  font-size: clamp(4rem, 11vw, 11rem);
+  font-size: clamp(4rem, min(11vw, 10.56rem), 11rem);
   font-weight: 530;
   line-height: .8;
   letter-spacing: -.075em;
@@ -1751,11 +1751,11 @@ button:focus-visible {
 
 .reschuhe-stage__axis {
   position: absolute;
-  top: clamp(1.5rem, 3vw, 3rem);
-  right: clamp(1.5rem, 3vw, 3rem);
+  top: clamp(1.5rem, min(3vw, 2.88rem), 3rem);
+  right: clamp(1.5rem, min(3vw, 2.88rem), 3rem);
   z-index: 2;
   display: flex;
-  gap: clamp(.65rem, 2vw, 2rem);
+  gap: clamp(.65rem, min(2vw, 1.92rem), 2rem);
   flex-wrap: wrap;
   justify-content: flex-end;
   max-width: 34rem;
@@ -1768,7 +1768,7 @@ button:focus-visible {
   margin-top: clamp(3.5rem, 8vh, 6rem);
   display: grid;
   grid-template-columns: minmax(0, .9fr) minmax(20rem, .8fr);
-  gap: clamp(3rem, 9vw, 11rem);
+  gap: clamp(3rem, min(9vw, 8.64rem), 11rem);
 }
 
 .work-case__role {
@@ -1782,7 +1782,7 @@ button:focus-visible {
 .work-case__story h3,
 .symbioz-grid__story h3 {
   margin: 0;
-  font-size: clamp(3.2rem, 7vw, 7.4rem);
+  font-size: clamp(3.2rem, min(7vw, 6.72rem), 7.4rem);
   font-weight: 530;
   line-height: .86;
   letter-spacing: -.066em;
@@ -1792,7 +1792,7 @@ button:focus-visible {
   margin: 1.5rem 0 0;
   max-width: 34rem;
   color: var(--ink);
-  font-size: clamp(1.25rem, 2.1vw, 1.9rem);
+  font-size: clamp(1.25rem, min(2.1vw, 2.016rem), 1.9rem);
   line-height: 1.25;
   letter-spacing: -.03em;
 }
@@ -1801,7 +1801,7 @@ button:focus-visible {
   margin: .2rem 0 0;
   max-width: 48rem;
   color: var(--graphite);
-  font-size: clamp(1.06rem, 1.45vw, 1.28rem);
+  font-size: clamp(1.06rem, min(1.45vw, 1.392rem), 1.28rem);
   line-height: 1.66;
 }
 
@@ -1847,7 +1847,7 @@ button:focus-visible {
   margin-top: clamp(4rem, 9vh, 7rem);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(22rem, .82fr);
-  gap: clamp(4rem, 10vw, 12rem);
+  gap: clamp(4rem, min(10vw, 9.6rem), 12rem);
   align-items: end;
 }
 
@@ -1877,7 +1877,7 @@ button:focus-visible {
 }
 
 .symbioz-grid__metrics strong {
-  font-size: clamp(2.7rem, 5vw, 5.3rem);
+  font-size: clamp(2.7rem, min(5vw, 4.8rem), 5.3rem);
   font-weight: 530;
   line-height: .85;
   letter-spacing: -.06em;
@@ -1899,7 +1899,7 @@ button:focus-visible {
 .digital-work__intro {
   display: grid;
   grid-template-columns: .48fr .7fr 1fr;
-  gap: clamp(2rem, 6vw, 7rem);
+  gap: clamp(2rem, min(6vw, 5.76rem), 7rem);
   align-items: start;
 }
 
@@ -1913,7 +1913,7 @@ button:focus-visible {
 
 .digital-work__intro h3 {
   margin: 0;
-  font-size: clamp(2.7rem, 5vw, 5.5rem);
+  font-size: clamp(2.7rem, min(5vw, 4.8rem), 5.5rem);
   font-weight: 530;
   line-height: .9;
   letter-spacing: -.06em;
@@ -1921,7 +1921,7 @@ button:focus-visible {
 
 .digital-work__intro > div {
   color: var(--graphite);
-  font-size: clamp(1rem, 1.35vw, 1.2rem);
+  font-size: clamp(1rem, min(1.35vw, 1.296rem), 1.2rem);
   line-height: 1.65;
 }
 
@@ -1936,7 +1936,7 @@ button:focus-visible {
 
 .digital-card {
   background: var(--paper);
-  padding: clamp(1.3rem, 2.5vw, 2.2rem);
+  padding: clamp(1.3rem, min(2.5vw, 2.4rem), 2.2rem);
 }
 
 .digital-card__top {
@@ -1954,7 +1954,7 @@ button:focus-visible {
   aspect-ratio: 16 / 10;
   position: relative;
   overflow: hidden;
-  padding: clamp(1.2rem, 3vw, 2.5rem);
+  padding: clamp(1.2rem, min(3vw, 2.88rem), 2.5rem);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1974,7 +1974,7 @@ button:focus-visible {
 }
 
 .digital-card__visual > span {
-  font-size: clamp(4rem, 9vw, 9rem);
+  font-size: clamp(4rem, min(9vw, 8.64rem), 9rem);
   font-weight: 520;
   line-height: .82;
   letter-spacing: -.07em;
@@ -1987,7 +1987,7 @@ button:focus-visible {
 
 .digital-card h4 {
   margin: 2rem 0 0;
-  font-size: clamp(2rem, 3.5vw, 3.6rem);
+  font-size: clamp(2rem, min(3.5vw, 3.36rem), 3.6rem);
   font-weight: 530;
   line-height: .92;
   letter-spacing: -.05em;
@@ -2039,7 +2039,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   max-width: 13ch;
-  font-size: clamp(3.6rem, 8vw, 8.4rem);
+  font-size: clamp(3.6rem, min(8vw, 7.68rem), 8.4rem);
   font-weight: 530;
   line-height: .84;
   letter-spacing: -.07em;
@@ -2070,7 +2070,7 @@ button:focus-visible {
   }
 
   .work__display {
-    font-size: clamp(3.25rem, 15vw, 6.3rem);
+    font-size: clamp(3.25rem, min(15vw, 14.4rem), 6.3rem);
   }
 
   .work-case__meta {
@@ -2083,7 +2083,7 @@ button:focus-visible {
   }
 
   .reschuhe-stage__name {
-    font-size: clamp(3.5rem, 18vw, 7rem);
+    font-size: clamp(3.5rem, min(18vw, 17.28rem), 7rem);
   }
 
   .reschuhe-stage__axis {
@@ -2151,14 +2151,14 @@ button:focus-visible {
 .journey__heading-row {
   display: grid;
   grid-template-columns: minmax(0,1.05fr) minmax(19rem,.72fr);
-  gap: clamp(3rem,8vw,10rem);
+  gap: clamp(3rem, min(8vw, 7.68rem), 10rem);
   align-items: end;
 }
 
 .journey__display {
   margin: 0;
   max-width: 11ch;
-  font-size: clamp(3.8rem,8.2vw,8.6rem);
+  font-size: clamp(3.8rem, min(8.2vw, 7.872rem), 8.6rem);
   font-weight: 535;
   line-height: .83;
   letter-spacing: -.07em;
@@ -2177,7 +2177,7 @@ button:focus-visible {
   margin: 0 0 .6rem;
   max-width: 35rem;
   color: var(--graphite);
-  font-size: clamp(1.15rem,1.65vw,1.5rem);
+  font-size: clamp(1.15rem, min(1.65vw, 1.584rem), 1.5rem);
   line-height: 1.56;
   letter-spacing: -.025em;
 }
@@ -2186,7 +2186,7 @@ button:focus-visible {
   margin-top: clamp(9rem,20vh,16rem);
   display: grid;
   grid-template-columns: minmax(14rem,.58fr) minmax(0,1.42fr);
-  gap: clamp(3rem,9vw,11rem);
+  gap: clamp(3rem, min(9vw, 8.64rem), 11rem);
 }
 
 .journey-story__year {
@@ -2199,7 +2199,7 @@ button:focus-visible {
 
 .journey-story__year > span {
   display: block;
-  font-size: clamp(5.5rem,10vw,10rem);
+  font-size: clamp(5.5rem, min(10vw, 9.6rem), 10rem);
   font-weight: 525;
   line-height: .78;
   letter-spacing: -.075em;
@@ -2218,7 +2218,7 @@ button:focus-visible {
   min-height: clamp(25rem,58vh,38rem);
   display: grid;
   grid-template-columns: minmax(7rem,.28fr) minmax(0,1fr);
-  gap: clamp(2rem,5vw,5rem);
+  gap: clamp(2rem, min(5vw, 4.8rem), 5rem);
   align-items: center;
   padding: clamp(3.5rem,8vh,6rem) 0;
   border-top: 1px solid var(--hairline-light);
@@ -2252,7 +2252,7 @@ button:focus-visible {
 .journey-event__content h3 {
   margin: 0;
   max-width: 18ch;
-  font-size: clamp(2.3rem,4.7vw,5rem);
+  font-size: clamp(2.3rem, min(4.7vw, 4.512rem), 5rem);
   font-weight: 530;
   line-height: .92;
   letter-spacing: -.055em;
@@ -2278,7 +2278,7 @@ button:focus-visible {
   margin: 1.6rem 0 0;
   max-width: 42rem;
   color: var(--graphite);
-  font-size: clamp(1rem,1.35vw,1.2rem);
+  font-size: clamp(1rem, min(1.35vw, 1.296rem), 1.2rem);
   line-height: 1.65;
 }
 
@@ -2287,7 +2287,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   max-width: 13ch;
-  font-size: clamp(3.7rem,8.4vw,8.8rem);
+  font-size: clamp(3.7rem, min(8.4vw, 8.064rem), 8.8rem);
   font-weight: 530;
   line-height: .84;
   letter-spacing: -.07em;
@@ -2307,7 +2307,7 @@ button:focus-visible {
 
 .journey-education > h3 {
   margin: 0;
-  font-size: clamp(2.6rem,5vw,5.3rem);
+  font-size: clamp(2.6rem, min(5vw, 4.8rem), 5.3rem);
   font-weight: 530;
   line-height: .92;
   letter-spacing: -.055em;
@@ -2321,7 +2321,7 @@ button:focus-visible {
 .journey-education__item {
   display: grid;
   grid-template-columns: minmax(8rem,.35fr) minmax(16rem,.8fr) 1fr;
-  gap: clamp(1.5rem,4vw,4rem);
+  gap: clamp(1.5rem, min(4vw, 3.84rem), 4rem);
   align-items: baseline;
   padding: 1.4rem 0;
   border-bottom: 1px solid var(--hairline-light);
@@ -2334,7 +2334,7 @@ button:focus-visible {
 }
 
 .journey-education__item strong {
-  font-size: clamp(1.15rem,1.8vw,1.55rem);
+  font-size: clamp(1.15rem, min(1.8vw, 1.728rem), 1.55rem);
   font-weight: 540;
   letter-spacing: -.025em;
 }
@@ -2353,7 +2353,7 @@ button:focus-visible {
   }
 
   .journey__display {
-    font-size: clamp(3.3rem,15.5vw,6.4rem);
+    font-size: clamp(3.3rem, min(15.5vw, 14.88rem), 6.4rem);
   }
 
   .journey-story {
@@ -2386,7 +2386,7 @@ button:focus-visible {
   }
 
   .journey-ending {
-    font-size: clamp(3.35rem,15vw,6.4rem);
+    font-size: clamp(3.35rem, min(15vw, 14.4rem), 6.4rem);
   }
 
   .journey-education__item {
@@ -2423,14 +2423,14 @@ button:focus-visible {
 .languages__heading-row {
   display: grid;
   grid-template-columns: minmax(0,1.05fr) minmax(19rem,.72fr);
-  gap: clamp(3rem,8vw,10rem);
+  gap: clamp(3rem, min(8vw, 7.68rem), 10rem);
   align-items: end;
 }
 
 .languages__display {
   margin: 0;
   max-width: 11ch;
-  font-size: clamp(3.8rem,8.2vw,8.6rem);
+  font-size: clamp(3.8rem, min(8.2vw, 7.872rem), 8.6rem);
   font-weight: 535;
   line-height: .83;
   letter-spacing: -.07em;
@@ -2449,7 +2449,7 @@ button:focus-visible {
   margin: 0 0 .6rem;
   max-width: 35rem;
   color: var(--graphite);
-  font-size: clamp(1.15rem,1.65vw,1.5rem);
+  font-size: clamp(1.15rem, min(1.65vw, 1.584rem), 1.5rem);
   line-height: 1.56;
   letter-spacing: -.025em;
 }
@@ -2463,7 +2463,7 @@ button:focus-visible {
   min-height: clamp(9rem,17vh,13rem);
   display: grid;
   grid-template-columns: 5rem 1fr auto;
-  gap: clamp(1.5rem,4vw,4rem);
+  gap: clamp(1.5rem, min(4vw, 3.84rem), 4rem);
   align-items: center;
   border-bottom: 1px solid var(--hairline-light);
 }
@@ -2475,7 +2475,7 @@ button:focus-visible {
 }
 
 .language-row strong {
-  font-size: clamp(2.4rem,5.5vw,5.8rem);
+  font-size: clamp(2.4rem, min(5.5vw, 5.28rem), 5.8rem);
   font-weight: 530;
   line-height: .9;
   letter-spacing: -.06em;
@@ -2483,7 +2483,7 @@ button:focus-visible {
 
 .language-row__level {
   color: var(--graphite);
-  font-size: clamp(1rem,1.8vw,1.5rem);
+  font-size: clamp(1rem, min(1.8vw, 1.728rem), 1.5rem);
   letter-spacing: -.025em;
 }
 
@@ -2535,7 +2535,7 @@ button:focus-visible {
 .contact__display {
   margin: 0;
   max-width: 12ch;
-  font-size: clamp(4.2rem,10vw,10.5rem);
+  font-size: clamp(4.2rem, min(10vw, 9.6rem), 10.5rem);
   font-weight: 525;
   line-height: .8;
   letter-spacing: -.075em;
@@ -2554,7 +2554,7 @@ button:focus-visible {
   margin-top: clamp(6rem,13vh,10rem);
   display: grid;
   grid-template-columns: minmax(13rem,.55fr) minmax(0,1.45fr);
-  gap: clamp(3rem,9vw,11rem);
+  gap: clamp(3rem, min(9vw, 8.64rem), 11rem);
 }
 
 .contact__identity {
@@ -2564,7 +2564,7 @@ button:focus-visible {
 }
 
 .contact__identity strong {
-  font-size: clamp(1.5rem,2.6vw,2.5rem);
+  font-size: clamp(1.5rem, min(2.6vw, 2.496rem), 2.5rem);
   font-weight: 530;
   letter-spacing: -.035em;
 }
@@ -2601,7 +2601,7 @@ button:focus-visible {
 .contact__links strong,
 .contact__cv strong {
   color: var(--paper-soft);
-  font-size: clamp(1rem,1.7vw,1.4rem);
+  font-size: clamp(1rem, min(1.7vw, 1.632rem), 1.4rem);
   font-weight: 450;
   letter-spacing: -.02em;
   overflow-wrap: anywhere;
@@ -2638,7 +2638,7 @@ button:focus-visible {
   }
 
   .languages__display {
-    font-size: clamp(3.3rem,15.5vw,6.4rem);
+    font-size: clamp(3.3rem, min(15.5vw, 14.88rem), 6.4rem);
   }
 
   .language-row {
@@ -2656,7 +2656,7 @@ button:focus-visible {
   }
 
   .contact__display {
-    font-size: clamp(3.7rem,17vw,7rem);
+    font-size: clamp(3.7rem, min(17vw, 16.32rem), 7rem);
   }
 
   .contact__links > a,
@@ -2757,7 +2757,7 @@ section[id] {
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--hairline-dark);
-  font-size: clamp(1.65rem, 5vw, 3.2rem);
+  font-size: clamp(1.65rem, min(5vw, 4.8rem), 3.2rem);
   font-weight: 520;
   line-height: 1;
   letter-spacing: -.045em;
@@ -2944,7 +2944,7 @@ body:not(.is-ready) .journey-event {
   .journey__display,
   .languages__display {
     max-width: 100%;
-    font-size: clamp(2.55rem, 11.5vw, 4.4rem);
+    font-size: clamp(2.55rem, min(11.5vw, 11.04rem), 4.4rem);
     line-height: .88;
     overflow-wrap: anywhere;
     text-wrap: balance;
@@ -2952,7 +2952,7 @@ body:not(.is-ready) .journey-event {
 
   .workflow-step h3 {
     max-width: 100%;
-    font-size: clamp(2.55rem, 11.5vw, 4.8rem);
+    font-size: clamp(2.55rem, min(11.5vw, 11.04rem), 4.8rem);
     line-height: .9;
     overflow-wrap: anywhere;
     text-wrap: balance;
@@ -2960,14 +2960,14 @@ body:not(.is-ready) .journey-event {
 
   .capability-row__evidence strong {
     max-width: 100%;
-    font-size: clamp(2.25rem, 10.5vw, 4.3rem);
+    font-size: clamp(2.25rem, min(10.5vw, 10.08rem), 4.3rem);
     line-height: .94;
     overflow-wrap: anywhere;
   }
 
   .capability-row__result h3 {
     max-width: 100%;
-    font-size: clamp(2.15rem, 9.8vw, 3.8rem);
+    font-size: clamp(2.15rem, min(9.8vw, 9.408rem), 3.8rem);
     line-height: .96;
     overflow-wrap: anywhere;
   }
@@ -3055,7 +3055,7 @@ main,
   }
 
   .opening__name {
-    font-size: clamp(3.6rem, 17.5vw, 5.4rem);
+    font-size: clamp(3.6rem, min(17.5vw, 16.8rem), 5.4rem);
   }
 
   .opening__eyebrow,
@@ -3068,7 +3068,7 @@ main,
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(2.65rem, 11.7vw, 4.4rem);
+    font-size: clamp(2.65rem, min(11.7vw, 11.232rem), 4.4rem);
     line-height: .88;
   }
 
@@ -3100,7 +3100,7 @@ main,
 /* Final mobile headline containment */
 @media (max-width: 560px) {
   .opening__name {
-    font-size: clamp(3.45rem, 16.3vw, 5.1rem);
+    font-size: clamp(3.45rem, min(16.3vw, 15.648rem), 5.1rem);
     letter-spacing: -.07em;
   }
 
@@ -3110,7 +3110,7 @@ main,
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(2.4rem, 10.8vw, 4rem);
+    font-size: clamp(2.4rem, min(10.8vw, 10.368rem), 4rem);
     line-height: .9;
     text-wrap: balance;
   }
@@ -3169,14 +3169,14 @@ body.menu-open {
 @media (min-width: 901px) {
   .languages__heading-row {
     grid-template-columns: minmax(0, 1fr) minmax(19rem, .68fr);
-    gap: clamp(3rem, 6vw, 7rem);
+    gap: clamp(3rem, min(6vw, 5.76rem), 7rem);
   }
 
   .languages__display {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(3.8rem, 6.5vw, 7rem);
+    font-size: clamp(3.8rem, min(6.5vw, 6.24rem), 7rem);
   }
 
   .languages__display span {
@@ -3195,7 +3195,7 @@ body.menu-open {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(3rem, 14vw, 5.4rem);
+    font-size: clamp(3rem, min(14vw, 13.44rem), 5.4rem);
     line-height: .86;
   }
 
@@ -3211,7 +3211,7 @@ body.menu-open {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(3.7rem, 6.15vw, 6.6rem);
+    font-size: clamp(3.7rem, min(6.15vw, 5.904rem), 6.6rem);
     line-height: .84;
   }
 
@@ -3219,7 +3219,7 @@ body.menu-open {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(3.5rem, 5.75vw, 6.15rem);
+    font-size: clamp(3.5rem, min(5.75vw, 5.52rem), 6.15rem);
     line-height: .86;
   }
 }
@@ -3231,15 +3231,15 @@ body.menu-open {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(3.8rem, 7.85vw, 8.4rem);
+    font-size: clamp(3.8rem, min(7.85vw, 7.536rem), 8.4rem);
   }
 
   html[lang="de"] .languages__display {
-    font-size: clamp(3.65rem, 6.02vw, 6.6rem);
+    font-size: clamp(3.65rem, min(6.02vw, 5.779rem), 6.6rem);
   }
 
   html[lang="ru"] .languages__display {
-    font-size: clamp(3.5rem, 5.82vw, 6.35rem);
+    font-size: clamp(3.5rem, min(5.82vw, 5.587rem), 6.35rem);
   }
 }
 
@@ -3291,7 +3291,7 @@ body.menu-open {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(3.4rem, 11vw, 5rem);
+    font-size: clamp(3.4rem, min(11vw, 10.56rem), 5rem);
     line-height: .87;
     text-wrap: balance;
   }
@@ -3313,7 +3313,7 @@ body.menu-open {
 
   .workflow-step h3 {
     max-width: 100%;
-    font-size: clamp(3.15rem, 10.5vw, 4.8rem);
+    font-size: clamp(3.15rem, min(10.5vw, 10.08rem), 4.8rem);
     line-height: .9;
     text-wrap: balance;
   }
@@ -3343,7 +3343,7 @@ body.menu-open {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(3.25rem, 11.5vw, 6.1rem);
+    font-size: clamp(3.25rem, min(11.5vw, 11.04rem), 6.1rem);
   }
 
   html[lang="ru"] .foundation__closing strong,
@@ -3359,7 +3359,7 @@ body.menu-open {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    font-size: clamp(3.2rem, 11vw, 5.8rem);
+    font-size: clamp(3.2rem, min(11vw, 10.56rem), 5.8rem);
     line-height: .88;
   }
 
@@ -3385,12 +3385,14 @@ body.menu-open {
 
   html[lang="de"] .languages__display,
   html[lang="en"] .languages__display {
-    font-size: clamp(1.95rem, 9vw, 3.6rem);
+    font-size: clamp(1.95rem, min(9vw, 8.64rem), 3.6rem);
   }
 
   html[lang="ru"] .capabilities__display,
   html[lang="ru"] .work__display,
   html[lang="ru"] .languages__display {
-    font-size: clamp(1.85rem, 9vw, 3.5rem);
+    font-size: clamp(1.85rem, min(9vw, 8.64rem), 3.5rem);
   }
 }
+
+/* v2.1 wide-screen fluid cap: viewport-driven clamp values stop growing after 1536px. */

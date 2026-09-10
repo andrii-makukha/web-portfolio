@@ -262,23 +262,42 @@ async function runPage(browser, locale, viewport) {
 
     const headlineOverflow = await page.evaluate(() => {
       const selectors = [
+        ".opening__name",
+        ".identity__title",
         ".profile__display",
         ".foundation__display",
         ".capabilities__display",
         ".ai__display",
         ".work__display",
         ".journey__display",
-        ".languages__display"
+        ".languages__display",
+        ".contact__display",
+        ".foundation__closing",
+        ".capabilities__bridge",
+        ".ai-formula",
+        ".work__closing > div",
+        ".journey-ending",
+        ".case-study__title",
+        ".workflow-step h3",
+        ".work-case__story h3",
+        ".symbioz-grid__story h3",
+        ".digital-work__intro h3",
+        ".digital-card h4",
+        ".journey-event__content h3",
+        ".journey-education > h3",
+        ".language-row strong"
       ];
       return selectors.flatMap(selector => {
         const headline = document.querySelector(selector);
         if (!headline) return [];
         const available = headline.clientWidth;
-        return [...headline.querySelectorAll(":scope > span")]
+        const directLines = [...headline.querySelectorAll(":scope > span")];
+        const measuredNodes = directLines.length ? directLines : [headline];
+        return measuredNodes
           .map((line, index) => ({
             selector,
             index,
-            text: (line.textContent || "").trim(),
+            text: (line.textContent || "").trim().replace(/\s+/g, " ").slice(0, 120),
             available,
             scrollWidth: line.scrollWidth,
             clientWidth: line.clientWidth
@@ -289,6 +308,22 @@ async function runPage(browser, locale, viewport) {
     if (headlineOverflow.length) {
       recordFailure(scope, "Editorial headline line exceeds its column", headlineOverflow);
     }
+  }
+
+  const clippedViewportContainers = await page.evaluate(() => {
+    const selectors = [".opening"];
+    return selectors.flatMap(selector => [...document.querySelectorAll(selector)]).map(el => ({
+      selector: el.className || el.tagName,
+      clientWidth: el.clientWidth,
+      scrollWidth: el.scrollWidth,
+      clientHeight: el.clientHeight,
+      scrollHeight: el.scrollHeight,
+      overflowX: getComputedStyle(el).overflowX,
+      overflowY: getComputedStyle(el).overflowY
+    })).filter(item => item.scrollWidth > item.clientWidth + 2 || item.scrollHeight > item.clientHeight + 2);
+  });
+  if (clippedViewportContainers.length) {
+    recordFailure(scope, "Viewport-locked container would clip its content", clippedViewportContainers);
   }
 
   if (viewport.width <= 1180) {
