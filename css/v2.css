@@ -3424,3 +3424,467 @@ body.menu-open {
 }
 
 /* v2.1 wide-screen fluid cap: viewport-driven clamp values stop growing after 1536px. */
+
+
+/* v2.2 semantic text-flow hardening */
+main h1,
+main h2,
+main h3,
+main h4,
+.foundation__closing,
+.capabilities__bridge,
+.ai-formula,
+.work__closing > div,
+.journey-ending,
+.capability-row__evidence strong,
+.language-row strong {
+  text-wrap: balance;
+}
+
+main p {
+  text-wrap: pretty;
+}
+
+main h1,
+main h2,
+main h3,
+main h4,
+.foundation__closing,
+.capabilities__bridge,
+.work__closing > div,
+.journey-ending,
+.capability-row__evidence strong,
+.language-row strong {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+/* The AI statement is one semantic sentence. Let the browser balance it instead of
+   forcing desktop-authored span breaks at narrower desktop widths. */
+.ai__display > span {
+  display: inline;
+}
+
+.ai__display > span + span::before {
+  content: " ";
+}
+
+/* Closing statements now use two semantic phrases; keep the second phrase accented. */
+.work__closing > div span:last-child,
+.journey-ending span:last-child {
+  color: var(--brass);
+}
+
+@media (max-width: 900px) {
+  .profile__display,
+  .foundation__display,
+  .capabilities__display,
+  .ai__display,
+  .work__display,
+  .journey__display,
+  .languages__display {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(2.55rem, 10vw, 5.2rem);
+    line-height: .9;
+    text-wrap: balance;
+  }
+
+  .contact__display {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(3rem, 10.2vw, 5.8rem);
+    line-height: .9;
+    text-wrap: balance;
+  }
+
+  .profile__display > span,
+  .foundation__display > span,
+  .capabilities__display > span,
+  .work__display > span,
+  .journey__display > span,
+  .languages__display > span,
+  .contact__display > span {
+    display: inline;
+  }
+
+  .profile__display > span + span::before,
+  .foundation__display > span + span::before,
+  .capabilities__display > span + span::before,
+  .work__display > span + span::before,
+  .journey__display > span + span::before,
+  .languages__display > span + span::before,
+  .contact__display > span + span::before {
+    content: " ";
+  }
+
+  .opening__name {
+    max-width: 100%;
+    font-size: clamp(3.6rem, 9.5vw, 5.8rem);
+  }
+
+  .opening__name span:last-child {
+    margin-left: clamp(.75rem, 3vw, 2.25rem);
+  }
+
+  .capability-row__evidence strong {
+    max-width: 100%;
+    font-size: clamp(2.2rem, 6.5vw, 4rem);
+    line-height: .94;
+  }
+
+  .capability-row__result h3 {
+    max-width: 100%;
+    font-size: clamp(2rem, 5.8vw, 3.8rem);
+    line-height: .96;
+  }
+
+  .workflow-step h3 {
+    max-width: 100%;
+    font-size: clamp(2.4rem, 7vw, 5rem);
+    line-height: .9;
+  }
+
+  .digital-card h4 {
+    max-width: 100%;
+    font-size: clamp(1.9rem, 5vw, 3.4rem);
+    line-height: .94;
+  }
+
+  .journey-event__content h3,
+  .journey-education > h3 {
+    max-width: 100%;
+    font-size: clamp(2rem, 5.8vw, 3.8rem);
+    line-height: .96;
+  }
+
+  .foundation__closing,
+  .capabilities__bridge,
+  .work__closing > div,
+  .journey-ending {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: .9;
+  }
+}
+
+@media (max-width: 560px) {
+  .opening__name {
+    font-size: clamp(3.2rem, 15vw, 4.8rem);
+  }
+
+  .opening__name span:last-child {
+    margin-left: clamp(.5rem, 2.5vw, 1rem);
+  }
+
+  .capability-row__evidence strong {
+    font-size: clamp(1.85rem, 8.4vw, 3.2rem);
+  }
+
+  .capability-row__result h3 {
+    font-size: clamp(1.8rem, 8vw, 3.1rem);
+  }
+
+  .workflow-step h3 {
+    font-size: clamp(2rem, 9.2vw, 3.8rem);
+  }
+
+  .digital-card h4 {
+    font-size: clamp(1.7rem, 7.4vw, 2.8rem);
+  }
+
+  .journey-event__content h3 {
+    font-size: clamp(1.7rem, 7.4vw, 2.9rem);
+  }
+
+  .journey-education > h3 {
+    font-size: clamp(1.85rem, 7.8vw, 3rem);
+  }
+
+  .foundation__closing,
+  .capabilities__bridge,
+  .work__closing > div,
+  .journey-ending {
+    font-size: clamp(2rem, 9vw, 3.6rem);
+  }
+}
+
+
+/* v2.2.1 measured text-flow corrections */
+/* Keep long evidence labels within their column across the 901–1728 desktop matrix. */
+@media (min-width: 901px) {
+  .capability-row__evidence strong {
+    max-width: 100%;
+    font-size: clamp(2.05rem, 3.65vw, 4rem);
+    line-height: .92;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  /* The work statement needs enough room to keep the conjunction attached to its verb. */
+  .work__display {
+    font-size: clamp(3.45rem, 6.75vw, 6.5rem);
+  }
+
+  .work__display > span {
+    white-space: nowrap;
+  }
+
+  /* Preserve the authored three-part AI statement on desktop; the mobile version stays fluid. */
+  .ai__display > span {
+    display: block;
+  }
+
+  .ai__display > span + span::before {
+    content: none;
+  }
+
+  html[lang="en"] .ai__display > span:last-child {
+    white-space: nowrap;
+  }
+
+  html[lang="de"] .journey-ending {
+    max-width: 19ch;
+    font-size: clamp(3.4rem, 7vw, 6.6rem);
+  }
+
+  html[lang="de"] .journey-ending > span:last-child {
+    white-space: nowrap;
+  }
+}
+
+/* The first desktop layout immediately above 900px is the tightest two-column state. */
+@media (min-width: 901px) and (max-width: 1180px) {
+  html[lang="de"] .languages__display,
+  html[lang="ru"] .languages__display {
+    font-size: clamp(3.25rem, 5.8vw, 4.15rem);
+  }
+
+  html[lang="ru"] .capabilities__display,
+  html[lang="ru"] .work__display {
+    font-size: clamp(3.3rem, 6.9vw, 5rem);
+  }
+}
+
+@media (max-width: 900px) {
+  /* Phrase-level nowrap prevents weak conjunctions from becoming their own display line. */
+  .work__display > span {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 560px) {
+  .work__display {
+    font-size: clamp(2rem, 9vw, 4rem);
+    line-height: .9;
+  }
+
+  .digital-card h4 {
+    font-size: clamp(1.45rem, 6.4vw, 2.5rem);
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  .workflow-step h3 {
+    font-size: clamp(1.9rem, 9vw, 3.65rem);
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  .contact__display {
+    font-size: clamp(2.75rem, 10vw, 4.5rem);
+  }
+
+  .work__closing > div span {
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  html[lang="de"] .journey-ending {
+    max-width: 100%;
+    font-size: clamp(1.85rem, 8.4vw, 3.4rem);
+  }
+
+  html[lang="de"] .journey-ending > span:last-child {
+    white-space: nowrap;
+  }
+}
+
+
+/* v2.2 measured text-flow corrections */
+.work__display,
+.digital-card h4,
+.workflow-step h3,
+.contact__display,
+.work__closing > div,
+.work__closing > div span,
+.journey-ending,
+.journey-ending span,
+.capability-row__evidence strong,
+.capabilities__display,
+.languages__display {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+@media (max-width: 900px) {
+  .work__display {
+    font-size: clamp(2rem, 9.2vw, 4.2rem);
+  }
+
+  .digital-card h4 {
+    font-size: clamp(1.45rem, 6.5vw, 2.8rem);
+  }
+
+  html[lang="ru"] .workflow-step h3 {
+    font-size: clamp(1.75rem, 8vw, 3.4rem);
+  }
+}
+
+@media (max-width: 560px) {
+  html[lang="de"] .journey-ending {
+    font-size: clamp(1.82rem, 8.5vw, 3.2rem);
+  }
+
+  html[lang="ru"] .contact__display {
+    font-size: clamp(2.55rem, 12.5vw, 4rem);
+  }
+}
+
+@media (min-width: 901px) {
+  html[lang="de"] .capability-row__evidence strong {
+    font-size: clamp(2.2rem, 4.1vw, 4rem);
+  }
+
+  html[lang="ru"] .capability-row__evidence strong {
+    font-size: clamp(2.2rem, 4.7vw, 4.6rem);
+  }
+
+  html[lang="de"] .journey-ending {
+    max-width: 15ch;
+  }
+
+  html[lang="de"] .journey-ending > span,
+  html[lang="en"] .ai__display > span:last-child {
+    white-space: nowrap;
+  }
+
+  html[lang="de"] .work__display,
+  html[lang="en"] .work__display {
+    font-size: clamp(3.6rem, 6.5vw, 6.25rem);
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1024px) {
+  html[lang="de"] .languages__display,
+  html[lang="ru"] .languages__display {
+    font-size: 3.35rem;
+  }
+
+  html[lang="ru"] .capabilities__display {
+    font-size: 3.4rem;
+  }
+
+  html[lang="ru"] .work__display {
+    font-size: 3.35rem;
+  }
+}
+
+
+/* v2.2.2 residual text-flow corrections */
+@media (min-width: 901px) {
+  /* Measured against the real work column: keep conjunction+verb phrases intact without overflow. */
+  .work__display {
+    font-size: clamp(3.35rem, 6.4vw, 6.2rem);
+  }
+
+  html[lang="de"] .capability-row__evidence strong {
+    font-size: clamp(2.05rem, 3.35vw, 3.6rem);
+  }
+
+  html[lang="en"] .ai__display {
+    font-size: clamp(3.55rem, 7.7vw, 7.45rem);
+  }
+
+  html[lang="en"] .ai__display > span:nth-child(2),
+  html[lang="en"] .ai__display > span:last-child,
+  html[lang="ru"] .ai__display > span:nth-child(2) {
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1180px) {
+  html[lang="ru"] .capabilities__display {
+    font-size: clamp(3.15rem, 6.2vw, 4.6rem);
+  }
+
+  html[lang="ru"] .work__display {
+    font-size: clamp(3.05rem, 6vw, 4.45rem);
+  }
+}
+
+@media (max-width: 560px) {
+  html[lang="ru"] .contact__display {
+    font-size: clamp(2.5rem, 9.2vw, 4.2rem);
+  }
+
+  html[lang="de"] .work__closing > div {
+    font-size: clamp(1.9rem, 8.5vw, 3.3rem);
+  }
+}
+
+
+/* v2.2.3 final measured overflow correction */
+@media (min-width: 901px) {
+  /* Final measured reduction: phrase-width overflow was only ~2–4%. */
+  .work__display {
+    font-size: clamp(3.25rem, 6.15vw, 6rem);
+  }
+
+  html[lang="ru"] .ai__display {
+    font-size: clamp(3.45rem, 8vw, 7.6rem);
+  }
+
+  html[lang="de"] .capability-row__evidence strong {
+    font-size: clamp(2.05rem, 3.25vw, 3.5rem);
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1180px) {
+  html[lang="ru"] .languages__display {
+    font-size: clamp(3.2rem, 5.7vw, 4.05rem);
+  }
+}
+
+
+/* v2.2.4 DE/EN work phrase fit */
+@media (min-width: 901px) {
+  /* Measured fit for the semantic conjunction+verb phrase on desktop columns. */
+  html[lang="de"] .work__display,
+  html[lang="en"] .work__display {
+    font-size: clamp(3.12rem, 5.92vw, 5.8rem);
+  }
+}
+
+
+/* v2.2.5 work display geometry correction */
+@media (min-width: 901px) {
+  /* 12ch scaled with the font and kept the semantic phrase permanently ~3% too narrow.
+     13ch fixes the actual geometry while preserving the editorial line composition. */
+  html[lang="de"] .work__display,
+  html[lang="en"] .work__display {
+    max-width: 13ch;
+    min-width: 0;
+    font-size: clamp(3.25rem, 6.15vw, 6rem);
+  }
+}
