@@ -1,14 +1,12 @@
 # CV v3 — Final QA record
 
-Release candidate head: `096c1c8b1f9a33fde5b65c91dc6eca1123982a2f`
+Release candidate branch: `cv-v3-professional-redesign`
 
 ## Automated gate
 
-GitHub Actions run: `34528482127` (`Build Portfolio CV PDFs`)
+The permanent `Build Portfolio CV PDFs` release gate must be green on the release-candidate head.
 
-Result: PASS.
-
-The permanent release gate rebuilt the committed DE / EN / RU PDFs from source and verified:
+It rebuilds the committed DE / EN / RU PDFs from source and verifies:
 
 - exactly one page per locale;
 - selectable ATS text;
