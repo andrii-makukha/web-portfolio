@@ -10,6 +10,11 @@ fs.mkdirSync(OUTPUT, { recursive: true });
 const locales = ["de", "en", "ru"];
 const viewports = [
   { name: "desktop", width: 1440, height: 900 },
+  { name: "macbook14", width: 1512, height: 982 },
+  { name: "macbook16", width: 1728, height: 1117 },
+  { name: "macbook16Browser", width: 1728, height: 960 },
+  { name: "fullHd", width: 1920, height: 1080 },
+  { name: "qhd", width: 2560, height: 1440 },
   { name: "laptop", width: 1280, height: 800 },
   { name: "tablet", width: 1024, height: 900 },
   { name: "landscape", width: 844, height: 390, hasTouch: true },
@@ -257,33 +262,80 @@ async function runPage(browser, locale, viewport) {
 
     const headlineOverflow = await page.evaluate(() => {
       const selectors = [
+        ".opening__name",
+        ".identity__title",
         ".profile__display",
         ".foundation__display",
         ".capabilities__display",
         ".ai__display",
         ".work__display",
         ".journey__display",
-        ".languages__display"
+        ".languages__display",
+        ".contact__display",
+        ".foundation__closing",
+        ".capabilities__bridge",
+        ".ai-formula",
+        ".work__closing > div",
+        ".journey-ending",
+        ".case-study__title",
+        ".workflow-step h3",
+        ".work-case__story h3",
+        ".symbioz-grid__story h3",
+        ".digital-work__intro h3",
+        ".digital-card h4",
+        ".journey-event__content h3",
+        ".journey-education > h3",
+        ".language-row strong"
       ];
-      return selectors.flatMap(selector => {
-        const headline = document.querySelector(selector);
-        if (!headline) return [];
+      return selectors.flatMap(selector => [...document.querySelectorAll(selector)].flatMap((headline, elementIndex) => {
         const available = headline.clientWidth;
-        return [...headline.querySelectorAll(":scope > span")]
+        const directLines = [...headline.querySelectorAll(":scope > span")];
+        const measuredNodes = directLines.length ? directLines : [headline];
+        return measuredNodes
           .map((line, index) => ({
             selector,
+            elementIndex,
             index,
-            text: (line.textContent || "").trim(),
+            text: (line.textContent || "").trim().replace(/\s+/g, " ").slice(0, 120),
             available,
             scrollWidth: line.scrollWidth,
             clientWidth: line.clientWidth
           }))
           .filter(line => line.scrollWidth > available + 2);
-      });
+      }));
     });
     if (headlineOverflow.length) {
       recordFailure(scope, "Editorial headline line exceeds its column", headlineOverflow);
     }
+  }
+
+  const clippedViewportContent = await page.evaluate(() => {
+    const container = document.querySelector(".opening");
+    if (!container) return [];
+    const outer = container.getBoundingClientRect();
+    const selectors = [".opening__eyebrow", ".opening__name-wrap", ".opening__bottom"];
+    return selectors.flatMap(selector => [...container.querySelectorAll(selector)].map(el => {
+      const box = el.getBoundingClientRect();
+      return {
+        selector,
+        left: Math.round(box.left),
+        right: Math.round(box.right),
+        top: Math.round(box.top),
+        bottom: Math.round(box.bottom),
+        containerLeft: Math.round(outer.left),
+        containerRight: Math.round(outer.right),
+        containerTop: Math.round(outer.top),
+        containerBottom: Math.round(outer.bottom)
+      };
+    })).filter(item =>
+      item.left < item.containerLeft - 2 ||
+      item.right > item.containerRight + 2 ||
+      item.top < item.containerTop - 2 ||
+      item.bottom > item.containerBottom + 2
+    );
+  });
+  if (clippedViewportContent.length) {
+    recordFailure(scope, "Viewport-locked opening content would be clipped", clippedViewportContent);
   }
 
   if (viewport.width <= 1180) {

@@ -5,8 +5,9 @@ The automated browser QA is a release gate for the multilingual portfolio, not a
 It currently covers:
 
 - DE / EN / RU production pages
-- desktop, laptop, tablet, landscape and mobile viewports
-- horizontal overflow and editorial headline containment
+- desktop, laptop, tablet, landscape and mobile viewports, plus MacBook 14 (1512×982), MacBook 16 (1728×1117 and 1728×960), Full HD (1920×1080) and QHD (2560×1440) wide-screen checks
+- horizontal overflow, viewport-locked vertical clipping and broad editorial headline containment
+- all matching editorial/title instances, not only the first element for a selector
 - dedicated whole-word editorial typography regression checks at 320 px and 360 px across DE / EN / RU
 - chapter state and navigation theme in both scroll directions
 - responsive menu behaviour, focus handling and focus trapping
@@ -33,3 +34,7 @@ Identity portrait baseline: the current production portrait is expected to retai
 Verified portrait source: `assets/portrait.avif` is 40,146 bytes with SHA-256 `3965392de7cc4f0361a3406e1b6ff8c9622e988c65d8460223a1a8b8dcd1379d`.
 
 A release candidate is not considered ready while any gate reports a failure.
+
+Wide-screen fluid sizing rule: `vw`-driven `clamp()` values stop growing after the 1536px viewport layout ceiling, so typography and layout rhythm cannot continue scaling after the 1440px content columns have stopped growing. MacBook 16, Full HD and QHD containment checks are release-blocking regressions.
+
+Measured long-string regressions include German closing copy, DE/RU Journey titles and DE/RU AI workflow titles; their sizing is explicitly kept inside the available content column rather than relying on hidden overflow.
