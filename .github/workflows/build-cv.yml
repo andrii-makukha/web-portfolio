@@ -14,6 +14,8 @@ on:
       - "assets/portrait.avif"
       - "scripts/build_cv.py"
       - "scripts/build_cv_v3.py"
+      - "docs/CV_V3_DESIGN.md"
+      - "docs/CV_V3_QA.md"
       - ".github/workflows/build-cv.yml"
 
 permissions:
