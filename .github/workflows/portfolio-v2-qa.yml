@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - portfolio-v2
+      - main
     paths:
       - "README.md"
       - "index.html"
@@ -23,7 +24,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: portfolio-v2-browser-qa
+  group: portfolio-v2-browser-qa-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
