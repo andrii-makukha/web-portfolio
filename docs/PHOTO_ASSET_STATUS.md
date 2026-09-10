@@ -1,1 +1,0 @@
-Binary portrait asset replacement is being applied directly to assets/portrait.webp. This note exists only to keep the change traceable during QA and may be removed before release.
