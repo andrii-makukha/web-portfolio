@@ -106,7 +106,7 @@ Screenshots, JSON reports and CV visual/text QA outputs are stored as GitHub Act
 
 GitHub Pages is the intended public host. Automatic Vercel Git deployments are disabled in `vercel.json` to avoid an unused parallel deployment path.
 
-Both permanent quality workflows support the release branch and `main`. Changes that affect the public release surface are expected to pass the browser QA gate before release. CV source changes rebuild and verify the locale-specific PDF files reproducibly.
+Both permanent quality workflows support the release branch and `main`. Changes that affect the public release surface are expected to pass the browser QA gate before release. CV source changes rebuild and verify the locale-specific PDF files reproducibly. A release candidate is considered ready only when the browser QA and CV reproducibility gates are both green for the same release state.
 
 ## AI transparency
 
