@@ -1,6 +1,7 @@
 name: Portfolio v2 Browser QA
 
 # Includes wide-screen responsive hardening and multilingual text-flow stress coverage.
+# v2.2.1 reruns the complete matrix after measured typography corrections.
 on:
   push:
     branches:
