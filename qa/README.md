@@ -13,6 +13,7 @@ It currently covers:
 - image loading, console errors, failed requests and external runtime requests
 - cumulative layout shift and lightweight performance budgets
 - reduced-motion and no-JavaScript fallbacks
+- no-JavaScript Opening visibility, usable language navigation and removal of the non-functional mobile menu toggle
 - aggressive bidirectional scrolling
 - AI workflow and Journey state synchronisation
 - resize / orientation stress
@@ -20,8 +21,10 @@ It currently covers:
 - axe-core WCAG A/AA checks
 - release-facing external link checks
 - curated live-project links: a public Live link is kept only after visual release review
-- social-preview metadata and a 1200 × 630 portfolio preview image as part of the release surface
+- social-preview metadata, `summary_large_image` cards and a 1200 × 630 portfolio preview image
+- local SVG favicon availability on all locale pages
 - multilingual CV integration: locale-specific DE / EN / RU PDF download links, valid PDF responses and no stale placeholders
+- active CV calls-to-action that are not styled as disabled/quiet links
 - reproducible one-page ATS-friendly CV generation with visual PNG and extracted-text QA artifacts
 
 A release candidate is not considered ready while any gate reports a failure.
