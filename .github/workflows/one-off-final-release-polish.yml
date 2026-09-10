@@ -23,7 +23,9 @@ jobs:
           sudo apt-get install -y fonts-noto-core poppler-utils
           python -m pip install reportlab==5.0.1
       - name: Apply final polish
-        run: python scripts/final_release_polish.py
+        run: |
+          python scripts/final_release_polish.py
+          git checkout -- .github/workflows/build-cv.yml
       - name: Regenerate and verify CVs
         run: |
           python scripts/build_cv.py
@@ -33,7 +35,7 @@ jobs:
           done
       - name: Commit polished release candidate
         run: |
-          rm .github/workflows/one-off-final-release-polish.yml scripts/final_release_polish.py
+          rm scripts/final_release_polish.py
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
