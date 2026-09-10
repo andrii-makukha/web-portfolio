@@ -7,6 +7,7 @@ It currently covers:
 - DE / EN / RU production pages
 - desktop, laptop, tablet, landscape and mobile viewports, plus MacBook 14 (1512×982), MacBook 16 (1728×1117 and 1728×960), Full HD (1920×1080) and QHD (2560×1440) wide-screen checks
 - horizontal overflow, viewport-locked vertical clipping and broad editorial headline containment
+- all matching editorial/title instances, not only the first element for a selector
 - dedicated whole-word editorial typography regression checks at 320 px and 360 px across DE / EN / RU
 - chapter state and navigation theme in both scroll directions
 - responsive menu behaviour, focus handling and focus trapping
@@ -35,3 +36,5 @@ Verified portrait source: `assets/portrait.avif` is 40,146 bytes with SHA-256 `3
 A release candidate is not considered ready while any gate reports a failure.
 
 Wide-screen fluid sizing rule: `vw`-driven `clamp()` values stop growing after the 1536px viewport layout ceiling, so typography and layout rhythm cannot continue scaling after the 1440px content columns have stopped growing. MacBook 16, Full HD and QHD containment checks are release-blocking regressions.
+
+Measured long-string regressions include German closing copy and DE/RU Journey titles; their sizing is explicitly kept inside the available content column rather than relying on hidden overflow.
