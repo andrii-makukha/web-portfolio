@@ -1,0 +1,84 @@
+name: Portfolio v2 Mobile Typography Fix
+
+on:
+  push:
+    branches:
+      - portfolio-v2
+    paths:
+      - .github/workflows/portfolio-v2-mobile-typography-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout portfolio-v2
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2
+      - name: Apply compact-view editorial typography fix
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('css/v2.css')
+          css = path.read_text(encoding='utf-8')
+          marker = '/* Compact-view whole-word typography */'
+          if marker in css:
+              print('Typography fix already present; no change needed.')
+              raise SystemExit(0)
+
+          css += r'''
+
+/* Compact-view whole-word typography */
+@media (max-width: 560px) {
+  .profile__display,
+  .foundation__display,
+  .capabilities__display,
+  .ai__display,
+  .work__display,
+  .journey__display,
+  .languages__display,
+  .workflow-step h3,
+  .capability-row__evidence strong,
+  .capability-row__result h3,
+  .work-case__story h3,
+  .symbioz-grid__story h3,
+  .case-study__title,
+  .journey-event__content h3,
+  .digital-card h4,
+  .journey-education > h3 {
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  html[lang="de"] .languages__display,
+  html[lang="en"] .languages__display {
+    font-size: clamp(1.95rem, 9vw, 3.6rem);
+  }
+
+  html[lang="ru"] .capabilities__display,
+  html[lang="ru"] .work__display,
+  html[lang="ru"] .languages__display {
+    font-size: clamp(1.85rem, 9vw, 3.5rem);
+  }
+}
+'''
+          path.write_text(css, encoding='utf-8')
+          PY
+      - name: Commit typography fix
+        shell: bash
+        run: |
+          if git diff --quiet -- css/v2.css; then
+            echo "No CSS change to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add css/v2.css
+          git commit -m "Fix mobile editorial word breaks"
+          git push origin HEAD:portfolio-v2
