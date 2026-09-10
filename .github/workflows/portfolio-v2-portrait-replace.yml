@@ -1,0 +1,61 @@
+name: Portfolio v2 Portrait Replace
+
+on:
+  push:
+    branches:
+      - portfolio-v2
+    paths:
+      - .github/workflows/portfolio-v2-portrait-replace.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2
+      - name: Download selected portrait source
+        run: |
+          curl -L --fail --retry 3 -o /tmp/portrait.jpg "https://sdmntprcentralus.oaiusercontent.com/files/00000000-f894-822f-8520-718d50fab71f/raw"
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('/tmp/portrait.jpg')
+          if not p.exists() or p.stat().st_size < 50000:
+              raise SystemExit('portrait download failed')
+          PY
+      - name: Prepare optimized portrait
+        run: |
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          src = Path('/tmp/portrait.jpg')
+          out = Path('assets/portrait.webp')
+          img = Image.open(src).convert('RGB')
+          img.thumbnail((1122, 1402), Image.Resampling.LANCZOS)
+          img.save(out, 'WEBP', quality=92, method=6)
+          PY
+      - name: Update portrait metadata and presentation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for name in ('de/index.html','en/index.html','ru/index.html'):
+              p=Path(name)
+              s=p.read_text(encoding='utf-8')
+              s=s.replace('width="720" height="1080" loading="lazy"', 'width="1122" height="1402" loading="lazy"')
+              p.write_text(s, encoding='utf-8')
+          p=Path('css/v2.css')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('object-position: center 30%;\n  display: block;\n  filter: saturate(.8) contrast(1.03);', 'object-position: center 31%;\n  display: block;\n  filter: saturate(.78) brightness(.86) contrast(1.05);')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit portrait integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/portrait.webp css/v2.css de/index.html en/index.html ru/index.html
+          git commit -m "Integrate new studio portrait" || exit 0
+          git push origin HEAD:portfolio-v2
