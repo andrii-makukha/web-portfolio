@@ -30,4 +30,6 @@ It currently covers:
 
 Identity portrait baseline: the current production portrait is expected to retain at least 1122 × 1402 source pixels. Lower-resolution replacements must fail the browser QA gate.
 
+Verified portrait source: `assets/portrait.avif` is 40,146 bytes with SHA-256 `3965392de7cc4f0361a3406e1b6ff8c9622e988c65d8460223a1a8b8dcd1379d`.
+
 A release candidate is not considered ready while any gate reports a failure.
