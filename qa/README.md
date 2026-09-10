@@ -34,4 +34,4 @@ Verified portrait source: `assets/portrait.avif` is 40,146 bytes with SHA-256 `3
 
 A release candidate is not considered ready while any gate reports a failure.
 
-Wide-screen fluid sizing rule: `vw`-driven `clamp()` values stop growing after the 1536px viewport layout ceiling (1440px content canvas + 48px gutters per side), so typography cannot continue scaling after the content columns have stopped growing.
+Wide-screen fluid sizing rule: `vw`-driven `clamp()` values stop growing after the 1536px viewport layout ceiling, so typography and layout rhythm cannot continue scaling after the 1440px content columns have stopped growing. MacBook 16, Full HD and QHD containment checks are release-blocking regressions.
