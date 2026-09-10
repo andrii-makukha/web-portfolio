@@ -3875,3 +3875,16 @@ main h4,
     font-size: clamp(3.12rem, 5.92vw, 5.8rem);
   }
 }
+
+
+/* v2.2.5 work display geometry correction */
+@media (min-width: 901px) {
+  /* 12ch scaled with the font and kept the semantic phrase permanently ~3% too narrow.
+     13ch fixes the actual geometry while preserving the editorial line composition. */
+  html[lang="de"] .work__display,
+  html[lang="en"] .work__display {
+    max-width: 13ch;
+    min-width: 0;
+    font-size: clamp(3.25rem, 6.15vw, 6rem);
+  }
+}
