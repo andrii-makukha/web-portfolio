@@ -70,7 +70,7 @@ The repository contains locale-specific one-page CV PDFs:
 - English — `assets/cv/andrii-makukha-en.pdf`
 - Russian — `assets/cv/andrii-makukha-ru.pdf`
 
-The CVs are generated reproducibly from `scripts/build_cv.py`. The CV workflow verifies one-page output, extractable ATS text and creates PNG/text QA artifacts before generated PDFs are committed.
+The CVs are generated reproducibly from `scripts/build_cv.py`. The CV workflow verifies one-page output and extractable ATS text, then creates PNG/text QA artifacts before generated PDFs are committed.
 
 ## Browser QA
 
@@ -106,16 +106,12 @@ Screenshots, JSON reports and CV visual/text QA outputs are stored as GitHub Act
 
 GitHub Pages is the intended public host. Automatic Vercel Git deployments are disabled in `vercel.json` to avoid an unused parallel deployment path.
 
-The `portfolio-v2` branch is kept separate from `main` until explicit owner approval. The release pull request is intentionally draft; the preferred release strategy is a squash merge so the development history becomes one clean Portfolio v2 release commit on `main`.
+Both permanent quality workflows support the release branch and `main`. Changes that affect the public release surface are expected to pass the browser QA gate before release. CV source changes rebuild and verify the locale-specific PDF files reproducibly.
 
 ## AI transparency
 
 AI is used as a working tool for research, exploration, implementation assistance, iteration and quality review. Direction, factual decisions, evaluation and final responsibility remain human-led.
 
 The portfolio does not present AI-assisted implementation as professional software-development experience.
-
-## Status
-
-**Release candidate — quality gates passing. Awaiting owner approval for merge.**
 
 © 2026 Andrii Makukha
