@@ -1,5 +1,6 @@
 name: Build Portfolio CV PDFs
 
+# Release gate: rebuild from source and compare ATS text plus rendered output.
 on:
   workflow_dispatch:
   push:
