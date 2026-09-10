@@ -287,15 +287,14 @@ async function runPage(browser, locale, viewport) {
         ".journey-education > h3",
         ".language-row strong"
       ];
-      return selectors.flatMap(selector => {
-        const headline = document.querySelector(selector);
-        if (!headline) return [];
+      return selectors.flatMap(selector => [...document.querySelectorAll(selector)].flatMap((headline, elementIndex) => {
         const available = headline.clientWidth;
         const directLines = [...headline.querySelectorAll(":scope > span")];
         const measuredNodes = directLines.length ? directLines : [headline];
         return measuredNodes
           .map((line, index) => ({
             selector,
+            elementIndex,
             index,
             text: (line.textContent || "").trim().replace(/\s+/g, " ").slice(0, 120),
             available,
@@ -303,27 +302,40 @@ async function runPage(browser, locale, viewport) {
             clientWidth: line.clientWidth
           }))
           .filter(line => line.scrollWidth > available + 2);
-      });
+      }));
     });
     if (headlineOverflow.length) {
       recordFailure(scope, "Editorial headline line exceeds its column", headlineOverflow);
     }
   }
 
-  const clippedViewportContainers = await page.evaluate(() => {
-    const selectors = [".opening"];
-    return selectors.flatMap(selector => [...document.querySelectorAll(selector)]).map(el => ({
-      selector: el.className || el.tagName,
-      clientWidth: el.clientWidth,
-      scrollWidth: el.scrollWidth,
-      clientHeight: el.clientHeight,
-      scrollHeight: el.scrollHeight,
-      overflowX: getComputedStyle(el).overflowX,
-      overflowY: getComputedStyle(el).overflowY
-    })).filter(item => item.scrollWidth > item.clientWidth + 2 || item.scrollHeight > item.clientHeight + 2);
+  const clippedViewportContent = await page.evaluate(() => {
+    const container = document.querySelector(".opening");
+    if (!container) return [];
+    const outer = container.getBoundingClientRect();
+    const selectors = [".opening__eyebrow", ".opening__name-wrap", ".opening__bottom"];
+    return selectors.flatMap(selector => [...container.querySelectorAll(selector)].map(el => {
+      const box = el.getBoundingClientRect();
+      return {
+        selector,
+        left: Math.round(box.left),
+        right: Math.round(box.right),
+        top: Math.round(box.top),
+        bottom: Math.round(box.bottom),
+        containerLeft: Math.round(outer.left),
+        containerRight: Math.round(outer.right),
+        containerTop: Math.round(outer.top),
+        containerBottom: Math.round(outer.bottom)
+      };
+    })).filter(item =>
+      item.left < item.containerLeft - 2 ||
+      item.right > item.containerRight + 2 ||
+      item.top < item.containerTop - 2 ||
+      item.bottom > item.containerBottom + 2
+    );
   });
-  if (clippedViewportContainers.length) {
-    recordFailure(scope, "Viewport-locked container would clip its content", clippedViewportContainers);
+  if (clippedViewportContent.length) {
+    recordFailure(scope, "Viewport-locked opening content would be clipped", clippedViewportContent);
   }
 
   if (viewport.width <= 1180) {
