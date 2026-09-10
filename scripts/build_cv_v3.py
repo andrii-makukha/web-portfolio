@@ -50,11 +50,13 @@ CONTACT = {
 }
 
 DE = {
+    "locale": "de",
     "filename": "andrii-makukha-de-v3.pdf",
     "title": "Andrii Makukha - Lebenslauf",
     "kicker": "BERUFLICHES PROFIL",
     "tagline": "Führung · Organisation · Digitale Arbeitsweisen & KI",
     "location": "Bernau am Chiemsee · Deutschland",
+    "footer": "Lebenslauf · 2026",
     "sections": {
         "profile": "PROFIL",
         "experience": "BERUFSERFAHRUNG",
@@ -131,6 +133,174 @@ DE = {
     "languages": "Deutsch B2 · Ukrainisch Muttersprache · Russisch Muttersprache",
 }
 
+EN = {
+    "locale": "en",
+    "filename": "andrii-makukha-en-v3.pdf",
+    "title": "Andrii Makukha - CV",
+    "kicker": "PROFESSIONAL PROFILE",
+    "tagline": "Leadership · Organisation · Digital Workflows & AI",
+    "location": "Bernau am Chiemsee · Germany",
+    "footer": "Curriculum Vitae · 2026",
+    "sections": {
+        "profile": "PROFILE",
+        "experience": "PROFESSIONAL EXPERIENCE",
+        "projects": "SELECTED PROJECTS",
+        "education": "EDUCATION & TRAINING",
+        "capabilities": "CAPABILITIES",
+        "languages": "LANGUAGES",
+    },
+    "profile": (
+        "Professional background in music, leadership and organisation. As a first trumpet player, "
+        "section leader and founder of an eight-person band, I developed precision, responsibility "
+        "and team coordination under performance pressure. Today I combine that experience with web "
+        "fundamentals, digital tools and AI-assisted workflows."
+    ),
+    "experience": [
+        (
+            "Hardy Orchestra",
+            "First Trumpet & Section Leader",
+            "2017-2022",
+            "Led the trumpet section in complex productions, including Rammstein-Symphonien; "
+            "precision and resilience in live performance.",
+        ),
+        (
+            "Symbioz Band",
+            "Founder & Band Leader",
+            "09/2019-02/2022",
+            "Led 8 musicians and organised 80+ events. Responsible for project planning, budgets, "
+            "client acquisition, conflict management and quality assurance.",
+        ),
+        ("Hospitality / Food Service", "Courier / Delivery Driver", "2022-2024", ""),
+    ],
+    "projects": [
+        (
+            "ReSchuhe",
+            "Concept · brand · digital product",
+            "2026 · in development",
+            "Business planning, brand development, product structure and AI-assisted execution; "
+            "website and digital customer journey in development.",
+        ),
+        (
+            "Portfolio v2",
+            "Interactive professional profile",
+            "2026",
+            "Concept, structure and design direction defined independently; AI used for research, "
+            "technical implementation and quality assurance.",
+        ),
+    ],
+    "education": [
+        (
+            "Fullstack JavaScript (Certificate)",
+            "Hillel IT School",
+            "2024-2025",
+            "JavaScript (ES6+), frontend/backend fundamentals, React & Node.js (basic), REST APIs, "
+            "database fundamentals, Git.",
+        ),
+        ("Bachelor of Music Arts", "Odessa Music Academy", "2017-2021", ""),
+        (
+            "Vocational Music Education",
+            "V.S. Kosenko Music School, Zhytomyr",
+            "2013-2017",
+            "",
+        ),
+    ],
+    "capabilities": [
+        ("Leadership & responsibility", "Led 8 musicians · led a trumpet section"),
+        ("Organisation & planning", "80+ events · project planning · budgets"),
+        ("Communication", "Client acquisition · team coordination · conflict management"),
+        (
+            "Digital work & learning",
+            "Web fundamentals · information research · AI-assisted workflows",
+        ),
+    ],
+    "languages": "German B2 · Ukrainian native · Russian native",
+}
+
+RU = {
+    "locale": "ru",
+    "filename": "andrii-makukha-ru-v3.pdf",
+    "title": "Andrii Makukha - Резюме",
+    "kicker": "ПРОФЕССИОНАЛЬНЫЙ ПРОФИЛЬ",
+    "tagline": "Руководство · Организация · Цифровые процессы и ИИ",
+    "location": "Bernau am Chiemsee · Германия",
+    "footer": "Резюме · 2026",
+    "sections": {
+        "profile": "ПРОФИЛЬ",
+        "experience": "ПРОФЕССИОНАЛЬНЫЙ ОПЫТ",
+        "projects": "ИЗБРАННЫЕ ПРОЕКТЫ",
+        "education": "ОБРАЗОВАНИЕ И ОБУЧЕНИЕ",
+        "capabilities": "КОМПЕТЕНЦИИ",
+        "languages": "ЯЗЫКИ",
+    },
+    "profile": (
+        "Профессиональный опыт в музыке, руководстве и организации. Как первый трубач, руководитель "
+        "секции и основатель коллектива из восьми музыкантов я развил точность, ответственность и "
+        "навыки командной координации в условиях высокой сценической нагрузки. Сегодня я объединяю "
+        "этот опыт с веб-основами, цифровыми инструментами и рабочими процессами с поддержкой ИИ."
+    ),
+    "experience": [
+        (
+            "Hardy Orchestra",
+            "Первый трубач и руководитель секции",
+            "2017-2022",
+            "Руководство секцией труб в сложных постановках, включая Rammstein-Symphonien; "
+            "точность и выдержка в условиях живых выступлений.",
+        ),
+        (
+            "Symbioz Band",
+            "Основатель и руководитель",
+            "09/2019-02/2022",
+            "Руководство командой из 8 музыкантов и организация 80+ мероприятий. Ответственность за "
+            "проектное планирование, бюджет, привлечение клиентов, решение конфликтов и контроль качества.",
+        ),
+        ("Сфера общественного питания", "Курьер / водитель доставки", "2022-2024", ""),
+    ],
+    "projects": [
+        (
+            "ReSchuhe",
+            "Концепция · бренд · цифровой продукт",
+            "2026 · в разработке",
+            "Бизнес-планирование, развитие бренда, структура продукта и реализация с поддержкой ИИ; "
+            "сайт и цифровой путь клиента находятся в разработке.",
+        ),
+        (
+            "Portfolio v2",
+            "Интерактивный профессиональный профиль",
+            "2026",
+            "Концепция, структура и направление дизайна определены самостоятельно; ИИ используется "
+            "для исследования, технической реализации и контроля качества.",
+        ),
+    ],
+    "education": [
+        (
+            "Fullstack JavaScript (сертификат)",
+            "Hillel IT School",
+            "2024-2025",
+            "JavaScript (ES6+), основы фронтенда и бэкенда, React & Node.js (базовый уровень), "
+            "REST API, основы баз данных, Git.",
+        ),
+        ("Bachelor of Music Arts", "Музыкальная академия Одессы", "2017-2021", ""),
+        (
+            "Профессиональное музыкальное образование",
+            "Музыкальная школа им. В. С. Косенко, Житомир",
+            "2013-2017",
+            "",
+        ),
+    ],
+    "capabilities": [
+        ("Руководство и ответственность", "Команда из 8 музыкантов · руководство секцией труб"),
+        ("Организация и планирование", "80+ мероприятий · проектное планирование · бюджет"),
+        ("Коммуникация", "Привлечение клиентов · координация команды · решение конфликтов"),
+        (
+            "Цифровая работа и обучение",
+            "Веб-основы · поиск и анализ информации · процессы с поддержкой ИИ",
+        ),
+    ],
+    "languages": "Немецкий B2 · Украинский родной · Русский родной",
+}
+
+DATA = [DE, EN, RU]
+
 
 def wrap(text, font, size, max_width):
     words = text.split()
@@ -180,7 +350,8 @@ def section_label(c, number, title, y):
     line_x = MARGIN + 30 + title_w + 15
     c.setStrokeColor(LINE)
     c.setLineWidth(0.45)
-    c.line(line_x, y + 2.2, RIGHT, y + 2.2)
+    if line_x < RIGHT - 18:
+        c.line(line_x, y + 2.2, RIGHT, y + 2.2)
     return y - 19
 
 
@@ -212,10 +383,10 @@ def portrait_reader():
     image = Image.open(PORTRAIT).convert("RGB")
     width, height = image.size
 
-    # The source is the selected standing three-quarter portrait. For a CV we
-    # use a business-oriented upper-body crop while leaving the source untouched.
+    # The selected standing three-quarter portrait remains the single source.
+    # For the CV, use a business-oriented upper-body 4:5 crop without touching it.
     crop_w = int(width * 0.64)
-    crop_h = int(crop_w / 0.80)  # 4:5 application-photo ratio
+    crop_h = int(crop_w / 0.80)
     left = max(0, (width - crop_w) // 2)
     top = int(height * 0.025)
     bottom = min(height, top + crop_h)
@@ -265,7 +436,15 @@ def draw_header(c, data):
     path = c.beginPath()
     path.roundRect(photo_x, photo_y, photo_w, photo_h, 5.5)
     c.clipPath(path, stroke=0, fill=0)
-    c.drawImage(image_reader, photo_x, photo_y, width=photo_w, height=photo_h, preserveAspectRatio=False, mask="auto")
+    c.drawImage(
+        image_reader,
+        photo_x,
+        photo_y,
+        width=photo_w,
+        height=photo_h,
+        preserveAspectRatio=False,
+        mask="auto",
+    )
     c.restoreState()
     buffer.close()
 
@@ -350,15 +529,15 @@ def make(data):
     y -= 17
 
     if y < 35:
-        raise RuntimeError(f"CV content overflow: final y={y:.1f}")
+        raise RuntimeError(f"CV content overflow for {data['locale']}: final y={y:.1f}")
 
     c.setStrokeColor(LINE)
     c.setLineWidth(0.45)
     c.line(MARGIN, 31, RIGHT, 31)
     c.setFillColor(MUTED)
     c.setFont("Noto", 6.4)
-    c.drawString(MARGIN, 18, "Lebenslauf · 2026")
-    c.drawRightString(RIGHT, 18, "andrii-makukha.github.io/web-portfolio/")
+    c.drawString(MARGIN, 18, data["footer"])
+    c.drawRightString(RIGHT, 18, CONTACT["portfolio"])
     c.linkURL("https://" + CONTACT["portfolio"], (RIGHT - 185, 13, RIGHT, 25))
 
     c.save()
@@ -366,4 +545,5 @@ def make(data):
 
 
 if __name__ == "__main__":
-    make(DE)
+    for item in DATA:
+        make(item)
