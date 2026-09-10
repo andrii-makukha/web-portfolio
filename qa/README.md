@@ -7,6 +7,7 @@ It currently covers:
 - DE / EN / RU production pages
 - desktop, laptop, tablet, landscape and mobile viewports
 - horizontal overflow and editorial headline containment
+- dedicated whole-word editorial typography regression checks at 320 px and 360 px across DE / EN / RU
 - chapter state and navigation theme in both scroll directions
 - responsive menu behaviour, focus handling and focus trapping
 - language switching with hash preservation
