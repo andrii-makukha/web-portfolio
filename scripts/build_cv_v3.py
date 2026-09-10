@@ -66,23 +66,23 @@ DE = {
     "profile": (
         "Beruflicher Hintergrund in professioneller Musik, Führung und Organisation. "
         "Als erster Trompeter, Gruppenleiter und Gründer einer achtköpfigen Band habe ich "
-        "Präzision, Verantwortung und Koordination unter realem Leistungsdruck entwickelt. "
-        "Heute ergänze ich diese Erfahrung durch digitale Werkzeuge, Web-Grundlagen und "
-        "KI-gestützte Arbeitsweisen."
+        "Präzision, Verantwortung und Teamkoordination unter Leistungsdruck entwickelt. "
+        "Heute verbinde ich diese Erfahrung mit Web-Grundlagen, digitalen Werkzeugen und "
+        "KI-gestützten Arbeitsweisen."
     ),
     "experience": [
         (
             "Hardy Orchestra",
             "Erster Trompeter & Gruppenleiter",
             "2017-2022",
-            "Führung der Trompetensektion in komplexen Produktionen, u. a. Rammstein-Symphonien. "
+            "Führung der Trompetensektion in komplexen Produktionen, u. a. Rammstein-Symphonien; "
             "Präzision und Belastbarkeit bei Live-Auftritten.",
         ),
         (
             "Symbioz Band",
             "Gründer & Leiter",
             "09/2019-02/2022",
-            "Leitung von 8 Musikern; Organisation von 80+ Veranstaltungen. Verantwortung für "
+            "Leitung von 8 Musikern und Organisation von 80+ Veranstaltungen. Verantwortung für "
             "Projektplanung, Budget, Kundenakquise, Konfliktmanagement und Qualitätssicherung.",
         ),
         ("Gastronomie", "Kurier / Auslieferungsfahrer", "2022-2024", ""),
@@ -92,16 +92,15 @@ DE = {
             "ReSchuhe",
             "Konzept · Marke · digitales Produkt",
             "2026 · in Entwicklung",
-            "Geschäftsplanung, Markenentwicklung, Produktstruktur und KI-gestützte Umsetzung. "
-            "Öffentliche Website und digitale Nutzerführung sind noch in Entwicklung.",
+            "Geschäftsplanung, Markenentwicklung, Produktstruktur und KI-gestützte Umsetzung; "
+            "Website und digitale Nutzerführung in Entwicklung.",
         ),
         (
             "Portfolio v2",
             "Interaktives berufliches Profil",
             "2026",
-            "Konzept, Struktur, inhaltliche Ausrichtung und Designentscheidungen von mir bestimmt; "
-            "finale Prüfung ebenfalls bei mir. KI-Unterstützung für Recherche, Variantenfindung, "
-            "technische Umsetzung und Qualitätssicherung.",
+            "Konzept, Struktur und Designrichtung eigenverantwortlich definiert; KI für Recherche, "
+            "technische Umsetzung und Qualitätssicherung eingesetzt.",
         ),
     ],
     "education": [
@@ -150,7 +149,7 @@ def wrap(text, font, size, max_width):
     return lines
 
 
-def draw_wrapped(c, text, x, y, max_width, font="Noto", size=7.65, leading=9.7, color=GRAPH):
+def draw_wrapped(c, text, x, y, max_width, font="Noto", size=7.95, leading=10.05, color=GRAPH):
     c.setFillColor(color)
     c.setFont(font, size)
     for line in wrap(text, font, size, max_width):
@@ -170,40 +169,40 @@ def draw_spaced_text(c, text, x, y, font, size, color, char_space=0.0):
 
 def section_label(c, number, title, y):
     c.setFillColor(ACCENT)
-    c.setFont("NotoBold", 7.2)
+    c.setFont("NotoBold", 7.45)
     c.drawString(MARGIN, y, f"{number:02d}")
 
     c.setFillColor(INK)
-    c.setFont("NotoBold", 7.65)
+    c.setFont("NotoBold", 7.9)
     c.drawString(MARGIN + 30, y, title)
 
-    title_w = stringWidth(title, "NotoBold", 7.65)
+    title_w = stringWidth(title, "NotoBold", 7.9)
     line_x = MARGIN + 30 + title_w + 15
     c.setStrokeColor(LINE)
     c.setLineWidth(0.45)
     c.line(line_x, y + 2.2, RIGHT, y + 2.2)
-    return y - 18
+    return y - 19
 
 
 def draw_entry(c, org, role, date, body, y, compact=False):
     c.setFillColor(INK)
-    c.setFont("NotoBold", 9.0)
+    c.setFont("NotoBold", 9.35)
     c.drawString(MARGIN, y, org)
 
     c.setFillColor(MUTED)
-    c.setFont("Noto", 7.15)
+    c.setFont("Noto", 7.35)
     c.drawRightString(RIGHT, y + 0.4, date)
 
-    y -= 11.6
+    y -= 12
     c.setFillColor(NAVY)
-    c.setFont("NotoBold", 7.8)
+    c.setFont("NotoBold", 8.1)
     c.drawString(MARGIN, y, role)
-    y -= 10.2
+    y -= 10.6
 
     if body:
-        y = draw_wrapped(c, body, MARGIN, y, CONTENT_W, size=7.45, leading=9.35)
+        y = draw_wrapped(c, body, MARGIN, y, CONTENT_W, size=7.85, leading=9.85)
 
-    return y - (4.2 if compact else 5.8)
+    return y - (4.8 if compact else 6.2)
 
 
 def portrait_reader():
@@ -233,18 +232,18 @@ def portrait_reader():
 
 def draw_header(c, data):
     name_y = H - 55
-    draw_spaced_text(c, "ANDRII MAKUKHA", MARGIN, name_y, "NotoBold", 25.5, INK, 0.25)
+    draw_spaced_text(c, "ANDRII MAKUKHA", MARGIN, name_y, "NotoBold", 26.2, INK, 0.25)
 
     c.setFillColor(ACCENT)
-    c.setFont("NotoBold", 7.15)
+    c.setFont("NotoBold", 7.35)
     c.drawString(MARGIN, name_y - 22, data["kicker"])
 
     c.setFillColor(NAVY)
-    c.setFont("NotoBold", 9.0)
+    c.setFont("NotoBold", 9.35)
     c.drawString(MARGIN, name_y - 40, data["tagline"])
 
     c.setFillColor(GRAPH)
-    c.setFont("Noto", 7.05)
+    c.setFont("Noto", 7.35)
     c.drawString(MARGIN, name_y - 65, data["location"])
     c.drawString(MARGIN + 205, name_y - 65, CONTACT["phone"])
     c.drawString(MARGIN, name_y - 80, CONTACT["email"])
@@ -256,8 +255,8 @@ def draw_header(c, data):
     c.linkURL("https://" + CONTACT["github"], (MARGIN + 205, name_y - 84, MARGIN + 350, name_y - 74))
     c.linkURL("https://" + CONTACT["portfolio"], (MARGIN, name_y - 99, MARGIN + 210, name_y - 89))
 
-    photo_w = 94
-    photo_h = 117.5
+    photo_w = 96
+    photo_h = 120
     photo_x = RIGHT - photo_w
     photo_y = H - 43 - photo_h
 
@@ -274,17 +273,17 @@ def draw_header(c, data):
     c.setLineWidth(0.55)
     c.roundRect(photo_x, photo_y, photo_w, photo_h, 5.5, stroke=1, fill=0)
 
-    divider_y = H - 182
+    divider_y = H - 184
     c.setStrokeColor(LINE)
     c.setLineWidth(0.55)
     c.line(MARGIN, divider_y, RIGHT, divider_y)
-    return divider_y - 23
+    return divider_y - 24
 
 
 def draw_capabilities(c, items, y):
     gap = 22
     col_w = (CONTENT_W - gap) / 2
-    row_height = 38
+    row_height = 41
 
     for index, (title, evidence) in enumerate(items):
         col = index % 2
@@ -293,9 +292,9 @@ def draw_capabilities(c, items, y):
         item_y = y - row * row_height
 
         c.setFillColor(INK)
-        c.setFont("NotoBold", 7.85)
+        c.setFont("NotoBold", 8.0)
         c.drawString(x, item_y, title)
-        draw_wrapped(c, evidence, x, item_y - 11, col_w, size=7.15, leading=8.8, color=GRAPH)
+        draw_wrapped(c, evidence, x, item_y - 11.5, col_w, size=7.5, leading=9.1, color=GRAPH)
 
     return y - (2 * row_height) + 5
 
@@ -313,8 +312,8 @@ def make(data):
     y = draw_header(c, data)
 
     y = section_label(c, 1, data["sections"]["profile"], y)
-    y = draw_wrapped(c, data["profile"], MARGIN, y, CONTENT_W, size=7.8, leading=9.9)
-    y -= 10
+    y = draw_wrapped(c, data["profile"], MARGIN, y, CONTENT_W, size=8.15, leading=10.45)
+    y -= 11
 
     y = section_label(c, 2, data["sections"]["experience"], y)
     for item in data["experience"]:
@@ -327,28 +326,28 @@ def make(data):
     y = section_label(c, 4, data["sections"]["education"], y)
     for name, org, date, body in data["education"]:
         c.setFillColor(INK)
-        c.setFont("NotoBold", 8.45)
+        c.setFont("NotoBold", 8.8)
         c.drawString(MARGIN, y, name)
         c.setFillColor(MUTED)
-        c.setFont("Noto", 7.1)
+        c.setFont("Noto", 7.3)
         c.drawRightString(RIGHT, y + 0.2, date)
-        y -= 10.8
+        y -= 11.2
         c.setFillColor(GRAPH)
-        c.setFont("Noto", 7.35)
+        c.setFont("Noto", 7.6)
         c.drawString(MARGIN, y, org)
-        y -= 9.6
+        y -= 10
         if body:
-            y = draw_wrapped(c, body, MARGIN, y, CONTENT_W, size=7.2, leading=8.9)
-        y -= 4.4
+            y = draw_wrapped(c, body, MARGIN, y, CONTENT_W, size=7.55, leading=9.25)
+        y -= 5
 
     y = section_label(c, 5, data["sections"]["capabilities"], y)
     y = draw_capabilities(c, data["capabilities"], y)
 
     y = section_label(c, 6, data["sections"]["languages"], y)
     c.setFillColor(GRAPH)
-    c.setFont("Noto", 7.7)
+    c.setFont("Noto", 8.0)
     c.drawString(MARGIN, y, data["languages"])
-    y -= 16
+    y -= 17
 
     if y < 35:
         raise RuntimeError(f"CV content overflow: final y={y:.1f}")
@@ -357,7 +356,7 @@ def make(data):
     c.setLineWidth(0.45)
     c.line(MARGIN, 31, RIGHT, 31)
     c.setFillColor(MUTED)
-    c.setFont("Noto", 6.25)
+    c.setFont("Noto", 6.4)
     c.drawString(MARGIN, 18, "Lebenslauf · 2026")
     c.drawRightString(RIGHT, 18, "andrii-makukha.github.io/web-portfolio/")
     c.linkURL("https://" + CONTACT["portfolio"], (RIGHT - 185, 13, RIGHT, 25))
