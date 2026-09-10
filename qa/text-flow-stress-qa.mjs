@@ -7,8 +7,8 @@ const OUTPUT = path.resolve("qa-output");
 fs.mkdirSync(OUTPUT, { recursive: true });
 
 const locales = ["de", "en", "ru"];
-const widths = [320, 344, 360, 375, 390, 393, 412, 430, 480, 600, 768, 834, 900, 1024, 1280, 1440, 1728];
-const screenshotWidths = new Set([320, 360, 390, 430]);
+const widths = [320, 344, 360, 375, 390, 393, 412, 430, 480, 540, 560, 561, 575, 600, 640, 768, 834, 900, 901, 1024, 1180, 1181, 1280, 1440, 1536, 1728];
+const screenshotWidths = new Set([320, 360, 390, 430, 560, 600]);
 
 const headingSelectors = [
   ".opening__name",
@@ -74,6 +74,12 @@ function normalizeToken(token) {
   return token
     .toLocaleLowerCase()
     .replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
+}
+
+function hardWordSplits(splitTokens) {
+  // A visible hyphen is an intentional linguistic break opportunity. The stress gate
+  // blocks arbitrary mid-word fragmentation but does not penalize E-Mail / React-App style breaks.
+  return splitTokens.filter(({ token }) => !token.includes("-") && !token.includes("/"));
 }
 
 function pushFailure(locale, width, issue) {
@@ -216,6 +222,7 @@ try {
 
       for (const item of audit.headings) {
         const base = { selector: item.selector, index: item.index, text: item.text, lines: item.lines };
+        const hardSplits = hardWordSplits(item.splitTokens);
 
         if (item.scrollWidth > item.clientWidth + 2) {
           pushFailure(locale, width, { kind: "heading-internal-overflow", ...base, clientWidth: item.clientWidth, scrollWidth: item.scrollWidth });
@@ -223,8 +230,8 @@ try {
         if (item.rect.left < -1 || item.rect.right > audit.viewportWidth + 1 || item.outsideViewport.length) {
           pushFailure(locale, width, { kind: "heading-viewport-overflow", ...base, rect: item.rect, outsideViewport: item.outsideViewport });
         }
-        if (item.splitTokens.length) {
-          pushFailure(locale, width, { kind: "mid-word-wrap", ...base, splitTokens: item.splitTokens });
+        if (hardSplits.length) {
+          pushFailure(locale, width, { kind: "mid-word-wrap", ...base, splitTokens: hardSplits });
         }
 
         item.lines.forEach((line, lineIndex) => {
@@ -258,13 +265,14 @@ try {
 
       for (const item of audit.prose) {
         const base = { selector: item.selector, index: item.index, text: item.text, lines: item.lines };
-        if (item.scrollWidth > item.clientWidth + 2 || item.splitTokens.length || item.outsideViewport.length) {
+        const hardSplits = hardWordSplits(item.splitTokens);
+        if (item.scrollWidth > item.clientWidth + 2 || hardSplits.length || item.outsideViewport.length) {
           pushFailure(locale, width, {
             kind: "prose-flow-break",
             ...base,
             clientWidth: item.clientWidth,
             scrollWidth: item.scrollWidth,
-            splitTokens: item.splitTokens,
+            splitTokens: hardSplits,
             outsideViewport: item.outsideViewport
           });
         }
@@ -313,7 +321,7 @@ fs.writeFileSync(
 
 if (failures.length) {
   console.error(`FAIL: text-flow stress QA detected ${failures.length} blocking issue(s) and ${warnings.length} warning(s).`);
-  console.error(JSON.stringify(failures.slice(0, 80), null, 2));
+  console.error(JSON.stringify(failures.slice(0, 100), null, 2));
   process.exit(1);
 }
 
