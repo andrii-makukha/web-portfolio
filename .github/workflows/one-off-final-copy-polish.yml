@@ -1,0 +1,64 @@
+name: One-off final copy polish
+
+on:
+  push:
+    branches:
+      - portfolio-v2
+    paths:
+      - ".github/workflows/one-off-final-copy-polish.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  polish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply final native-language polish
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              Path('ru/index.html'): [
+                  (
+                      'Профессиональное портфолио Andrii Makukha: музыка, руководство, организация и современные цифровые инструменты и рабочие процессы с поддержкой ИИ.',
+                      'Профессиональное портфолио Andrii Makukha: музыка, руководство, организация, современные цифровые инструменты и рабочие процессы с поддержкой ИИ.'
+                  ),
+                  ('<a href="#contact">Контакт</a>', '<a href="#contact">Контакты</a>'),
+                  ('<a href="#contact">09 · Контакт</a>', '<a href="#contact">09 · Контакты</a>'),
+              ],
+              Path('de/index.html'): [
+                  (
+                      'Als erster Trompeter und Gruppenleiter gehörten hohe Präzision und Belastbarkeit in Live-Situationen zum Arbeitsalltag.',
+                      'Als erster Trompeter und Gruppenleiter musste ich auch bei Live-Auftritten präzise und belastbar arbeiten.'
+                  ),
+              ],
+              Path('en/index.html'): [
+                  (
+                      'As first trumpet and section leader, high precision and resilience in live situations were part of the work.',
+                      'As first trumpet and section leader, I had to work with precision and resilience in live-performance situations.'
+                  ),
+              ],
+          }
+
+          for path, pairs in replacements.items():
+              text = path.read_text(encoding='utf-8')
+              for old, new in pairs:
+                  count = text.count(old)
+                  if count == 0:
+                      raise SystemExit(f'Missing expected text in {path}: {old}')
+                  text = text.replace(old, new)
+              path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit polish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add de/index.html en/index.html ru/index.html
+          git diff --cached --check
+          git commit -m "Apply final native-language copy polish"
+          git push origin HEAD:portfolio-v2
