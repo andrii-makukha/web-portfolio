@@ -44,3 +44,5 @@ Measured long-string regressions include German closing copy, DE/RU Journey titl
 Final text-flow calibration is measured against the full 320–1728 px matrix: semantic phrase grouping is preserved first, then locale-specific font sizing is adjusted only when the real rendered phrase exceeds its available column.
 
 The DE/EN Work conjunction+verb phrase is also measured as an indivisible semantic unit so it stays visually intentional without clipping or a stranded conjunction. The display container uses a measured 13ch desktop width instead of shrinking the type to compensate for a 12ch geometry constraint.
+
+Release verification must be rerun after all temporary patch tooling is removed so the green result always represents the clean branch state intended for review and merge.
