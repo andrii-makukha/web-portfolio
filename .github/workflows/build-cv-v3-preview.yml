@@ -35,47 +35,59 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install reportlab==5.0.1 Pillow pillow-avif-plugin
 
-      - name: Build CV v3 candidate
+      - name: Build CV v3 candidates
         run: python scripts/build_cv_v3.py
 
       - name: Validate PDF structure and ATS text
         run: |
           mkdir -p build/cv-v3/render build/cv-v3/text
-          pdf="build/cv-v3/andrii-makukha-de-v3.pdf"
 
-          test -f "$pdf"
-          test "$(pdfinfo "$pdf" | awk '/^Pages:/ {print $2}')" = "1"
-          test "$(pdfinfo "$pdf" | awk '/^Page size:/ {print $3"x"$5}')" = "595.276x841.89" || true
+          for locale in de en ru; do
+            pdf="build/cv-v3/andrii-makukha-${locale}-v3.pdf"
+            text="build/cv-v3/text/andrii-makukha-${locale}-v3.txt"
 
-          pdftotext -layout "$pdf" build/cv-v3/text/andrii-makukha-de-v3.txt
-          grep -q "ANDRII MAKUKHA" build/cv-v3/text/andrii-makukha-de-v3.txt
+            test -f "$pdf"
+            test "$(pdfinfo "$pdf" | awk '/^Pages:/ {print $2}')" = "1"
+            pdftotext -layout "$pdf" "$text"
+            grep -q "ANDRII MAKUKHA" "$text"
+            grep -q "Hardy Orchestra" "$text"
+            grep -q "Symbioz Band" "$text"
+            grep -q "ReSchuhe" "$text"
+            grep -q "Hillel IT School" "$text"
+          done
+
           grep -q "BERUFSERFAHRUNG" build/cv-v3/text/andrii-makukha-de-v3.txt
-          grep -q "Hardy Orchestra" build/cv-v3/text/andrii-makukha-de-v3.txt
-          grep -q "Symbioz Band" build/cv-v3/text/andrii-makukha-de-v3.txt
-          grep -q "ReSchuhe" build/cv-v3/text/andrii-makukha-de-v3.txt
-          grep -q "Hillel IT School" build/cv-v3/text/andrii-makukha-de-v3.txt
+          grep -q "PROFESSIONAL EXPERIENCE" build/cv-v3/text/andrii-makukha-en-v3.txt
+          grep -q "ПРОФЕССИОНАЛЬНЫЙ ОПЫТ" build/cv-v3/text/andrii-makukha-ru-v3.txt
 
       - name: Render visual QA masters
         run: |
-          pdftoppm -png -singlefile -r 180 \
-            build/cv-v3/andrii-makukha-de-v3.pdf \
-            build/cv-v3/render/andrii-makukha-de-v3
+          for locale in de en ru; do
+            pdftoppm -png -singlefile -r 200 \
+              "build/cv-v3/andrii-makukha-${locale}-v3.pdf" \
+              "build/cv-v3/render/andrii-makukha-${locale}-v3"
+          done
 
       - name: Report candidate metrics
         run: |
-          pdfinfo build/cv-v3/andrii-makukha-de-v3.pdf
-          echo "PDF bytes: $(stat -c%s build/cv-v3/andrii-makukha-de-v3.pdf)"
-          echo "Rendered PNG bytes: $(stat -c%s build/cv-v3/render/andrii-makukha-de-v3.png)"
-          echo "Extracted text lines: $(wc -l < build/cv-v3/text/andrii-makukha-de-v3.txt)"
+          for locale in de en ru; do
+            pdf="build/cv-v3/andrii-makukha-${locale}-v3.pdf"
+            png="build/cv-v3/render/andrii-makukha-${locale}-v3.png"
+            text="build/cv-v3/text/andrii-makukha-${locale}-v3.txt"
+            echo "=== ${locale^^} ==="
+            pdfinfo "$pdf" | grep -E '^(Pages|Page size|File size|PDF version):'
+            echo "Rendered PNG bytes: $(stat -c%s "$png")"
+            echo "Extracted text lines: $(wc -l < "$text")"
+          done
 
       - name: Upload CV v3 preview artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cv-v3-german-master-preview
+          name: cv-v3-multilingual-master-preview
           path: |
-            build/cv-v3/andrii-makukha-de-v3.pdf
-            build/cv-v3/render/andrii-makukha-de-v3.png
-            build/cv-v3/text/andrii-makukha-de-v3.txt
+            build/cv-v3/*.pdf
+            build/cv-v3/render/*.png
+            build/cv-v3/text/*.txt
           if-no-files-found: error
           retention-days: 14
