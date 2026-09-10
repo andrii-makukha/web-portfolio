@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - portfolio-v2
+      - main
     paths:
       - "scripts/build_cv.py"
       - ".github/workflows/build-cv.yml"
@@ -61,5 +62,5 @@ jobs:
             echo "CV PDFs already current."
           else
             git commit -m "Generate multilingual CV PDFs"
-            git push origin HEAD:portfolio-v2
+            git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
