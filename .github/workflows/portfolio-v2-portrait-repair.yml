@@ -1,0 +1,52 @@
+name: Portfolio v2 Portrait Repair
+
+on:
+  push:
+    branches:
+      - portfolio-v2
+    paths:
+      - .github/workflows/portfolio-v2-portrait-repair.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout portfolio-v2
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2
+
+      - name: Rebuild and verify portrait
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat \
+            assets/.portrait-00a.b64 \
+            assets/.portrait-00b.b64 \
+            assets/.portrait-01.b64 \
+            assets/.portrait-02.b64 \
+            assets/.portrait-03.b64 \
+            > /tmp/portrait.b64
+          base64 --decode /tmp/portrait.b64 > assets/portrait.avif
+          test "$(wc -c < assets/portrait.avif | tr -d ' ')" = "40146"
+          echo "3965392de7cc4f0361a3406e1b6ff8c9622e988c65d8460223a1a8b8dcd1379d  assets/portrait.avif" | sha256sum --check --strict
+
+      - name: Remove transfer staging
+        run: |
+          rm -f assets/.portrait-00a.b64
+          rm -f assets/.portrait-00b.b64
+          rm -f assets/.portrait-01.b64
+          rm -f assets/.portrait-02.b64
+          rm -f assets/.portrait-03.b64
+          rm -f .github/workflows/portfolio-v2-portrait-repair.yml
+
+      - name: Commit verified portrait
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Restore verified high-quality portrait"
+          git push origin HEAD:portfolio-v2
