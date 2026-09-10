@@ -1,11 +1,12 @@
 name: Portfolio v2 Browser QA
 
-# Includes MacBook 14/16 and wide desktop regression coverage on the v2.1 hardening branch.
+# Includes wide-screen responsive hardening and multilingual text-flow stress coverage.
 on:
   push:
     branches:
       - portfolio-v2
       - portfolio-v2.1-responsive-hardening
+      - portfolio-v2.2-text-flow-stress
       - main
     paths:
       - "README.md"
@@ -35,7 +36,7 @@ permissions:
 jobs:
   browser-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
@@ -50,6 +51,7 @@ jobs:
         run: |
           node --check qa/browser-qa.mjs
           node --check qa/mobile-typography-qa.mjs
+          node --check qa/text-flow-stress-qa.mjs
 
       - name: Install Playwright
         run: |
@@ -77,6 +79,12 @@ jobs:
       - name: Run mobile typography regression QA
         if: always()
         run: node qa/mobile-typography-qa.mjs
+        env:
+          QA_ORIGIN: http://127.0.0.1:4173
+
+      - name: Run text-flow stress QA
+        if: always()
+        run: node qa/text-flow-stress-qa.mjs
         env:
           QA_ORIGIN: http://127.0.0.1:4173
 
