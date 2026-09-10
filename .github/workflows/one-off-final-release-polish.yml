@@ -1,0 +1,203 @@
+name: One-off final release polish
+
+on:
+  push:
+    branches:
+      - portfolio-v2
+    paths:
+      - ".github/workflows/one-off-final-release-polish.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  polish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2
+          fetch-depth: 0
+
+      - name: Install CV build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-core poppler-utils
+          python -m pip install reportlab==5.0.1
+
+      - name: Apply final release polish
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_exact(path, old, new, count=None):
+              p=Path(path)
+              text=p.read_text()
+              found=text.count(old)
+              if count is not None and found != count:
+                  raise SystemExit(f"{path}: expected {count} occurrences of {old!r}, found {found}")
+              if found == 0:
+                  raise SystemExit(f"{path}: missing {old!r}")
+              p.write_text(text.replace(old,new))
+
+          old_noscript='<noscript><style>[data-reveal]{opacity:1!important;transform:none!important}.portrait-frame{clip-path:none!important;opacity:1!important}.workflow-step,.journey-event{opacity:1!important;transform:none!important}</style></noscript>'
+          new_noscript='<noscript><style>[data-reveal]{opacity:1!important;transform:none!important}.portrait-frame{clip-path:none!important;opacity:1!important}.workflow-step,.journey-event{opacity:1!important;transform:none!important}.opening__name,.opening__eyebrow,.opening__meta,.opening__scroll{opacity:1!important;transform:none!important}.site-nav__menu-toggle{display:none!important}.site-nav__languages{display:flex!important}</style></noscript>'
+
+          for lang in ('de','en','ru'):
+              path=f'{lang}/index.html'
+              replace_exact(path,'class="text-link text-link--quiet" href="../assets/cv/', 'class="text-link" href="../assets/cv/', 1)
+              replace_exact(path,old_noscript,new_noscript,1)
+              replace_exact(path,'<meta name="twitter:card" content="summary">','<meta name="twitter:card" content="summary_large_image">',1)
+              replace_exact(path,'<link rel="stylesheet" href="../css/v2.css">','<link rel="stylesheet" href="../css/v2.css">\n  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">',1)
+
+          # English metadata follows the British spelling used throughout the copy.
+          replace_exact('en/index.html','<meta property="og:locale" content="en_US">','<meta property="og:locale" content="en_GB">',1)
+
+          # German residual interface/prose localisation.
+          de_replacements={
+              '<dt>OPERATIONS</dt>':'<dt>ORGANISATION</dt>',
+              '<dt>BUSINESS</dt>':'<dt>GESCHÄFT</dt>',
+              '<dt>LEADERSHIP</dt>':'<dt>FÜHRUNG</dt>',
+              '<dt>QUALITY</dt>':'<dt>QUALITÄT</dt>',
+              '<dt>ROLE</dt>':'<dt>ROLLE</dt>',
+              '<dt>CONTEXT</dt>':'<dt>KONTEXT</dt>',
+              '<dt>PRESSURE</dt>':'<dt>BELASTUNG</dt>',
+              '<div><span>DESIGN</span><strong>Art Direction · Layout · Motion</strong></div>':'<div><span>GESTALTUNG</span><strong>Gestaltung · Layout · Animation</strong></div>',
+              'E-Mail-Benachrichtigungen und Rate Limiting.':'E-Mail-Benachrichtigungen und Begrenzung der Anfragefrequenz.',
+              'Routing und State Management.':'Routing und Zustandsverwaltung.',
+              'Live-Druck':'Druck bei Live-Auftritten',
+          }
+          for old,new in de_replacements.items():
+              replace_exact('de/index.html',old,new)
+
+          # Russian residual localisation.
+          replace_exact('ru/index.html','<span>SYSTEM</span>','<span>СИСТЕМА</span>',1)
+          replace_exact('ru/index.html','основы frontend/backend','основы фронтенда и бэкенда',1)
+
+          # Root favicon.
+          replace_exact('index.html','<title>Andrii Makukha — Portfolio</title>','<title>Andrii Makukha — Portfolio</title>\n  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">',1)
+
+          # README must describe the permanent read-only reproducibility gate accurately.
+          old='The CVs are generated reproducibly from `scripts/build_cv.py`. The CV workflow verifies one-page output and extractable ATS text, then creates PNG/text QA artifacts before generated PDFs are committed.'
+          new='The CVs are generated from `scripts/build_cv.py`. The CV workflow rebuilds them in CI, verifies one-page output, compares ATS text and rendered PNGs against the committed PDFs, and uploads QA artifacts. It does not modify the repository.'
+          replace_exact('README.md',old,new,1)
+
+          # Pin PDF generator version used by the reproducibility gate.
+          replace_exact('.github/workflows/build-cv.yml','python -m pip install reportlab\n','python -m pip install reportlab==5.0.1\n',1)
+
+          # Polish the German CV wording and regenerate all locale PDFs from the same source.
+          replace_exact('scripts/build_cv.py','Präzision und Belastbarkeit unter Live-Druck.','Präzision und Belastbarkeit unter dem Druck von Live-Auftritten.',1)
+          replace_exact('scripts/build_cv.py','("Digital & Lernen", "Web-Grundlagen · digitale Recherche · KI-gestützte Workflows")','("Digitales Arbeiten & Lernen", "Web-Grundlagen · digitale Recherche · KI-gestützte Workflows")',1)
+
+          # Local, dependency-free SVG favicon.
+          favicon='''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AM"><rect width="64" height="64" rx="13" fill="#111D2D"/><rect x="8" y="8" width="3" height="48" rx="1.5" fill="#A67B4B"/><path d="M20 45 29.5 19h5L44 45h-5.2l-2.1-6.5H27.2L25.1 45H20Zm8.7-11h6.5l-3.25-10-3.25 10Z" fill="#FAF8F3"/><path d="M46 19h4v26h-4z" fill="#FAF8F3"/></svg>'''
+          Path('assets/favicon.svg').write_text(favicon)
+
+          # Strengthen permanent Browser QA with no-JS and release-polish gates.
+          qa=Path('qa/browser-qa.mjs')
+          text=qa.read_text()
+          marker='/* === CV release gate === */'
+          if '/* === No-JavaScript release gate === */' in text:
+              raise SystemExit('QA polish gates already present')
+          block=r'''/* === No-JavaScript release gate === */
+          {
+            const scope = "release/no-javascript";
+            const checks = [];
+            for (const locale of locales) {
+              const context = await browser.newContext({
+                viewport: { width: 390, height: 844 },
+                isMobile: true,
+                hasTouch: true,
+                javaScriptEnabled: false
+              });
+              const page = await context.newPage();
+              const response = await page.goto(`${ORIGIN}/${locale}/`, { waitUntil: "load", timeout: 30000 });
+              const state = await page.evaluate(() => {
+                const selectors = [".opening__name", ".opening__eyebrow", ".opening__meta", ".opening__scroll"];
+                const opening = selectors.map(selector => {
+                  const el=document.querySelector(selector);
+                  const style=el ? getComputedStyle(el) : null;
+                  return { selector, exists:Boolean(el), opacity:style ? Number(style.opacity) : null, transform:style?.transform || null };
+                });
+                const menuToggle=document.querySelector(".site-nav__menu-toggle");
+                const languages=document.querySelector(".site-nav__languages");
+                return {
+                  opening,
+                  menuToggleDisplay: menuToggle ? getComputedStyle(menuToggle).display : null,
+                  languagesDisplay: languages ? getComputedStyle(languages).display : null,
+                  scrollWidth: document.documentElement.scrollWidth,
+                  clientWidth: document.documentElement.clientWidth,
+                  mainTextLength: (document.querySelector("#main-content")?.textContent || "").trim().length
+                };
+              });
+              await page.screenshot({ path: path.join(OUTPUT, `${locale}-mobile-no-js.png`), fullPage: false });
+              const check={locale,status:response?.status() || null,...state};
+              checks.push(check);
+              const openingInvalid=state.opening.some(item => !item.exists || !Number.isFinite(item.opacity) || item.opacity < .99 || item.transform !== "none");
+              if (!response?.ok() || openingInvalid || state.menuToggleDisplay !== "none" || state.languagesDisplay === "none" || state.scrollWidth > state.clientWidth + 1 || state.mainTextLength < 500) {
+                recordFailure(scope,"No-JavaScript fallback is incomplete",check);
+              }
+              await context.close();
+            }
+            results.push({scope,checks});
+          }
+
+          /* === Release polish gate === */
+          {
+            const scope = "release/polish";
+            const checks=[];
+            for (const locale of locales) {
+              const context=await browser.newContext({viewport:{width:1440,height:900}});
+              const page=await context.newPage();
+              await page.goto(`${ORIGIN}/${locale}/`,{waitUntil:"networkidle",timeout:30000});
+              const state=await page.evaluate(() => {
+                const icon=document.querySelector('link[rel~="icon"]');
+                const identityCv=document.querySelector('.identity__actions a[download][href$=".pdf"]');
+                return {
+                  favicon:icon?.href || null,
+                  quietDownloads:[...document.querySelectorAll('a[download].text-link--quiet')].map(a=>a.getAttribute('href')),
+                  identityCvExists:Boolean(identityCv),
+                  identityCvOpacity:identityCv ? Number(getComputedStyle(identityCv).opacity) : null,
+                  twitterCard:document.querySelector('meta[name="twitter:card"]')?.content || null
+                };
+              });
+              let faviconResponse=null;
+              if(state.favicon){
+                const response=await page.request.get(state.favicon);
+                const body=await response.body();
+                faviconResponse={status:response.status(),ok:response.ok(),contentType:response.headers()["content-type"] || "",bytes:body.length};
+              }
+              const check={locale,...state,faviconResponse};
+              checks.push(check);
+              if (!state.favicon || !faviconResponse?.ok || !faviconResponse.contentType.includes('image/svg+xml') || faviconResponse.bytes < 100 || state.quietDownloads.length || !state.identityCvExists || state.identityCvOpacity < .99 || state.twitterCard !== 'summary_large_image') {
+                recordFailure(scope,"Release polish regression",check);
+              }
+              await context.close();
+            }
+            results.push({scope,checks});
+          }
+
+          '''
+          if marker not in text:
+              raise SystemExit('CV gate marker missing')
+          qa.write_text(text.replace(marker,block+marker,1))
+          PY
+
+      - name: Regenerate and verify CV PDFs
+        run: |
+          python scripts/build_cv.py
+          for file in assets/cv/*.pdf; do
+            test "$(pdfinfo "$file" | awk '/^Pages:/ {print $2}')" = "1"
+            pdftotext "$file" - | grep -q "ANDRII MAKUKHA"
+          done
+
+      - name: Remove one-off workflow and commit
+        run: |
+          rm .github/workflows/one-off-final-release-polish.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Apply final portfolio release polish"
+          git push origin HEAD:portfolio-v2
