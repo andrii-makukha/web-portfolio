@@ -8,6 +8,7 @@ on:
       - ".github/workflows/v22-text-flow-apply.yml"
       - "scripts/v22_text_flow_patch.py"
       - "scripts/v22_text_flow_patch2.py"
+      - "scripts/v22_text_flow_patch3.py"
 
 permissions:
   contents: write
@@ -20,15 +21,15 @@ jobs:
         with:
           ref: portfolio-v2.2-text-flow-stress
       - name: Apply measured correction patch
-        run: python3 scripts/v22_text_flow_patch2.py
+        run: python3 scripts/v22_text_flow_patch3.py
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add de/index.html en/index.html ru/index.html css/v2.css
+          git add css/v2.css
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "Fix: resolve measured text-flow failures"
+          git commit -m "Fix: resolve remaining text-flow failures"
           git push origin HEAD:portfolio-v2.2-text-flow-stress
