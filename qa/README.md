@@ -28,4 +28,6 @@ It currently covers:
 - active CV calls-to-action that are not styled as disabled/quiet links
 - reproducible one-page ATS-friendly CV generation with visual PNG and extracted-text QA artifacts
 
+Identity portrait baseline: the current production portrait is expected to retain at least 1122 × 1402 source pixels. Lower-resolution replacements must fail the browser QA gate.
+
 A release candidate is not considered ready while any gate reports a failure.
