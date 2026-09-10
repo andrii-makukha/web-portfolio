@@ -307,9 +307,9 @@ button:focus-visible {
   height: 100%;
   min-height: inherit;
   object-fit: cover;
-  object-position: center 30%;
+  object-position: center 31%;
   display: block;
-  filter: saturate(.8) contrast(1.03);
+  filter: saturate(.76) brightness(.88) contrast(1.04);
   transform: scale(1.025);
 }
 
