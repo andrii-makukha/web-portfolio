@@ -45,7 +45,9 @@ jobs:
           node-version: "22"
 
       - name: Validate QA syntax
-        run: node --check qa/browser-qa.mjs
+        run: |
+          node --check qa/browser-qa.mjs
+          node --check qa/mobile-typography-qa.mjs
 
       - name: Install Playwright
         run: |
@@ -67,6 +69,11 @@ jobs:
 
       - name: Run browser QA
         run: node qa/browser-qa.mjs
+        env:
+          QA_ORIGIN: http://127.0.0.1:4173
+
+      - name: Run mobile typography regression QA
+        run: node qa/mobile-typography-qa.mjs
         env:
           QA_ORIGIN: http://127.0.0.1:4173
 
