@@ -42,7 +42,7 @@ DATA = {
         "profile": "Beruflicher Hintergrund in professioneller Musik, Führung und Organisation. Als erster Trompeter, Gruppenleiter und Gründer einer achtköpfigen Band habe ich Präzision, Verantwortung und Koordination unter realem Leistungsdruck entwickelt. Heute ergänze ich diese Erfahrung durch digitale Werkzeuge, Web-Grundlagen und KI-gestützte Arbeitsweisen.",
         "exp_title": "BERUFSERFAHRUNG",
         "experience": [
-            ("Hardy Orchestra", "Erster Trompeter & Gruppenleiter", "2017-2022", "Führung der Trompetensektion in komplexen Produktionen, u. a. Rammstein-Symphonien. Präzision und Belastbarkeit unter Live-Druck."),
+            ("Hardy Orchestra", "Erster Trompeter & Gruppenleiter", "2017-2022", "Führung der Trompetensektion in komplexen Produktionen, u. a. Rammstein-Symphonien. Präzision und Belastbarkeit unter dem Druck von Live-Auftritten."),
             ("Symbioz Band", "Gründer & Leiter", "09/2019-02/2022", "Leitung von 8 Musikern; Organisation von 80+ Veranstaltungen. Verantwortung für Projektplanung, Budget, Kundenakquise, Konfliktmanagement und Qualitätssicherung."),
             ("Gastronomie", "Kurier / Auslieferungsfahrer", "2022-2024", ""),
         ],
@@ -62,7 +62,7 @@ DATA = {
             ("Führung & Verantwortung", "Leitung von 8 Musikern · Führung einer Trompetensektion"),
             ("Organisation & Planung", "80+ Veranstaltungen · Projektplanung · Budget"),
             ("Kommunikation", "Kundenakquise · Teamkoordination · Konfliktmanagement"),
-            ("Digital & Lernen", "Web-Grundlagen · digitale Recherche · KI-gestützte Workflows"),
+            ("Digitales Arbeiten & Lernen", "Web-Grundlagen · digitale Recherche · KI-gestützte Workflows"),
         ],
         "lang_title": "SPRACHEN",
         "langs": "Deutsch B2 · Ukrainisch Muttersprache · Russisch Muttersprache",

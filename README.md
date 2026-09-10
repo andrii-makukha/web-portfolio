@@ -70,7 +70,7 @@ The repository contains locale-specific one-page CV PDFs:
 - English — `assets/cv/andrii-makukha-en.pdf`
 - Russian — `assets/cv/andrii-makukha-ru.pdf`
 
-The CVs are generated reproducibly from `scripts/build_cv.py`. The CV workflow verifies one-page output and extractable ATS text, then creates PNG/text QA artifacts before generated PDFs are committed.
+The CVs are generated from `scripts/build_cv.py`. The CV workflow rebuilds them in CI, verifies one-page output, compares ATS text and rendered PNGs against the committed PDFs, and uploads QA artifacts. It does not modify the repository.
 
 ## Browser QA
 

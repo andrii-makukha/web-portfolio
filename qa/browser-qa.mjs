@@ -1113,6 +1113,42 @@ await runMotionStress("mobile", 390, 844, true);
   await context.close();
 }
 
+/* === No-JavaScript release gate === */
+{
+  const scope="release/no-javascript", checks=[];
+  for(const locale of locales){
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,javaScriptEnabled:false});
+    const page=await context.newPage();
+    const response=await page.goto(`${ORIGIN}/${locale}/`,{waitUntil:"load",timeout:30000});
+    const state=await page.evaluate(()=>{
+      const opening=[".opening__name",".opening__eyebrow",".opening__meta",".opening__scroll"].map(selector=>{const el=document.querySelector(selector),style=el?getComputedStyle(el):null;return{selector,exists:Boolean(el),opacity:style?Number(style.opacity):null,transform:style?.transform||null}});
+      const toggle=document.querySelector(".site-nav__menu-toggle"),langs=document.querySelector(".site-nav__languages");
+      return{opening,menuToggleDisplay:toggle?getComputedStyle(toggle).display:null,languagesDisplay:langs?getComputedStyle(langs).display:null,scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,mainTextLength:(document.querySelector("#main-content")?.textContent||"").trim().length};
+    });
+    await page.screenshot({path:path.join(OUTPUT,`${locale}-mobile-no-js.png`),fullPage:false});
+    const check={locale,status:response?.status()||null,...state}; checks.push(check);
+    const bad=state.opening.some(x=>!x.exists||!Number.isFinite(x.opacity)||x.opacity<.99||x.transform!=="none");
+    if(!response?.ok()||bad||state.menuToggleDisplay!=="none"||state.languagesDisplay==="none"||state.scrollWidth>state.clientWidth+1||state.mainTextLength<500) recordFailure(scope,"No-JavaScript fallback is incomplete",check);
+    await context.close();
+  }
+  results.push({scope,checks});
+}
+
+/* === Release polish gate === */
+{
+  const scope="release/polish",checks=[];
+  for(const locale of locales){
+    const context=await browser.newContext({viewport:{width:1440,height:900}}),page=await context.newPage();
+    await page.goto(`${ORIGIN}/${locale}/`,{waitUntil:"networkidle",timeout:30000});
+    const state=await page.evaluate(()=>{const icon=document.querySelector('link[rel~="icon"]'),cv=document.querySelector('.identity__actions a[download][href$=".pdf"]');return{favicon:icon?.href||null,quietDownloads:[...document.querySelectorAll('a[download].text-link--quiet')].map(a=>a.getAttribute('href')),identityCvExists:Boolean(cv),identityCvOpacity:cv?Number(getComputedStyle(cv).opacity):null,twitterCard:document.querySelector('meta[name="twitter:card"]')?.content||null}});
+    let fr=null;if(state.favicon){const r=await page.request.get(state.favicon),body=await r.body();fr={status:r.status(),ok:r.ok(),contentType:r.headers()["content-type"]||"",bytes:body.length}}
+    const check={locale,...state,faviconResponse:fr};checks.push(check);
+    if(!state.favicon||!fr?.ok||!fr.contentType.includes('image/svg+xml')||fr.bytes<100||state.quietDownloads.length||!state.identityCvExists||state.identityCvOpacity<.99||state.twitterCard!=="summary_large_image") recordFailure(scope,"Release polish regression",check);
+    await context.close();
+  }
+  results.push({scope,checks});
+}
+
 /* === CV release gate === */
 {
   const scope = "release/cv";
