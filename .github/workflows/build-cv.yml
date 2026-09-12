@@ -1,15 +1,21 @@
 name: Build Portfolio CV PDFs
 
-# Permanent read-only release gate: rebuild committed CVs from source and compare ATS text plus rendered output.
+# Permanent read-only release gate: rebuild committed CVs from source and compare
+# multilingual ATS text plus 200-dpi rendered output; CV v3 also verifies the shared portrait asset.
 on:
   workflow_dispatch:
   push:
     branches:
       - portfolio-v2
+      - cv-v3-professional-redesign
       - main
     paths:
       - "assets/cv/*.pdf"
+      - "assets/portrait.avif"
       - "scripts/build_cv.py"
+      - "scripts/build_cv_v3.py"
+      - "docs/CV_V3_DESIGN.md"
+      - "docs/CV_V3_QA.md"
       - ".github/workflows/build-cv.yml"
 
 permissions:
@@ -37,7 +43,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y fonts-noto-core poppler-utils
           python -m pip install --upgrade pip
-          python -m pip install reportlab==5.0.1
+          python -m pip install reportlab==5.0.1 Pillow pillow-avif-plugin
 
       - name: Rebuild CV PDFs from source
         run: python scripts/build_cv.py
@@ -56,12 +62,21 @@ jobs:
             pdftotext -layout "$file" "cv-qa/generated/$name.txt"
             pdftotext -layout "$reference" "cv-qa/reference/$name.txt"
             grep -q "ANDRII MAKUKHA" "cv-qa/generated/$name.txt"
+            grep -q "Hardy Orchestra" "cv-qa/generated/$name.txt"
+            grep -q "Symbioz Band" "cv-qa/generated/$name.txt"
+            grep -q "ReSchuhe" "cv-qa/generated/$name.txt"
+            grep -q "Hillel IT School" "cv-qa/generated/$name.txt"
+            ! grep -q "�" "cv-qa/generated/$name.txt"
             cmp "cv-qa/generated/$name.txt" "cv-qa/reference/$name.txt"
 
-            pdftoppm -png -singlefile -r 150 "$file" "cv-qa/generated/$name"
-            pdftoppm -png -singlefile -r 150 "$reference" "cv-qa/reference/$name"
+            pdftoppm -png -singlefile -r 200 "$file" "cv-qa/generated/$name"
+            pdftoppm -png -singlefile -r 200 "$reference" "cv-qa/reference/$name"
             cmp "cv-qa/generated/$name.png" "cv-qa/reference/$name.png"
           done
+
+          grep -q "BERUFSERFAHRUNG" cv-qa/generated/andrii-makukha-de.txt
+          grep -q "PROFESSIONAL EXPERIENCE" cv-qa/generated/andrii-makukha-en.txt
+          grep -q "ПРОФЕССИОНАЛЬНЫЙ ОПЫТ" cv-qa/generated/andrii-makukha-ru.txt
 
       - name: Upload CV QA artifact
         if: always()
