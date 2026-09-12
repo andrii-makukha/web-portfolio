@@ -16,7 +16,7 @@ on:
       - "assets/**"
       - "css/v2.css"
       - "js/**"
-      - "qa/cross-browser-qa.mjs"
+      - "qa/cross-browser-v2.mjs"
       - ".github/workflows/portfolio-v2-cross-browser-qa.yml"
   workflow_dispatch:
 
@@ -47,7 +47,7 @@ jobs:
           node-version: "22"
 
       - name: Validate QA syntax
-        run: node --check qa/cross-browser-qa.mjs
+        run: node --check qa/cross-browser-v2.mjs
 
       - name: Install Playwright browser
         run: |
@@ -68,7 +68,7 @@ jobs:
           exit 1
 
       - name: Run cross-browser stress QA
-        run: node qa/cross-browser-qa.mjs
+        run: node qa/cross-browser-v2.mjs
         env:
           QA_ORIGIN: http://127.0.0.1:4173
           QA_BROWSER: ${{ matrix.browser }}
