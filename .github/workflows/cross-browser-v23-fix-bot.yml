@@ -19,7 +19,7 @@ jobs:
         with:
           ref: portfolio-v2.3-cross-browser-stress
 
-      - name: Apply final cross-browser calibration
+      - name: Apply Firefox overflow diagnostics and final WebKit fit
         run: python3 qa/apply-cross-browser-v23.py
 
       - name: Validate QA syntax
@@ -34,5 +34,5 @@ jobs:
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "Fix: finish v2.3 cross-browser hardening"
+          git commit -m "QA: diagnose Firefox overflow sources"
           git push origin HEAD:portfolio-v2.3-cross-browser-stress
