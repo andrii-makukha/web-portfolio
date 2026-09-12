@@ -29,52 +29,53 @@ jobs:
           marker = "/* v2.3 cross-browser geometry hardening */"
           block = r'''
 
-/* v2.3 cross-browser geometry hardening */
-@media (min-width: 901px) {
-  /* Tiny locale-specific reductions cover Safari/WebKit glyph metrics without changing composition. */
-  html[lang="de"] .profile__display {
-    font-size: clamp(3.8rem, min(7.7vw, 7.392rem), 8.25rem);
-  }
+          /* v2.3 cross-browser geometry hardening */
+          @media (min-width: 901px) {
+            /* Tiny locale-specific reductions cover Safari/WebKit glyph metrics without changing composition. */
+            html[lang="de"] .profile__display {
+              font-size: clamp(3.8rem, min(7.7vw, 7.392rem), 8.25rem);
+            }
 
-  html[lang="de"] .foundation__display {
-    font-size: clamp(3.75rem, min(8vw, 7.68rem), 8.4rem);
-  }
+            html[lang="de"] .foundation__display {
+              font-size: clamp(3.75rem, min(8vw, 7.68rem), 8.4rem);
+            }
 
-  html[lang="de"] .workflow-step h3 {
-    font-size: clamp(3.45rem, min(7.65vw, 7.344rem), 7.7rem);
-  }
+            html[lang="de"] .workflow-step h3 {
+              font-size: clamp(3.45rem, min(7.65vw, 7.344rem), 7.7rem);
+            }
 
-  /* Give authored nowrap phrases enough physical measure across browser engines. */
-  html[lang="de"] .work__display,
-  html[lang="en"] .work__display {
-    max-width: 14.25ch;
-  }
+            /* Give authored nowrap phrases enough physical measure across browser engines. */
+            html[lang="de"] .work__display,
+            html[lang="en"] .work__display {
+              max-width: 14.25ch;
+            }
 
-  html[lang="de"] .work__closing > div {
-    max-width: 16.4ch;
-  }
+            html[lang="de"] .work__closing > div {
+              max-width: 16.4ch;
+            }
 
-  html[lang="de"] .journey-ending {
-    max-width: 17ch;
-  }
+            html[lang="de"] .journey-ending {
+              max-width: 17ch;
+            }
 
-  html[lang="en"] .ai__display {
-    max-width: 11.85ch;
-  }
+            html[lang="en"] .ai__display {
+              max-width: 11.85ch;
+            }
 
-  html[lang="ru"] .ai__display {
-    max-width: 11.6ch;
-  }
+            html[lang="ru"] .ai__display {
+              max-width: 11.6ch;
+            }
 
-  html[lang="ru"] .journey-ending {
-    max-width: 17ch;
-  }
+            html[lang="ru"] .journey-ending {
+              max-width: 17ch;
+            }
 
-  html[lang="ru"] .journey-ending > span {
-    white-space: nowrap;
-  }
-}
-'''
+            html[lang="ru"] .journey-ending > span {
+              white-space: nowrap;
+            }
+          }
+          '''
+          block = "\n".join(line[10:] if line.startswith("          ") else line for line in block.splitlines())
           if marker not in css:
               css_path.write_text(css.rstrip() + block + "\n")
 
