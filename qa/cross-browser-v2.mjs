@@ -298,7 +298,37 @@ async function runText(browser, locale, width) {
         return shiftedX;
       });
       if(Math.abs(horizontalShift) > 1) {
-        fail(scope,"Scrollable horizontal overflow",{viewportWidth:audit.viewportWidth,documentScrollWidth:audit.documentScrollWidth,horizontalShift});
+        const diagnostics = await page.evaluate(() => {
+          const vw = innerWidth;
+          const offenders = [...document.querySelectorAll("body *")].map((el) => {
+            const r = el.getBoundingClientRect();
+            const s = getComputedStyle(el);
+            return {
+              tag: el.tagName,
+              id: el.id || "",
+              className: typeof el.className === "string" ? el.className : "",
+              left: Math.round(r.left * 10) / 10,
+              right: Math.round(r.right * 10) / 10,
+              width: Math.round(r.width * 10) / 10,
+              clientWidth: el.clientWidth,
+              scrollWidth: el.scrollWidth,
+              overflowX: s.overflowX,
+              position: s.position,
+              text: (el.textContent || "").trim().replace(/\s+/g," ").slice(0,90)
+            };
+          }).filter((x) => x.right > vw + 1 || x.left < -1 || x.scrollWidth > x.clientWidth + 2)
+            .sort((a,b) => Math.max(b.right-vw,b.scrollWidth-b.clientWidth) - Math.max(a.right-vw,a.scrollWidth-a.clientWidth))
+            .slice(0,20);
+
+          const style = document.createElement("style");
+          style.textContent = "*::before,*::after{content:none!important}";
+          document.head.appendChild(style);
+          const withoutPseudoScrollWidth = document.documentElement.scrollWidth;
+          style.remove();
+
+          return { offenders, withoutPseudoScrollWidth };
+        });
+        fail(scope,"Scrollable horizontal overflow",{viewportWidth:audit.viewportWidth,documentScrollWidth:audit.documentScrollWidth,horizontalShift,...diagnostics});
       }
     }
     /* WebKit is the strict macOS/Safari typography gate. Ubuntu Firefox uses different
