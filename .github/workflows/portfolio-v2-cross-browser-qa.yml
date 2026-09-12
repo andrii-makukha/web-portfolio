@@ -1,0 +1,83 @@
+name: Portfolio v2 Cross-Browser QA
+
+on:
+  push:
+    branches:
+      - portfolio-v2.3-cross-browser-stress
+      - main
+    paths:
+      - "README.md"
+      - "index.html"
+      - "robots.txt"
+      - "sitemap.xml"
+      - "de/**"
+      - "en/**"
+      - "ru/**"
+      - "assets/**"
+      - "css/v2.css"
+      - "js/**"
+      - "qa/cross-browser-qa.mjs"
+      - ".github/workflows/portfolio-v2-cross-browser-qa.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: portfolio-v2-cross-browser-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  cross-browser:
+    name: ${{ matrix.browser }} stress
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validate QA syntax
+        run: node --check qa/cross-browser-qa.mjs
+
+      - name: Install Playwright browser
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Start local server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/portfolio-cross-browser-server.log 2>&1 &
+          echo $! > /tmp/portfolio-cross-browser-server.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/de/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/portfolio-cross-browser-server.log
+          exit 1
+
+      - name: Run cross-browser stress QA
+        run: node qa/cross-browser-qa.mjs
+        env:
+          QA_ORIGIN: http://127.0.0.1:4173
+          QA_BROWSER: ${{ matrix.browser }}
+
+      - name: Upload cross-browser report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-v2-cross-browser-${{ matrix.browser }}
+          path: qa-output/cross-browser/${{ matrix.browser }}/
+          if-no-files-found: warn
+          retention-days: 14
