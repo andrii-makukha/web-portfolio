@@ -1,7 +1,7 @@
 name: Portfolio v2 Cross-Browser QA
 
 # WebKit is the strict Safari-like typography gate; Firefox remains a full runtime,
-# interaction, sticky/resize and user-scrollable overflow gate across the same matrix.
+# interaction, sticky/resize and user-scrollable overflow gate with source diagnostics.
 on:
   push:
     branches:
