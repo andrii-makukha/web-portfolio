@@ -289,7 +289,17 @@ async function runText(browser, locale, width) {
     }, { HEADINGS, PROSE });
 
     if(audit.documentScrollWidth > audit.viewportWidth + 1) {
-      fail(scope,"Document overflow",{viewportWidth:audit.viewportWidth,documentScrollWidth:audit.documentScrollWidth});
+      const horizontalShift = await page.evaluate(() => {
+        const startX = scrollX;
+        const startY = scrollY;
+        scrollTo(document.documentElement.scrollWidth, startY);
+        const shiftedX = scrollX;
+        scrollTo(startX, startY);
+        return shiftedX;
+      });
+      if(Math.abs(horizontalShift) > 1) {
+        fail(scope,"Scrollable horizontal overflow",{viewportWidth:audit.viewportWidth,documentScrollWidth:audit.documentScrollWidth,horizontalShift});
+      }
     }
     /* WebKit is the strict macOS/Safari typography gate. Ubuntu Firefox uses different
        system-ui metrics, so Firefox remains a runtime + real document-overflow gate. */

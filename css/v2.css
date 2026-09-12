@@ -3934,3 +3934,11 @@ main h4,
     white-space: nowrap;
   }
 }
+
+/* v2.3.1 final WebKit DE foundation fit */
+@media (min-width: 901px) {
+  html[lang="de"] .foundation__display {
+    font-size: clamp(3.75rem, min(7.88vw, 7.565rem), 8.25rem);
+  }
+}
+
