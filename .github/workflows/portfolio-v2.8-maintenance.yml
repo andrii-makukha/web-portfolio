@@ -56,110 +56,38 @@ jobs:
           text = css.read_text()
           marker = '/* v2.8 footer information architecture */'
           if marker not in text:
-              text += dedent(r'''
+              raise SystemExit('v2.8 footer block is missing')
 
-              /* v2.8 footer information architecture */
-              .contact__footer {
-                margin-top: clamp(5rem, 10vh, 8rem);
-                padding-top: 1.2rem;
-                border-top: 1px solid var(--hairline-dark);
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) auto auto;
-                grid-template-areas:
-                  "copyright legal top"
-                  "transparency legal top";
-                column-gap: clamp(1.5rem, 4vw, 4rem);
-                row-gap: .3rem;
-                align-items: center;
-              }
-
-              .contact__footer > span:nth-child(1) {
-                grid-area: copyright;
-                color: rgba(250, 248, 243, .76);
-              }
-
-              .contact__footer > span:nth-child(2) {
-                grid-area: transparency;
-                color: rgba(250, 248, 243, .50);
-              }
-
-              .contact__footer .contact__legal {
-                grid-area: legal;
-                justify-self: end;
-                display: inline-flex;
-                align-items: center;
-                gap: .45rem;
-                white-space: nowrap;
-              }
-
-              .contact__footer .contact__legal a {
-                padding-inline: .25rem;
-              }
-
-              .contact__footer > a:last-child {
-                grid-area: top;
-                justify-self: end;
-                white-space: nowrap;
-                padding-left: .75rem;
-              }
-
-              .contact__footer .contact__legal a,
-              .contact__footer > a:last-child {
-                transition: color .2s ease, opacity .2s ease;
-              }
-
-              @media (hover: hover) and (pointer: fine) {
-                .contact__footer .contact__legal a:hover,
-                .contact__footer > a:last-child:hover {
-                  color: var(--paper-soft);
-                }
-              }
-
-              @media (max-width: 900px) {
-                .contact__footer {
-                  grid-template-columns: minmax(0, 1fr) auto;
-                  grid-template-areas:
-                    "copyright top"
-                    "transparency top"
-                    "legal legal";
-                  column-gap: 2rem;
-                  row-gap: .25rem;
-                }
-
-                .contact__footer .contact__legal {
-                  width: 100%;
-                  margin-top: .55rem;
-                  padding-top: .55rem;
-                  border-top: 1px solid rgba(250, 248, 243, .08);
-                  justify-self: stretch;
-                }
-
-                .contact__footer > a:last-child {
-                  align-self: start;
-                }
-              }
-
-              @media (max-width: 560px) {
-                .contact__footer {
-                  column-gap: 1rem;
-                  font-size: .63rem;
-                  letter-spacing: .1em;
-                }
-
-                .contact__footer > span:nth-child(1),
-                .contact__footer > span:nth-child(2) {
-                  max-width: 28ch;
-                }
-
-                .contact__footer .contact__legal {
-                  flex-wrap: wrap;
-                }
-              }
-              ''')
           text = text.replace(
               'color: rgba(250, 248, 243, .46);',
               'color: rgba(250, 248, 243, .50);',
           )
+
+          mobile_marker = '/* v2.8 mobile footer refinement */'
+          if mobile_marker not in text:
+              text += dedent(r'''
+
+              /* v2.8 mobile footer refinement */
+              @media (max-width: 560px) {
+                .contact__footer {
+                  grid-template-areas:
+                    "copyright top"
+                    "transparency transparency"
+                    "legal legal";
+                row-gap: .2rem;
+              }
+
+                .contact__footer > span:nth-child(1),
+                .contact__footer > span:nth-child(2) {
+                  max-width: none;
+                }
+
+                .contact__footer > span:nth-child(2) {
+                  white-space: normal;
+                }
+              }
+              ''')
+
           css.write_text(text)
           PY
 
@@ -187,5 +115,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add css/v2.css scripts/build_cv_v3.py assets/cv/*.pdf
-          git commit -m "Apply v2.8 footer and CV canonical URL fixes"
+          git commit -m "Refine v2.8 mobile footer layout"
           git push origin HEAD:portfolio-v2.8-final-audit
