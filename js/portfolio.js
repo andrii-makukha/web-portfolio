@@ -1,6 +1,11 @@
 (() => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const body = document.body;
+
+  // Make the Hero available immediately during deferred-script execution.
+  // All motion enhances already-visible content instead of gating first paint.
+  body.classList.add('is-ready');
+
   const revealItems = [...document.querySelectorAll('[data-reveal], .portrait-frame')];
   const sections = [...document.querySelectorAll('[data-chapter]')];
   const railLinks = [...document.querySelectorAll('[data-rail]')];
@@ -132,11 +137,6 @@
     });
   }
 
-  // Do not force an intentionally blank first frame. The hero should be
-  // available to the first meaningful paint; motion then progressively
-  // enhances the already-visible content.
-  body.classList.add('is-ready');
-
   if (!reducedMotion && 'IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
@@ -259,6 +259,7 @@
   const paintScrollState = () => {
     const scrollY = window.scrollY;
     const viewport = Math.max(window.innerHeight, 1);
+    const maxScroll = Math.max(document.documentElement.scrollHeight - viewport, 1);
     const openingProgress = Math.max(0, Math.min(1, scrollY / (viewport * 0.78)));
 
     if (!reducedMotion) {
@@ -276,7 +277,6 @@
       });
     }
 
-    const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
     document.documentElement.style.setProperty(
       '--page-progress',
       String(Math.max(0, Math.min(1, scrollY / maxScroll)))
