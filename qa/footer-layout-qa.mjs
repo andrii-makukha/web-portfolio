@@ -1,8 +1,16 @@
 import fs from 'node:fs';
-import { chromium } from 'playwright';
+import { chromium, firefox, webkit } from 'playwright';
 
 const origin = process.env.QA_ORIGIN || 'http://127.0.0.1:4173';
-const outputDir = 'qa-output/footer-layout';
+const browserName = process.env.QA_BROWSER || 'chromium';
+const browserTypes = { chromium, firefox, webkit };
+const browserType = browserTypes[browserName];
+
+if (!browserType) {
+  throw new Error(`Unsupported QA_BROWSER: ${browserName}`);
+}
+
+const outputDir = `qa-output/footer-layout/${browserName}`;
 const locales = ['de', 'en', 'ru'];
 const viewports = [
   { name: 'desktop', width: 1440, height: 1000 },
@@ -13,7 +21,7 @@ const viewports = [
 fs.mkdirSync(outputDir, { recursive: true });
 
 const failures = [];
-const browser = await chromium.launch({ headless: true });
+const browser = await browserType.launch({ headless: true });
 
 const overlaps = (a, b) => {
   const tolerance = 1;
@@ -29,7 +37,7 @@ try {
   for (const locale of locales) {
     for (const viewport of viewports) {
       const page = await browser.newPage({ viewport });
-      const label = `${locale}/${viewport.name}`;
+      const label = `${browserName}/${locale}/${viewport.name}`;
 
       try {
         await page.goto(`${origin}/${locale}/`, { waitUntil: 'networkidle' });
@@ -109,10 +117,21 @@ try {
           if (legal && top && legal.right > top.left + 1) {
             failures.push(`${label}: legal area collides with back-to-top area`);
           }
+        } else if (viewport.width <= 560) {
+          const expectedAreas = '"copyright top" "transparency transparency" "legal legal"';
+          if (snapshot.gridTemplateAreas !== expectedAreas) {
+            failures.push(`${label}: unexpected mobile grid areas: ${snapshot.gridTemplateAreas}`);
+          }
+          if (transparency && copyright && transparency.top < copyright.bottom - 1) {
+            failures.push(`${label}: transparency row is not placed below copyright`);
+          }
+          if (legal && transparency && legal.top < transparency.bottom - 1) {
+            failures.push(`${label}: legal row is not placed below transparency`);
+          }
         } else {
           const expectedAreas = '"copyright top" "transparency top" "legal legal"';
           if (snapshot.gridTemplateAreas !== expectedAreas) {
-            failures.push(`${label}: unexpected compact grid areas: ${snapshot.gridTemplateAreas}`);
+            failures.push(`${label}: unexpected tablet grid areas: ${snapshot.gridTemplateAreas}`);
           }
           if (legal && transparency && legal.top < transparency.bottom - 1) {
             failures.push(`${label}: legal row is not placed below service information`);
@@ -141,4 +160,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('PASS: footer information hierarchy, spacing, touch targets and responsive layout are stable across DE/EN/RU.');
+console.log(`PASS: footer information hierarchy, spacing, touch targets and responsive layout are stable across DE/EN/RU in ${browserName}.`);
