@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 
+// Changes to this legal gate intentionally trigger Browser, Cross-Browser and Lighthouse release QA.
 const requiredFiles = [
   '404.html',
   'sitemap.xml',
