@@ -20,6 +20,11 @@ const privacyFiles = [
   'en/privacy/index.html',
   'ru/privacy/index.html',
 ];
+const portfolioPages = {
+  'de/index.html': ['../de/impressum/', '../de/datenschutz/'],
+  'en/index.html': ['../en/legal-notice/', '../en/privacy/'],
+  'ru/index.html': ['../ru/impressum/', '../ru/privacy/'],
+};
 const vercelPrivacyUrl = 'https://vercel.com/legal/privacy-notice';
 const vercelProviderParts = [
   'Vercel Inc.',
@@ -67,17 +72,20 @@ if (failures.length === 0) {
     }
   }
 
-  const requiredLegalRoutes = [
-    "noticeHref: './impressum/'",
-    "privacyHref: './datenschutz/'",
-    "noticeHref: './legal-notice/'",
-    "privacyHref: './privacy/'",
-  ];
-  for (const route of requiredLegalRoutes) {
-    if (!portfolioJs.includes(route)) failures.push(`portfolio footer legal route missing: ${route}`);
+  for (const [file, routes] of Object.entries(portfolioPages)) {
+    const html = fs.readFileSync(file, 'utf8');
+    const legalGroupCount = (html.match(/class="contact__legal"/g) || []).length;
+    if (legalGroupCount !== 1) failures.push(`${file}: expected exactly one static contact__legal group, found ${legalGroupCount}`);
+
+    for (const route of routes) {
+      const escaped = route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const routeCount = (html.match(new RegExp(`href="${escaped}"`, 'g')) || []).length;
+      if (routeCount !== 1) failures.push(`${file}: expected exactly one footer legal link to ${route}, found ${routeCount}`);
+    }
   }
-  if (!portfolioJs.includes("footer.querySelector('[data-legal-links]')")) {
-    failures.push('portfolio footer legal-link duplicate protection is missing');
+
+  if (/injectLegalLinks|data-legal-links|legalByLocale/.test(portfolioJs)) {
+    failures.push('js/portfolio.js: runtime legal-link injection must not exist; legal links are static HTML');
   }
 }
 
@@ -87,4 +95,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('PASS: legal pages, Vercel hosting disclosures, serviceable address, localized legal links, custom 404 and search-indexing prerequisites are complete.');
+console.log('PASS: legal pages, Vercel hosting disclosures, serviceable address, single static localized legal footer, custom 404 and search-indexing prerequisites are complete.');

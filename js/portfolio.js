@@ -73,54 +73,7 @@
     });
   };
 
-  const injectLegalLinks = () => {
-    const footer = document.querySelector('.contact__footer');
-    if (!footer || footer.querySelector('[data-legal-links]')) return;
-
-    const locale = (document.documentElement.lang || 'de').split('-')[0];
-    // Keep locale-local legal routes domain-agnostic for GitHub Pages and a future custom domain.
-    const legalByLocale = {
-      de: {
-        noticeHref: './impressum/',
-        noticeLabel: 'Impressum',
-        privacyHref: './datenschutz/',
-        privacyLabel: 'Datenschutz',
-      },
-      en: {
-        noticeHref: './legal-notice/',
-        noticeLabel: 'Legal notice',
-        privacyHref: './privacy/',
-        privacyLabel: 'Privacy',
-      },
-      ru: {
-        noticeHref: './impressum/',
-        noticeLabel: 'Impressum',
-        privacyHref: './privacy/',
-        privacyLabel: 'Datenschutz',
-      },
-    };
-    const legal = legalByLocale[locale] || legalByLocale.de;
-
-    const group = document.createElement('span');
-    group.dataset.legalLinks = '';
-
-    const notice = document.createElement('a');
-    notice.href = legal.noticeHref;
-    notice.textContent = legal.noticeLabel;
-
-    const separator = document.createTextNode(' · ');
-
-    const privacy = document.createElement('a');
-    privacy.href = legal.privacyHref;
-    privacy.textContent = legal.privacyLabel;
-
-    group.append(notice, separator, privacy);
-    const backToTop = footer.querySelector('a[href="#top"]');
-    footer.insertBefore(group, backToTop || null);
-  };
-
   harmonizeNavAccessibleNames();
-  injectLegalLinks();
 
   const setBackgroundInteractive = (interactive) => {
     if (!mainContent) return;
