@@ -15,6 +15,7 @@ const viewports = [
   { name: "desktop", width: 1440, height: 900 },
   { name: "mobile", width: 390, height: 844 }
 ];
+const sampleScrollY = [0, 30, 60, 90, 120, 220];
 
 const outputDir = path.join("qa-output", "cross-browser", BROWSER_NAME, "header-compact");
 fs.mkdirSync(outputDir, { recursive: true });
@@ -51,8 +52,6 @@ try {
       }
 
       await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
-      await page.evaluate(() => scrollTo(0, 0));
-      await page.waitForTimeout(120);
 
       const readNav = () => page.evaluate(() => {
         const nav = document.querySelector(".site-nav");
@@ -74,38 +73,50 @@ try {
         };
       });
 
-      const top = await readNav();
+      const samples = [];
+      for (const scrollY of sampleScrollY) {
+        await page.evaluate(y => scrollTo(0, y), scrollY);
+        await page.waitForTimeout(100);
+        samples.push({ scrollY, nav: await readNav() });
+      }
+
+      const top = samples[0]?.nav ?? null;
+      const compact = samples.at(-1)?.nav ?? null;
+      const delta = top && compact ? top.height - compact.height : 0;
+      const allTargetHeights = samples.flatMap(sample => sample.nav?.targetHeights ?? []);
+      const minTargetHeight = allTargetHeights.length ? Math.min(...allTargetHeights) : 0;
+      const sampleHeights = samples.map(sample => sample.nav?.height ?? null);
+      const stepDeltas = sampleHeights.slice(1).map((height, index) => {
+        const previous = sampleHeights[index];
+        return height === null || previous === null ? null : previous - height;
+      });
+
+      await page.evaluate(() => scrollTo(0, 0));
+      await page.waitForTimeout(100);
       await page.screenshot({
         path: path.join(outputDir, `${locale}-${viewport.name}-top.png`),
         fullPage: false
       });
-
       await page.evaluate(() => scrollTo(0, 220));
-      await page.waitForTimeout(450);
-      const compact = await readNav();
+      await page.waitForTimeout(100);
       await page.screenshot({
         path: path.join(outputDir, `${locale}-${viewport.name}-compact.png`),
         fullPage: false
       });
 
-      const delta = top && compact ? top.height - compact.height : 0;
-      const minTargetHeight = compact?.targetHeights?.length
-        ? Math.min(...compact.targetHeights)
-        : 0;
-
       const record = {
         scope,
-        top,
-        compact,
+        samples,
         delta,
+        stepDeltas,
         minTargetHeight,
         consoleErrors,
         pageErrors
       };
       results.push(record);
 
-      if (!top || !compact) {
-        failures.push({ scope, reason: "nav-missing", top, compact });
+      if (!top || !compact || samples.some(sample => !sample.nav)) {
+        failures.push({ scope, reason: "nav-missing", samples });
       } else {
         if (top.scrolled || !compact.scrolled) {
           failures.push({ scope, reason: "scroll-state", top, compact });
@@ -117,7 +128,57 @@ try {
           failures.push({ scope, reason: "compact-header-too-tall", height: compact.height, top, compact });
         }
         if (minTargetHeight < 44) {
-          failures.push({ scope, reason: "touch-target-regression", minTargetHeight, compact });
+          failures.push({ scope, reason: "touch-target-regression", minTargetHeight, samples });
+        }
+
+        for (let index = 1; index < sampleHeights.length; index += 1) {
+          const previous = sampleHeights[index - 1];
+          const current = sampleHeights[index];
+          if (previous === null || current === null) continue;
+          if (current > previous + 0.5) {
+            failures.push({
+              scope,
+              reason: "non-monotonic-collapse",
+              previousScrollY: sampleScrollY[index - 1],
+              scrollY: sampleScrollY[index],
+              previous,
+              current
+            });
+          }
+        }
+
+        const intermediate = samples.filter(sample => sample.scrollY > 0 && sample.scrollY < 120);
+        for (const sample of intermediate) {
+          if (sample.nav.height >= top.height - 1 || sample.nav.height <= compact.height + 1) {
+            failures.push({
+              scope,
+              reason: "missing-intermediate-collapse-state",
+              scrollY: sample.scrollY,
+              height: sample.nav.height,
+              topHeight: top.height,
+              compactHeight: compact.height
+            });
+          }
+        }
+
+        const earlyStepDeltas = stepDeltas.slice(0, 4).filter(value => value !== null);
+        if (earlyStepDeltas.some(value => value < 3 || value > 10)) {
+          failures.push({
+            scope,
+            reason: "collapse-step-too-abrupt",
+            earlyStepDeltas,
+            samples
+          });
+        }
+
+        const fullCompactSample = samples.find(sample => sample.scrollY === 120)?.nav;
+        if (!fullCompactSample || Math.abs(fullCompactSample.height - compact.height) > 1) {
+          failures.push({
+            scope,
+            reason: "collapse-distance-regression",
+            at120: fullCompactSample,
+            compact
+          });
         }
       }
 
@@ -153,5 +214,8 @@ if (failures.length) {
 
 console.log(`PASS: ${BROWSER_NAME} header compact regression QA completed with 0 failures.`);
 for (const result of results) {
-  console.log(`${result.scope}: ${result.top.height.toFixed(1)}px -> ${result.compact.height.toFixed(1)}px (delta ${result.delta.toFixed(1)}px)`);
+  const progression = result.samples
+    .map(sample => `${sample.scrollY}:${sample.nav.height.toFixed(1)}px`)
+    .join(" -> ");
+  console.log(`${result.scope}: ${progression}`);
 }
