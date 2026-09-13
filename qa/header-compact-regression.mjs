@@ -12,8 +12,8 @@ if (!browserType) {
 
 const locales = ["de", "en", "ru"];
 const viewports = [
-  { name: "desktop", width: 1440, height: 900, isMobile: false },
-  { name: "mobile", width: 390, height: 844, isMobile: true }
+  { name: "desktop", width: 1440, height: 900 },
+  { name: "mobile", width: 390, height: 844 }
 ];
 
 const outputDir = path.join("qa-output", "cross-browser", BROWSER_NAME, "header-compact");
@@ -29,8 +29,6 @@ try {
       const scope = `${BROWSER_NAME}/${locale}/${viewport.name}`;
       const context = await browser.newContext({
         viewport: { width: viewport.width, height: viewport.height },
-        isMobile: viewport.isMobile,
-        hasTouch: viewport.isMobile,
         reducedMotion: "no-preference"
       });
       const page = await context.newPage();
