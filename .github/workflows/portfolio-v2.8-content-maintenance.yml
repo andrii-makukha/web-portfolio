@@ -1,0 +1,97 @@
+name: Portfolio v2.8 Content Maintenance
+
+on:
+  push:
+    branches:
+      - portfolio-v2.8-final-audit
+    paths:
+      - ".github/workflows/portfolio-v2.8-content-maintenance.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  apply-content-corrections:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2.8-final-audit
+          fetch-depth: 0
+
+      - name: Apply approved multilingual corrections
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          patches = {
+              'de/index.html': [
+                  (
+                      '<span>Erfahrung</span>\n            <span>verändert sich.</span>\n            <span>Arbeitsweise</span>\n            <span>bleibt.</span>',
+                      '<span>Rollen</span>\n            <span>ändern sich.</span>\n            <span>Arbeitsweise</span>\n            <span>bleibt.</span>',
+                  ),
+                  (
+                      'Als Trompeter, Gruppenleiter und Gründer einer achtköpfigen Brass Band habe ich gelernt',
+                      'Als Trompeter, Gruppenleiter und Gründer einer achtköpfigen Band habe ich gelernt',
+                  ),
+              ],
+              'en/index.html': [
+                  (
+                      '<span>Experience</span>\n            <span>evolves.</span>\n            <span>The way I work</span>\n            <span>remains.</span>',
+                      '<span>Roles</span>\n            <span>change.</span>\n            <span>The way I work</span>\n            <span>remains.</span>',
+                  ),
+                  (
+                      'As a trumpeter, section leader and founder of an eight-person brass band, I learned',
+                      'As a trumpeter, section leader and founder of an eight-person band, I learned',
+                  ),
+              ],
+              'ru/index.html': [
+                  (
+                      '<span>Опыт</span>\n            <span>меняется.</span>\n            <span>Подход</span>\n            <span>остаётся.</span>',
+                      '<span>Роли</span>\n            <span>меняются.</span>\n            <span>Подход</span>\n            <span>остаётся.</span>',
+                  ),
+                  (
+                      'Работая трубачом, руководителем группы и основателем брасс-бэнда из восьми человек, я научился',
+                      'Работая трубачом, руководителем группы и основателем коллектива из восьми музыкантов, я научился',
+                  ),
+                  (
+                      '<span class="contact__legal"><a href="../ru/impressum/">Impressum</a> · <a href="../ru/privacy/">Datenschutz</a></span>',
+                      '<span class="contact__legal"><a href="../ru/impressum/">Правовая информация</a> · <a href="../ru/privacy/">Конфиденциальность</a></span>',
+                  ),
+              ],
+          }
+
+          changed = []
+          for filename, replacements in patches.items():
+              path = Path(filename)
+              text = path.read_text()
+              original = text
+              for old, new in replacements:
+                  if old not in text:
+                      if new in text:
+                          continue
+                      raise SystemExit(f'Expected content contract not found in {filename}: {old[:80]}')
+                  text = text.replace(old, new, 1)
+              if text != original:
+                  path.write_text(text)
+                  changed.append(filename)
+
+          print('Changed:', ', '.join(changed) if changed else 'none')
+          PY
+
+      - name: Verify content contract
+        run: node qa/content-parity-qa.mjs
+
+      - name: Commit corrections
+        run: |
+          if git diff --quiet -- de/index.html en/index.html ru/index.html; then
+            echo "No content changes remain."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add de/index.html en/index.html ru/index.html
+          git commit -m "Refine multilingual portfolio positioning copy"
+          git push origin HEAD:portfolio-v2.8-final-audit
