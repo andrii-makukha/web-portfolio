@@ -4135,3 +4135,24 @@ html {
     flex-wrap: wrap;
   }
 }
+
+
+/* v2.8 mobile footer refinement */
+@media (max-width: 560px) {
+  .contact__footer {
+    grid-template-areas:
+      "copyright top"
+      "transparency transparency"
+      "legal legal";
+  row-gap: .2rem;
+}
+
+  .contact__footer > span:nth-child(1),
+  .contact__footer > span:nth-child(2) {
+    max-width: none;
+  }
+
+  .contact__footer > span:nth-child(2) {
+    white-space: normal;
+  }
+}
