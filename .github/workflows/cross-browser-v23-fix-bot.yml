@@ -19,20 +19,20 @@ jobs:
         with:
           ref: portfolio-v2.3-cross-browser-stress
 
-      - name: Apply Firefox overflow diagnostics and final WebKit fit
+      - name: Apply final Firefox and WebKit containment fixes
         run: python3 qa/apply-cross-browser-v23.py
 
-      - name: Validate QA syntax
-        run: node --check qa/cross-browser-v2.mjs
+      - name: Validate resulting CSS marker
+        run: grep -q "v2.3.2 Firefox/WebKit final measured containment" css/v2.css
 
-      - name: Commit calibration
+      - name: Commit final containment calibration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add qa/cross-browser-v2.mjs css/v2.css
+          git add css/v2.css
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "QA: diagnose Firefox overflow sources"
+          git commit -m "Fix: close Firefox and WebKit overflow gaps"
           git push origin HEAD:portfolio-v2.3-cross-browser-stress
