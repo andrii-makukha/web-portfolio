@@ -1,0 +1,46 @@
+name: One-off Vercel production migration
+
+on:
+  push:
+    branches:
+      - portfolio-v2.7-vercel-seo
+    paths:
+      - "scripts/migrate_vercel_production.py"
+      - ".github/workflows/vercel-production-migration.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2.7-vercel-seo
+
+      - name: Run controlled migration
+        run: python3 scripts/migrate_vercel_production.py
+
+      - name: Validate diff
+        run: |
+          git diff --check
+          git status --short
+
+      - name: Commit migration
+        run: |
+          if git diff --quiet; then
+            echo "No migration changes required."
+            exit 0
+          fi
+          git config user.name "portfolio-v2-release"
+          git config user.email "actions@users.noreply.github.com"
+          git add de/index.html en/index.html ru/index.html sitemap.xml robots.txt 404.html \
+            .github/workflows/portfolio-v2-qa.yml \
+            .github/workflows/portfolio-v2-cross-browser-qa.yml \
+            .github/workflows/portfolio-v2-lighthouse-audit.yml
+          git commit -m "Migrate portfolio production metadata to Vercel"
+          git push origin HEAD:portfolio-v2.7-vercel-seo
