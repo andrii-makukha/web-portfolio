@@ -1,7 +1,7 @@
 name: Portfolio v2 Browser QA
 
 # Permanent Chromium regression gate for responsive, accessibility, multilingual text flow,
-# legal completeness, footer composition and search-indexing prerequisites.
+# content parity, legal completeness, footer composition and search-indexing prerequisites.
 on:
   push:
     branches:
@@ -65,6 +65,7 @@ jobs:
           node --check qa/text-flow-stress-qa.mjs
           node --check qa/header-compact-regression.mjs
           node --check qa/footer-layout-qa.mjs
+          node --check qa/content-parity-qa.mjs
           node --check qa/legal-completeness-qa.mjs
           node --check qa/vercel-production-qa.mjs
 
@@ -114,6 +115,10 @@ jobs:
         run: node qa/footer-layout-qa.mjs
         env:
           QA_ORIGIN: http://127.0.0.1:4173
+
+      - name: Run multilingual content parity QA
+        if: always()
+        run: node qa/content-parity-qa.mjs
 
       - name: Run legal and search readiness QA
         if: always()
