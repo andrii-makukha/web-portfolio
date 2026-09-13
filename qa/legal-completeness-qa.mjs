@@ -20,6 +20,11 @@ const privacyFiles = [
   'ru/privacy/index.html',
 ];
 const vercelPrivacyUrl = 'https://vercel.com/legal/privacy-notice';
+const vercelProviderParts = [
+  'Vercel Inc.',
+  '440 N Barranca Avenue #4133',
+  'Covina, CA 91723',
+];
 
 for (const file of requiredFiles) {
   if (!fs.existsSync(file)) failures.push(`missing required file: ${file}`);
@@ -53,7 +58,12 @@ if (failures.length === 0) {
     if (!html.includes('Vercel')) failures.push(`${file}: Vercel hosting disclosure is missing`);
     if (!html.includes(vercelPrivacyUrl)) failures.push(`${file}: Vercel Privacy Notice link is missing`);
     if (html.includes('GitHub Pages')) failures.push(`${file}: stale GitHub Pages hosting disclosure remains`);
-    if (!html.includes('Vercel Inc.')) failures.push(`${file}: Vercel provider identification is missing`);
+    for (const providerPart of vercelProviderParts) {
+      if (!html.includes(providerPart)) failures.push(`${file}: Vercel provider identification is incomplete (${providerPart})`);
+    }
+    if (/retention|Speicherdauer|Срок хранения/i.test(html) && /technical data[^<]*GitHub|technischer Daten bei GitHub|технических данных GitHub/i.test(html)) {
+      failures.push(`${file}: stale GitHub retention disclosure remains`);
+    }
   }
 
   const requiredLegalRoutes = [
