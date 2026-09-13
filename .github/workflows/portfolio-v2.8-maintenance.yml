@@ -1,0 +1,186 @@
+name: Portfolio v2.8 Maintenance
+
+on:
+  push:
+    branches:
+      - portfolio-v2.8-final-audit
+    paths:
+      - ".github/workflows/portfolio-v2.8-maintenance.yml"
+      - "css/v2.css"
+      - "scripts/build_cv_v3.py"
+      - "assets/cv/*.pdf"
+
+permissions:
+  contents: write
+
+jobs:
+  apply-audit-fixes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2.8-final-audit
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install CV build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-core poppler-utils
+          python -m pip install --upgrade pip
+          python -m pip install reportlab==5.0.1 Pillow pillow-avif-plugin
+
+      - name: Apply v2.8 source corrections
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          cv = Path('scripts/build_cv_v3.py')
+          text = cv.read_text()
+          old = '"portfolio": "andrii-makukha.github.io/web-portfolio/",'
+          new = '"portfolio": "web-portfolio-woad-two.vercel.app/",'
+          if old in text:
+              text = text.replace(old, new, 1)
+          elif new not in text:
+              raise SystemExit('CV portfolio URL contract not found')
+          cv.write_text(text)
+
+          css = Path('css/v2.css')
+          text = css.read_text()
+          marker = '/* v2.8 footer information architecture */'
+          if marker not in text:
+              text += r'''
+
+/* v2.8 footer information architecture */
+.contact__footer {
+  margin-top: clamp(5rem, 10vh, 8rem);
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--hairline-dark);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "copyright legal top"
+    "transparency legal top";
+  column-gap: clamp(1.5rem, 4vw, 4rem);
+  row-gap: .3rem;
+  align-items: center;
+}
+
+.contact__footer > span:nth-child(1) {
+  grid-area: copyright;
+  color: rgba(250, 248, 243, .76);
+}
+
+.contact__footer > span:nth-child(2) {
+  grid-area: transparency;
+  color: rgba(250, 248, 243, .46);
+}
+
+.contact__footer .contact__legal {
+  grid-area: legal;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  white-space: nowrap;
+}
+
+.contact__footer .contact__legal a {
+  padding-inline: .25rem;
+}
+
+.contact__footer > a:last-child {
+  grid-area: top;
+  justify-self: end;
+  white-space: nowrap;
+  padding-left: .75rem;
+}
+
+.contact__footer .contact__legal a,
+.contact__footer > a:last-child {
+  transition: color .2s ease, opacity .2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contact__footer .contact__legal a:hover,
+  .contact__footer > a:last-child:hover {
+    color: var(--paper-soft);
+  }
+}
+
+@media (max-width: 900px) {
+  .contact__footer {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "copyright top"
+      "transparency top"
+      "legal legal";
+    column-gap: 2rem;
+    row-gap: .25rem;
+  }
+
+  .contact__footer .contact__legal {
+    width: 100%;
+    margin-top: .55rem;
+    padding-top: .55rem;
+    border-top: 1px solid rgba(250, 248, 243, .08);
+    justify-self: stretch;
+  }
+
+  .contact__footer > a:last-child {
+    align-self: start;
+  }
+}
+
+@media (max-width: 560px) {
+  .contact__footer {
+    column-gap: 1rem;
+    font-size: .63rem;
+    letter-spacing: .1em;
+  }
+
+  .contact__footer > span:nth-child(1),
+  .contact__footer > span:nth-child(2) {
+    max-width: 28ch;
+  }
+
+  .contact__footer .contact__legal {
+    flex-wrap: wrap;
+  }
+}
+'''
+          css.write_text(text)
+          PY
+
+      - name: Rebuild production CV PDFs
+        run: python scripts/build_cv.py
+
+      - name: Verify refreshed CVs
+        run: |
+          for file in assets/cv/*.pdf; do
+            test "$(pdfinfo "$file" | awk '/^Pages:/ {print $2}')" = "1"
+            text="/tmp/$(basename "$file" .pdf).txt"
+            pdftotext -layout "$file" "$text"
+            grep -q "ANDRII MAKUKHA" "$text"
+            grep -q "web-portfolio-woad-two.vercel.app/" "$text"
+            ! grep -q "andrii-makukha.github.io/web-portfolio/" "$text"
+            ! grep -q "�" "$text"
+          done
+
+      - name: Commit generated audit fixes when needed
+        run: |
+          if git diff --quiet -- css/v2.css scripts/build_cv_v3.py assets/cv; then
+            echo "No maintenance changes remain."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add css/v2.css scripts/build_cv_v3.py assets/cv/*.pdf
+          git commit -m "Apply v2.8 footer and CV canonical URL fixes"
+          git push origin HEAD:portfolio-v2.8-final-audit
