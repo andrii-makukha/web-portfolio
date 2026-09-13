@@ -31,6 +31,16 @@
       : 'color .35s ease, background-color .35s ease, border-color .35s ease, padding .32s cubic-bezier(.16, 1, .3, 1)';
   }
 
+  let navCompactState = null;
+
+  const setNavCompactState = (isScrolled) => {
+    if (!nav || navCompactState === isScrolled) return;
+    navCompactState = isScrolled;
+    nav.classList.toggle('is-scrolled', isScrolled);
+    nav.style.paddingTop = isScrolled ? '.55rem' : '1.15rem';
+    nav.style.paddingBottom = isScrolled ? '.55rem' : '1.15rem';
+  };
+
   const harmonizeNavAccessibleNames = () => {
     nav?.querySelectorAll('a[aria-label]').forEach((link) => {
       const visibleText = link.textContent.replace(/\s+/g, ' ').trim();
@@ -288,12 +298,7 @@
       String(Math.max(0, Math.min(1, scrollY / maxScroll)))
     );
 
-    if (nav) {
-      const isScrolled = scrollY > 24;
-      nav.classList.toggle('is-scrolled', isScrolled);
-      nav.style.paddingTop = isScrolled ? '.55rem' : '1.15rem';
-      nav.style.paddingBottom = isScrolled ? '.55rem' : '1.15rem';
-    }
+    setNavCompactState(scrollY > 24);
 
     updateActiveChapter();
     updateWorkflowState();
