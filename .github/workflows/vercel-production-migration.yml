@@ -38,9 +38,6 @@ jobs:
           fi
           git config user.name "portfolio-v2-release"
           git config user.email "actions@users.noreply.github.com"
-          git add de/index.html en/index.html ru/index.html sitemap.xml robots.txt 404.html \
-            .github/workflows/portfolio-v2-qa.yml \
-            .github/workflows/portfolio-v2-cross-browser-qa.yml \
-            .github/workflows/portfolio-v2-lighthouse-audit.yml
+          git add de/index.html en/index.html ru/index.html sitemap.xml robots.txt 404.html
           git commit -m "Migrate portfolio production metadata to Vercel"
           git push origin HEAD:portfolio-v2.7-vercel-seo
