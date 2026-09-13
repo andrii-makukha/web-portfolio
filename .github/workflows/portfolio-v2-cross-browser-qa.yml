@@ -10,6 +10,7 @@ on:
       - portfolio-v2.4-lighthouse-final-audit
       - portfolio-v2.5-final-polish
       - portfolio-v2.5.1-header-compact-fix
+      - portfolio-v2.5.2-smooth-header-collapse
       - main
     paths:
       - "README.md"

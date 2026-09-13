@@ -27,18 +27,40 @@
 
   if (nav) {
     nav.style.transition = reducedMotion
-      ? 'color .01ms linear, background-color .01ms linear, border-color .01ms linear, padding .01ms linear'
-      : 'color .35s ease, background-color .35s ease, border-color .35s ease, padding .32s cubic-bezier(.16, 1, .3, 1)';
+      ? 'color .01ms linear, background-color .01ms linear, border-color .01ms linear'
+      : 'color .35s ease, background-color .35s ease, border-color .35s ease';
   }
 
+  const NAV_TOP_PADDING_REM = 1.15;
+  const NAV_COMPACT_PADDING_REM = 0.25;
+  const NAV_COLLAPSE_DISTANCE = 144;
   let navCompactState = null;
+  let navPaddingValue = null;
 
-  const setNavCompactState = (isScrolled) => {
-    if (!nav || navCompactState === isScrolled) return;
-    navCompactState = isScrolled;
-    nav.classList.toggle('is-scrolled', isScrolled);
-    nav.style.paddingTop = isScrolled ? '.25rem' : '1.15rem';
-    nav.style.paddingBottom = isScrolled ? '.25rem' : '1.15rem';
+  const smoothstep = (progress) => progress * progress * (3 - 2 * progress);
+
+  const updateNavScrollState = (scrollY) => {
+    if (!nav) return;
+
+    const isScrolled = scrollY > 24;
+    if (navCompactState !== isScrolled) {
+      navCompactState = isScrolled;
+      nav.classList.toggle('is-scrolled', isScrolled);
+    }
+
+    const rawProgress = Math.max(0, Math.min(1, scrollY / NAV_COLLAPSE_DISTANCE));
+    const collapseProgress = reducedMotion
+      ? (isScrolled ? 1 : 0)
+      : smoothstep(rawProgress);
+    const paddingRem = NAV_TOP_PADDING_REM -
+      (NAV_TOP_PADDING_REM - NAV_COMPACT_PADDING_REM) * collapseProgress;
+    const paddingValue = `${paddingRem.toFixed(4)}rem`;
+
+    if (navPaddingValue !== paddingValue) {
+      navPaddingValue = paddingValue;
+      nav.style.paddingTop = paddingValue;
+      nav.style.paddingBottom = paddingValue;
+    }
   };
 
   const harmonizeNavAccessibleNames = () => {
@@ -298,7 +320,7 @@
       String(Math.max(0, Math.min(1, scrollY / maxScroll)))
     );
 
-    setNavCompactState(scrollY > 24);
+    updateNavScrollState(scrollY);
 
     updateActiveChapter();
     updateWorkflowState();
