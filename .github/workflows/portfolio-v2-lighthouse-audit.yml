@@ -9,6 +9,7 @@ on:
       - portfolio-v2.5.2-smooth-header-collapse
       - portfolio-v2.6-legal-404-search
       - portfolio-v2.7-vercel-seo
+      - portfolio-v2.8-final-audit
       - main
     paths:
       - "404.html"
