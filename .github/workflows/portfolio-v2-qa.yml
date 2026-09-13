@@ -1,7 +1,7 @@
 name: Portfolio v2 Browser QA
 
 # Permanent Chromium regression gate for responsive, accessibility and multilingual text flow.
-# v2.5 final-polish is covered alongside the earlier hardening branches and main.
+# v2.5 final-polish and v2.5.1 header hotfix are covered alongside the earlier hardening branches and main.
 on:
   push:
     branches:
@@ -11,6 +11,7 @@ on:
       - portfolio-v2.3-cross-browser-stress
       - portfolio-v2.4-lighthouse-final-audit
       - portfolio-v2.5-final-polish
+      - portfolio-v2.5.1-header-compact-fix
       - main
     paths:
       - "README.md"
@@ -56,6 +57,7 @@ jobs:
           node --check qa/browser-qa.mjs
           node --check qa/mobile-typography-qa.mjs
           node --check qa/text-flow-stress-qa.mjs
+          node --check qa/header-compact-regression.mjs
 
       - name: Install Playwright
         run: |
@@ -79,6 +81,12 @@ jobs:
         run: node qa/browser-qa.mjs
         env:
           QA_ORIGIN: http://127.0.0.1:4173
+
+      - name: Run compact Header regression QA
+        run: node qa/header-compact-regression.mjs
+        env:
+          QA_ORIGIN: http://127.0.0.1:4173
+          QA_BROWSER: chromium
 
       - name: Run mobile typography regression QA
         if: always()
