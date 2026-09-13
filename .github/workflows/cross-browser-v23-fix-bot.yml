@@ -19,13 +19,13 @@ jobs:
         with:
           ref: portfolio-v2.3-cross-browser-stress
 
-      - name: Apply final Firefox and WebKit containment fixes
+      - name: Apply final WebKit Foundation geometry correction
         run: python3 qa/apply-cross-browser-v23.py
 
       - name: Validate resulting CSS marker
         run: grep -q "v2.3.2 Firefox/WebKit final measured containment" css/v2.css
 
-      - name: Commit final containment calibration
+      - name: Commit Foundation geometry correction
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -34,5 +34,5 @@ jobs:
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "Fix: close Firefox and WebKit overflow gaps"
+          git commit -m "Fix: widen German Foundation measure for WebKit"
           git push origin HEAD:portfolio-v2.3-cross-browser-stress
