@@ -78,6 +78,7 @@
     if (!footer || footer.querySelector('[data-legal-links]')) return;
 
     const locale = (document.documentElement.lang || 'de').split('-')[0];
+    // Keep locale-local legal routes domain-agnostic for GitHub Pages and a future custom domain.
     const legalByLocale = {
       de: {
         noticeHref: './impressum/',
