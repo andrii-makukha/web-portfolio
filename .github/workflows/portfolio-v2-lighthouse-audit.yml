@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - portfolio-v2.4-lighthouse-final-audit
+      - main
     paths:
       - "de/**"
       - "en/**"
@@ -41,7 +42,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          LH_VERSION="$(npm view lighthouse version)"
+          LH_VERSION="13.4.1"
           echo "LIGHTHOUSE_VERSION=$LH_VERSION" >> "$GITHUB_ENV"
           npm install --global "lighthouse@$LH_VERSION"
           lighthouse --version
@@ -95,7 +96,6 @@ jobs:
           locale = "${{ matrix.locale }}"
           root = pathlib.Path("lighthouse") / strategy / locale
           rows = []
-          metrics = []
 
           for idx in (1, 2, 3):
               data = json.loads((root / f"run-{idx}.report.json").read_text())
