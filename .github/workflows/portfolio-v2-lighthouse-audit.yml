@@ -8,6 +8,7 @@ on:
       - portfolio-v2.5.1-header-compact-fix
       - portfolio-v2.5.2-smooth-header-collapse
       - portfolio-v2.6-legal-404-search
+      - portfolio-v2.7-vercel-seo
       - main
     paths:
       - "404.html"

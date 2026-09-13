@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://andrii-makukha.github.io/web-portfolio/sitemap.xml
+Sitemap: https://web-portfolio-woad-two.vercel.app/sitemap.xml

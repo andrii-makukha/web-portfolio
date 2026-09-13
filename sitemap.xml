@@ -2,24 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://andrii-makukha.github.io/web-portfolio/de/</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://andrii-makukha.github.io/web-portfolio/de/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://andrii-makukha.github.io/web-portfolio/en/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://andrii-makukha.github.io/web-portfolio/ru/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://andrii-makukha.github.io/web-portfolio/de/"/>
+    <loc>https://web-portfolio-woad-two.vercel.app/de/</loc>
+    <lastmod>2026-09-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="de" href="https://web-portfolio-woad-two.vercel.app/de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://web-portfolio-woad-two.vercel.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://web-portfolio-woad-two.vercel.app/ru/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://web-portfolio-woad-two.vercel.app/de/"/>
   </url>
   <url>
-    <loc>https://andrii-makukha.github.io/web-portfolio/en/</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://andrii-makukha.github.io/web-portfolio/de/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://andrii-makukha.github.io/web-portfolio/en/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://andrii-makukha.github.io/web-portfolio/ru/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://andrii-makukha.github.io/web-portfolio/de/"/>
+    <loc>https://web-portfolio-woad-two.vercel.app/en/</loc>
+    <lastmod>2026-09-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="de" href="https://web-portfolio-woad-two.vercel.app/de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://web-portfolio-woad-two.vercel.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://web-portfolio-woad-two.vercel.app/ru/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://web-portfolio-woad-two.vercel.app/de/"/>
   </url>
   <url>
-    <loc>https://andrii-makukha.github.io/web-portfolio/ru/</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://andrii-makukha.github.io/web-portfolio/de/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://andrii-makukha.github.io/web-portfolio/en/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://andrii-makukha.github.io/web-portfolio/ru/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://andrii-makukha.github.io/web-portfolio/de/"/>
+    <loc>https://web-portfolio-woad-two.vercel.app/ru/</loc>
+    <lastmod>2026-09-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="de" href="https://web-portfolio-woad-two.vercel.app/de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://web-portfolio-woad-two.vercel.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://web-portfolio-woad-two.vercel.app/ru/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://web-portfolio-woad-two.vercel.app/de/"/>
   </url>
 </urlset>
