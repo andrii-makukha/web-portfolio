@@ -1,6 +1,6 @@
 name: Portfolio v2 Cross-Browser QA
 
-# Permanent v2.3 cross-browser release gate.
+# Permanent cross-browser release gate.
 # WebKit is the strict Safari-like typography gate; Firefox remains a full runtime,
 # interaction, sticky/resize and user-scrollable horizontal-overflow gate.
 on:
@@ -8,6 +8,7 @@ on:
     branches:
       - portfolio-v2.3-cross-browser-stress
       - portfolio-v2.4-lighthouse-final-audit
+      - portfolio-v2.5-final-polish
       - main
     paths:
       - "README.md"
