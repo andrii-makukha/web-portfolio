@@ -20,6 +20,18 @@
   const openingMeta = document.querySelector('.opening__meta');
   const openingScroll = document.querySelector('.opening__scroll');
 
+  const harmonizeNavAccessibleNames = () => {
+    nav?.querySelectorAll('a[aria-label]').forEach((link) => {
+      const visibleText = link.textContent.replace(/\s+/g, ' ').trim();
+      const ariaLabel = link.getAttribute('aria-label')?.trim();
+      if (!visibleText || !ariaLabel) return;
+      if (ariaLabel.toLocaleLowerCase().includes(visibleText.toLocaleLowerCase())) return;
+      link.setAttribute('aria-label', `${visibleText} — ${ariaLabel}`);
+    });
+  };
+
+  harmonizeNavAccessibleNames();
+
   const setBackgroundInteractive = (interactive) => {
     if (!mainContent) return;
     mainContent.inert = !interactive;
@@ -174,9 +186,19 @@
     const probe = window.innerHeight * 0.5;
     const active = findActiveByProbe(journeyEvents, probe);
     if (!active) return;
+    const desktopEditorialState = window.innerWidth > 900;
 
     journeyEvents.forEach((event) => {
-      event.classList.toggle('is-active', event === active);
+      const isActive = event === active;
+      event.classList.toggle('is-active', isActive);
+      event.style.opacity = '1';
+      event.querySelectorAll('.journey-event__content h3, .journey-event__meta, .journey-event__body').forEach((node) => {
+        if (desktopEditorialState && !isActive) {
+          node.style.color = '#707070';
+        } else {
+          node.style.removeProperty('color');
+        }
+      });
     });
     if (journeyCurrent) journeyCurrent.textContent = active.dataset.journeyYear || '';
   };
