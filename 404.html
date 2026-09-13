@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0c0d">
+  <meta name="robots" content="noindex,follow">
+  <meta name="color-scheme" content="dark">
+  <title>404 — Andrii Makukha</title>
+  <style>
+    :root{--ink:#0b0c0d;--paper:#faf8f3;--muted:rgba(250,248,243,.62);--line:rgba(250,248,243,.16);--brass:#a67b4b;--pad:clamp(1.25rem,3vw,3rem)}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--ink);color:var(--paper);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}body{min-height:100vh;background:radial-gradient(circle at 78% 8%,rgba(166,123,75,.12),transparent 30rem),var(--ink)}a{color:inherit;text-decoration:none}a:focus-visible{outline:2px solid var(--brass);outline-offset:4px}.nav{display:flex;align-items:center;justify-content:space-between;min-height:72px;padding:0 var(--pad);border-bottom:1px solid var(--line)}.mark{font-size:.78rem;font-weight:700;letter-spacing:.18em}.langs{display:flex;gap:1rem;font-size:.72rem;letter-spacing:.11em}.shell{display:grid;align-content:center;min-height:calc(100vh - 72px);width:min(calc(100% - 2 * var(--pad)),1120px);margin:0 auto;padding:4rem 0}.eyebrow{margin:0 0 1rem;color:var(--brass);font-size:.72rem;font-weight:650;letter-spacing:.16em;text-transform:uppercase}.code{font-size:clamp(7rem,27vw,18rem);font-weight:560;line-height:.72;letter-spacing:-.065em}.grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:clamp(2rem,8vw,7rem);align-items:end;margin-top:clamp(2.5rem,7vw,5rem)}h1{margin:0;max-width:12ch;font-size:clamp(2.5rem,7vw,5.5rem);font-weight:560;line-height:.96;letter-spacing:-.045em}.lead{max-width:62ch;margin:1.5rem 0 0;color:var(--muted);font-size:clamp(1.02rem,1.8vw,1.2rem);line-height:1.65}.actions{display:grid}.actions a{display:flex;justify-content:space-between;gap:1rem;min-height:48px;padding:.85rem 0;border-top:1px solid var(--line);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}.actions a:last-child{border-bottom:1px solid var(--line)}@media(max-width:720px){.grid{grid-template-columns:1fr}.shell{padding-top:3rem}.code{font-size:clamp(7rem,42vw,12rem)}}
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Seitennavigation">
+    <a class="mark" data-route="/de/" href="https://andrii-makukha.github.io/web-portfolio/de/" aria-label="Zur Startseite von Andrii Makukha">AM</a>
+    <div class="langs" aria-label="Sprache wählen">
+      <a data-route="/de/" href="https://andrii-makukha.github.io/web-portfolio/de/" hreflang="de" lang="de">DE</a>
+      <a data-route="/en/" href="https://andrii-makukha.github.io/web-portfolio/en/" hreflang="en" lang="en">EN</a>
+      <a data-route="/ru/" href="https://andrii-makukha.github.io/web-portfolio/ru/" hreflang="ru" lang="ru">RU</a>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <p class="eyebrow">Error / 404</p>
+    <div class="code" aria-hidden="true">404</div>
+    <div class="grid">
+      <div>
+        <h1>Seite nicht gefunden.</h1>
+        <p class="lead">Die angeforderte Seite existiert nicht oder wurde verschoben. Wählen Sie eine Portfolio-Version und setzen Sie Ihre Reise dort fort.</p>
+      </div>
+      <div class="actions" aria-label="Portfolio-Versionen">
+        <a data-route="/de/" href="https://andrii-makukha.github.io/web-portfolio/de/"><span>Deutsch</span><span>DE ↗</span></a>
+        <a data-route="/en/" href="https://andrii-makukha.github.io/web-portfolio/en/"><span>English</span><span>EN ↗</span></a>
+        <a data-route="/ru/" href="https://andrii-makukha.github.io/web-portfolio/ru/"><span>Русский</span><span>RU ↗</span></a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const prefix = location.hostname.endsWith('github.io') ? '/web-portfolio' : '';
+      document.querySelectorAll('[data-route]').forEach((link) => {
+        link.href = `${prefix}${link.dataset.route}`;
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -11,20 +11,21 @@ on:
       - portfolio-v2.5-final-polish
       - portfolio-v2.5.1-header-compact-fix
       - portfolio-v2.5.2-smooth-header-collapse
+      - portfolio-v2.6-legal-404-search
       - main
     paths:
       - "README.md"
       - "index.html"
+      - "404.html"
       - "robots.txt"
       - "sitemap.xml"
       - "de/**"
       - "en/**"
       - "ru/**"
       - "assets/**"
-      - "css/v2.css"
+      - "css/**"
       - "js/**"
-      - "qa/cross-browser-v2.mjs"
-      - "qa/header-compact-regression.mjs"
+      - "qa/**"
       - ".github/workflows/portfolio-v2-cross-browser-qa.yml"
   workflow_dispatch:
 
@@ -58,6 +59,7 @@ jobs:
         run: |
           node --check qa/cross-browser-v2.mjs
           node --check qa/header-compact-regression.mjs
+          node --check qa/legal-completeness-qa.mjs
 
       - name: Install Playwright browser
         run: |
@@ -76,6 +78,9 @@ jobs:
           done
           cat /tmp/portfolio-cross-browser-server.log
           exit 1
+
+      - name: Run legal and search readiness QA
+        run: node qa/legal-completeness-qa.mjs
 
       - name: Run cross-browser stress QA
         run: node qa/cross-browser-v2.mjs
