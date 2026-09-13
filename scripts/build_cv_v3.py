@@ -46,7 +46,7 @@ CONTACT = {
     "phone_url": "tel:+4915125233241",
     "email": "makukha.andrii.it@gmail.com",
     "github": "github.com/andrii-makukha",
-    "portfolio": "andrii-makukha.github.io/web-portfolio/",
+    "portfolio": "web-portfolio-woad-two.vercel.app/",
 }
 
 DE = {

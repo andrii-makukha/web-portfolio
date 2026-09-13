@@ -14,6 +14,9 @@
   const workflowSteps = [...document.querySelectorAll('[data-workflow-step]')];
   const workflowMarkers = [...document.querySelectorAll('[data-workflow-marker]')];
   const journeyEvents = [...document.querySelectorAll('[data-journey-event]')];
+  const journeyTextNodes = journeyEvents.map((event) => [
+    ...event.querySelectorAll('.journey-event__content h3, .journey-event__meta, .journey-event__body'),
+  ]);
   const journeyCurrent = document.querySelector('[data-journey-current]');
   const menuToggle = document.querySelector('.site-nav__menu-toggle');
   const mobileMenu = document.querySelector('.mobile-menu');
@@ -36,6 +39,11 @@
   const NAV_COLLAPSE_DISTANCE = 144;
   let navCompactState = null;
   let navPaddingValue = null;
+  let activeWorkflowIndex = null;
+  let activeJourneyIndex = null;
+  let journeyDesktopEditorialState = null;
+  let activeChapterId = null;
+  let activeChapterTheme = null;
 
   const smoothstep = (progress) => progress * progress * (3 - 2 * progress);
 
@@ -214,6 +222,9 @@
     if (!active) return;
 
     const index = active.dataset.workflowStep;
+    if (activeWorkflowIndex === index) return;
+    activeWorkflowIndex = index;
+
     workflowSteps.forEach((step) => {
       step.classList.toggle('is-active', step === active);
     });
@@ -227,14 +238,23 @@
     const probe = window.innerHeight * 0.5;
     const active = findActiveByProbe(journeyEvents, probe);
     if (!active) return;
+
+    const index = active.dataset.journeyEvent;
     // Preserve the editorial inactive state without dropping text below WCAG contrast.
     const desktopEditorialState = window.innerWidth > 900;
+    if (
+      activeJourneyIndex === index &&
+      journeyDesktopEditorialState === desktopEditorialState
+    ) return;
 
-    journeyEvents.forEach((event) => {
+    activeJourneyIndex = index;
+    journeyDesktopEditorialState = desktopEditorialState;
+
+    journeyEvents.forEach((event, eventIndex) => {
       const isActive = event === active;
       event.classList.toggle('is-active', isActive);
       event.style.opacity = '1';
-      event.querySelectorAll('.journey-event__content h3, .journey-event__meta, .journey-event__body').forEach((node) => {
+      journeyTextNodes[eventIndex].forEach((node) => {
         if (desktopEditorialState && !isActive) {
           node.style.color = '#707070';
         } else {
@@ -279,6 +299,10 @@
 
     const id = activeSection.id;
     const navTheme = activeSection.dataset.nav || 'dark';
+    if (activeChapterId === id && activeChapterTheme === navTheme) return;
+
+    activeChapterId = id;
+    activeChapterTheme = navTheme;
 
     if (nav) nav.classList.toggle('is-light', navTheme === 'light');
 
@@ -321,7 +345,6 @@
     );
 
     updateNavScrollState(scrollY);
-
     updateActiveChapter();
     updateWorkflowState();
     updateJourneyState();

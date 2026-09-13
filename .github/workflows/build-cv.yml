@@ -8,6 +8,7 @@ on:
     branches:
       - portfolio-v2
       - cv-v3-professional-redesign
+      - portfolio-v2.8-final-audit
       - main
     paths:
       - "assets/cv/*.pdf"
@@ -66,6 +67,8 @@ jobs:
             grep -q "Symbioz Band" "cv-qa/generated/$name.txt"
             grep -q "ReSchuhe" "cv-qa/generated/$name.txt"
             grep -q "Hillel IT School" "cv-qa/generated/$name.txt"
+            grep -q "web-portfolio-woad-two.vercel.app/" "cv-qa/generated/$name.txt"
+            ! grep -q "andrii-makukha.github.io/web-portfolio/" "cv-qa/generated/$name.txt"
             ! grep -q "�" "cv-qa/generated/$name.txt"
             cmp "cv-qa/generated/$name.txt" "cv-qa/reference/$name.txt"
 
