@@ -20,45 +20,45 @@ for path in public_files:
 
 footer_replacements = {
     Path("de/index.html"): (
-        """        <div class=\"contact__footer\">\n"
-        "          <span>© 2026 Andrii Makukha</span>\n"
-        "          <span>Human-directed · AI-assisted</span>\n"
-        "          <a href=\"#top\">Nach oben ↑</a>\n"
-        "        </div>""",
-        """        <div class=\"contact__footer\">\n"
-        "          <span>© 2026 Andrii Makukha</span>\n"
-        "          <span>Human-directed · AI-assisted</span>\n"
-        "          <span class=\"contact__legal\"><a href=\"../de/impressum/\">Impressum</a> · <a href=\"../de/datenschutz/\">Datenschutz</a></span>\n"
-        "          <a href=\"#top\">Nach oben ↑</a>\n"
-        "        </div>""",
+        '''        <div class="contact__footer">
+          <span>© 2026 Andrii Makukha</span>
+          <span>Human-directed · AI-assisted</span>
+          <a href="#top">Nach oben ↑</a>
+        </div>''',
+        '''        <div class="contact__footer">
+          <span>© 2026 Andrii Makukha</span>
+          <span>Human-directed · AI-assisted</span>
+          <span class="contact__legal"><a href="../de/impressum/">Impressum</a> · <a href="../de/datenschutz/">Datenschutz</a></span>
+          <a href="#top">Nach oben ↑</a>
+        </div>''',
         "../de/impressum/",
     ),
     Path("en/index.html"): (
-        """        <div class=\"contact__footer\">\n"
-        "          <span>© 2026 Andrii Makukha</span>\n"
-        "          <span>Human-directed · AI-assisted</span>\n"
-        "          <a href=\"#top\">Back to top ↑</a>\n"
-        "        </div>""",
-        """        <div class=\"contact__footer\">\n"
-        "          <span>© 2026 Andrii Makukha</span>\n"
-        "          <span>Human-directed · AI-assisted</span>\n"
-        "          <span class=\"contact__legal\"><a href=\"../en/legal-notice/\">Legal notice</a> · <a href=\"../en/privacy/\">Privacy</a></span>\n"
-        "          <a href=\"#top\">Back to top ↑</a>\n"
-        "        </div>""",
+        '''        <div class="contact__footer">
+          <span>© 2026 Andrii Makukha</span>
+          <span>Human-directed · AI-assisted</span>
+          <a href="#top">Back to top ↑</a>
+        </div>''',
+        '''        <div class="contact__footer">
+          <span>© 2026 Andrii Makukha</span>
+          <span>Human-directed · AI-assisted</span>
+          <span class="contact__legal"><a href="../en/legal-notice/">Legal notice</a> · <a href="../en/privacy/">Privacy</a></span>
+          <a href="#top">Back to top ↑</a>
+        </div>''',
         "../en/legal-notice/",
     ),
     Path("ru/index.html"): (
-        """        <div class=\"contact__footer\">\n"
-        "          <span>© 2026 Andrii Makukha</span>\n"
-        "          <span>Human-directed · AI-assisted</span>\n"
-        "          <a href=\"#top\">Наверх ↑</a>\n"
-        "        </div>""",
-        """        <div class=\"contact__footer\">\n"
-        "          <span>© 2026 Andrii Makukha</span>\n"
-        "          <span>Human-directed · AI-assisted</span>\n"
-        "          <span class=\"contact__legal\"><a href=\"../ru/impressum/\">Impressum</a> · <a href=\"../ru/privacy/\">Datenschutz</a></span>\n"
-        "          <a href=\"#top\">Наверх ↑</a>\n"
-        "        </div>""",
+        '''        <div class="contact__footer">
+          <span>© 2026 Andrii Makukha</span>
+          <span>Human-directed · AI-assisted</span>
+          <a href="#top">Наверх ↑</a>
+        </div>''',
+        '''        <div class="contact__footer">
+          <span>© 2026 Andrii Makukha</span>
+          <span>Human-directed · AI-assisted</span>
+          <span class="contact__legal"><a href="../ru/impressum/">Impressum</a> · <a href="../ru/privacy/">Datenschutz</a></span>
+          <a href="#top">Наверх ↑</a>
+        </div>''',
         "../ru/impressum/",
     ),
 }
