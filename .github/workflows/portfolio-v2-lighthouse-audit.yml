@@ -1,0 +1,275 @@
+name: Portfolio v2 Lighthouse Final Audit
+
+on:
+  push:
+    branches:
+      - portfolio-v2.4-lighthouse-final-audit
+      - main
+    paths:
+      - "de/**"
+      - "en/**"
+      - "ru/**"
+      - "css/**"
+      - "js/**"
+      - "assets/**"
+      - ".github/workflows/portfolio-v2-lighthouse-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    name: ${{ matrix.strategy }} / ${{ matrix.locale }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        strategy: [mobile, desktop]
+        locale: [de, en, ru]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Install Lighthouse
+        shell: bash
+        run: |
+          set -euo pipefail
+          LH_VERSION="13.4.1"
+          echo "LIGHTHOUSE_VERSION=$LH_VERSION" >> "$GITHUB_ENV"
+          npm install --global "lighthouse@$LH_VERSION"
+          lighthouse --version
+          google-chrome --version || chromium-browser --version || chromium --version
+
+      - name: Start local production server
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/portfolio-server.log 2>&1 &
+          echo $! > /tmp/portfolio-server.pid
+          for i in {1..30}; do
+            if curl --fail --silent "http://127.0.0.1:4173/${{ matrix.locale }}/" > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/portfolio-server.log
+          exit 1
+
+      - name: Warm up Lighthouse
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="http://127.0.0.1:4173/${{ matrix.locale }}/"
+          PRESET=()
+
+          if [ "${{ matrix.strategy }}" = "desktop" ]; then
+            PRESET=(--preset=desktop)
+          fi
+
+          lighthouse "$URL" \
+            --quiet \
+            --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
+            --only-categories=performance,accessibility,best-practices,seo \
+            "${PRESET[@]}" \
+            --output=json \
+            --output-path="/tmp/lighthouse-warmup.report.json"
+
+      - name: Run Lighthouse three times
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "lighthouse/${{ matrix.strategy }}/${{ matrix.locale }}"
+          URL="http://127.0.0.1:4173/${{ matrix.locale }}/"
+          PRESET=()
+
+          if [ "${{ matrix.strategy }}" = "desktop" ]; then
+            PRESET=(--preset=desktop)
+          fi
+
+          for run in 1 2 3; do
+            lighthouse "$URL" \
+              --quiet \
+              --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
+              --only-categories=performance,accessibility,best-practices,seo \
+              "${PRESET[@]}" \
+              --output=json \
+              --output=html \
+              --output-path="lighthouse/${{ matrix.strategy }}/${{ matrix.locale }}/run-$run"
+          done
+
+      - name: Build median summary and enforce release gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import statistics
+          import os
+
+          strategy = "${{ matrix.strategy }}"
+          locale = "${{ matrix.locale }}"
+          root = pathlib.Path("lighthouse") / strategy / locale
+          rows = []
+
+          for idx in (1, 2, 3):
+              data = json.loads((root / f"run-{idx}.report.json").read_text())
+              cats = data["categories"]
+              audits = data["audits"]
+
+              row = {
+                  "run": idx,
+                  "performance": round(cats["performance"]["score"] * 100),
+                  "accessibility": round(cats["accessibility"]["score"] * 100),
+                  "best_practices": round(cats["best-practices"]["score"] * 100),
+                  "seo": round(cats["seo"]["score"] * 100),
+                  "fcp_ms": round(audits["first-contentful-paint"]["numericValue"]),
+                  "lcp_ms": round(audits["largest-contentful-paint"]["numericValue"]),
+                  "tbt_ms": round(audits["total-blocking-time"]["numericValue"]),
+                  "cls": round(audits["cumulative-layout-shift"]["numericValue"], 3),
+                  "speed_index_ms": round(audits["speed-index"]["numericValue"]),
+              }
+
+              rows.append(row)
+
+          keys = [
+              "performance",
+              "accessibility",
+              "best_practices",
+              "seo",
+              "fcp_ms",
+              "lcp_ms",
+              "tbt_ms",
+              "cls",
+              "speed_index_ms",
+          ]
+
+          median = {
+              key: statistics.median(row[key] for row in rows)
+              for key in keys
+          }
+
+          limits = {
+              "mobile": {
+                  "performance": 98,
+                  "fcp_ms": 2000,
+                  "lcp_ms": 2500,
+                  "tbt_ms": 200,
+                  "cls": 0.05,
+                  "speed_index_ms": 2500,
+              },
+              "desktop": {
+                  "performance": 99,
+                  "fcp_ms": 1000,
+                  "lcp_ms": 1500,
+                  "tbt_ms": 100,
+                  "cls": 0.05,
+                  "speed_index_ms": 1500,
+              },
+          }[strategy]
+
+          violations = []
+
+          for category in ("accessibility", "best_practices", "seo"):
+              if median[category] < 100:
+                  violations.append(
+                      f"{category}: {median[category]} < required 100"
+                  )
+
+          if median["performance"] < limits["performance"]:
+              violations.append(
+                  f"performance: {median['performance']} "
+                  f"< required {limits['performance']}"
+              )
+
+          for metric in (
+              "fcp_ms",
+              "lcp_ms",
+              "tbt_ms",
+              "cls",
+              "speed_index_ms",
+          ):
+              if median[metric] > limits[metric]:
+                  violations.append(
+                      f"{metric}: {median[metric]} "
+                      f"> budget {limits[metric]}"
+                  )
+
+          gate_status = "FAIL" if violations else "PASS"
+
+          summary = {
+              "strategy": strategy,
+              "locale": locale,
+              "lighthouse_version": os.environ.get("LIGHTHOUSE_VERSION"),
+              "runs": rows,
+              "median": median,
+              "release_gate": {
+                  "status": gate_status,
+                  "limits": limits,
+                  "violations": violations,
+              },
+          }
+
+          (root / "summary.json").write_text(
+              json.dumps(summary, indent=2) + "\n"
+          )
+
+          md = [
+              f"### Lighthouse — {strategy} / {locale.upper()}",
+              "",
+              f"Lighthouse `{summary['lighthouse_version']}` · median of 3 measured runs after warm-up",
+              "",
+              "| Metric | Median |",
+              "| --- | ---: |",
+              f"| Performance | {median['performance']:.0f} |",
+              f"| Accessibility | {median['accessibility']:.0f} |",
+              f"| Best Practices | {median['best_practices']:.0f} |",
+              f"| SEO | {median['seo']:.0f} |",
+              f"| FCP | {median['fcp_ms']:.0f} ms |",
+              f"| LCP | {median['lcp_ms']:.0f} ms |",
+              f"| TBT | {median['tbt_ms']:.0f} ms |",
+              f"| CLS | {median['cls']:.3f} |",
+              f"| Speed Index | {median['speed_index_ms']:.0f} ms |",
+              "",
+              f"**Release gate: {gate_status}**",
+              "",
+          ]
+
+          if violations:
+              md.append("#### Violations")
+              md.append("")
+              for violation in violations:
+                  md.append(f"- {violation}")
+              md.append("")
+
+          text = "\n".join(md)
+
+          (root / "summary.md").write_text(text)
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as fh:
+              fh.write(text)
+
+          if violations:
+              print("Lighthouse release gate failed:")
+              for violation in violations:
+                  print(f"- {violation}")
+              raise SystemExit(1)
+
+          print("Lighthouse release gate passed.")
+          PY
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-${{ matrix.strategy }}-${{ matrix.locale }}
+          path: lighthouse/${{ matrix.strategy }}/${{ matrix.locale }}/
+          retention-days: 14

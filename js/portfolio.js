@@ -1,6 +1,11 @@
 (() => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const body = document.body;
+
+  // Make the Hero available immediately during deferred-script execution.
+  // All motion enhances already-visible content instead of gating first paint.
+  body.classList.add('is-ready');
+
   const revealItems = [...document.querySelectorAll('[data-reveal], .portrait-frame')];
   const sections = [...document.querySelectorAll('[data-chapter]')];
   const railLinks = [...document.querySelectorAll('[data-rail]')];
@@ -19,6 +24,18 @@
   const openingEyebrow = document.querySelector('.opening__eyebrow');
   const openingMeta = document.querySelector('.opening__meta');
   const openingScroll = document.querySelector('.opening__scroll');
+
+  const harmonizeNavAccessibleNames = () => {
+    nav?.querySelectorAll('a[aria-label]').forEach((link) => {
+      const visibleText = link.textContent.replace(/\s+/g, ' ').trim();
+      const ariaLabel = link.getAttribute('aria-label')?.trim();
+      if (!visibleText || !ariaLabel) return;
+      if (ariaLabel.toLocaleLowerCase().includes(visibleText.toLocaleLowerCase())) return;
+      link.setAttribute('aria-label', `${visibleText} — ${ariaLabel}`);
+    });
+  };
+
+  harmonizeNavAccessibleNames();
 
   const setBackgroundInteractive = (interactive) => {
     if (!mainContent) return;
@@ -120,8 +137,6 @@
     });
   }
 
-  requestAnimationFrame(() => body.classList.add('is-ready'));
-
   if (!reducedMotion && 'IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
@@ -174,9 +189,20 @@
     const probe = window.innerHeight * 0.5;
     const active = findActiveByProbe(journeyEvents, probe);
     if (!active) return;
+    // Preserve the editorial inactive state without dropping text below WCAG contrast.
+    const desktopEditorialState = window.innerWidth > 900;
 
     journeyEvents.forEach((event) => {
-      event.classList.toggle('is-active', event === active);
+      const isActive = event === active;
+      event.classList.toggle('is-active', isActive);
+      event.style.opacity = '1';
+      event.querySelectorAll('.journey-event__content h3, .journey-event__meta, .journey-event__body').forEach((node) => {
+        if (desktopEditorialState && !isActive) {
+          node.style.color = '#707070';
+        } else {
+          node.style.removeProperty('color');
+        }
+      });
     });
     if (journeyCurrent) journeyCurrent.textContent = active.dataset.journeyYear || '';
   };
@@ -233,6 +259,7 @@
   const paintScrollState = () => {
     const scrollY = window.scrollY;
     const viewport = Math.max(window.innerHeight, 1);
+    const maxScroll = Math.max(document.documentElement.scrollHeight - viewport, 1);
     const openingProgress = Math.max(0, Math.min(1, scrollY / (viewport * 0.78)));
 
     if (!reducedMotion) {
@@ -250,7 +277,6 @@
       });
     }
 
-    const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
     document.documentElement.style.setProperty(
       '--page-progress',
       String(Math.max(0, Math.min(1, scrollY / maxScroll)))

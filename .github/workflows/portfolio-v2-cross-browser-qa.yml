@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - portfolio-v2.3-cross-browser-stress
+      - portfolio-v2.4-lighthouse-final-audit
       - main
     paths:
       - "README.md"

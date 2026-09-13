@@ -1,7 +1,7 @@
 name: Portfolio v2 Browser QA
 
 # Permanent Chromium regression gate for responsive, accessibility and multilingual text flow.
-# v2.3 remains covered alongside the earlier hardening branches and main.
+# v2.4 Lighthouse hardening is covered alongside the earlier hardening branches and main.
 on:
   push:
     branches:
@@ -9,6 +9,7 @@ on:
       - portfolio-v2.1-responsive-hardening
       - portfolio-v2.2-text-flow-stress
       - portfolio-v2.3-cross-browser-stress
+      - portfolio-v2.4-lighthouse-final-audit
       - main
     paths:
       - "README.md"
