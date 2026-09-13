@@ -31,6 +31,8 @@ It currently covers:
 - active CV calls-to-action that are not styled as disabled/quiet links
 - reproducible one-page ATS-friendly CV generation with visual PNG and extracted-text QA artifacts
 
+Cross-browser release coverage is split deliberately by engine. Chromium runs the full responsive, accessibility, performance, mobile-typography and semantic text-flow suite. WebKit is the strict Safari-like rendered-typography gate. Firefox runs the same multilingual interaction, sticky/resize and runtime stress plus a user-scrollable horizontal-overflow gate; Linux system-font metrics are not treated as macOS typography truth, but real horizontal page movement remains release-blocking.
+
 Identity portrait baseline: the current production portrait is expected to retain at least 1122 × 1402 source pixels. Lower-resolution replacements must fail the browser QA gate.
 
 Verified portrait source: `assets/portrait.avif` is 40,146 bytes with SHA-256 `3965392de7cc4f0361a3406e1b6ff8c9622e988c65d8460223a1a8b8dcd1379d`.
@@ -44,5 +46,7 @@ Measured long-string regressions include German closing copy, DE/RU Journey titl
 Final text-flow calibration is measured against the full 320–1728 px matrix: semantic phrase grouping is preserved first, then locale-specific font sizing is adjusted only when the real rendered phrase exceeds its available column.
 
 The DE/EN Work conjunction+verb phrase is also measured as an indivisible semantic unit so it stays visually intentional without clipping or a stranded conjunction. The display container uses a measured 13ch desktop width instead of shrinking the type to compensate for a 12ch geometry constraint.
+
+The German Foundation display uses a measured desktop text measure rather than continued font shrinking, because `ch`-based geometry scales with font size and a glyph-width mismatch must be fixed at the column measure itself.
 
 Release verification must be rerun after all temporary patch tooling is removed so the green result always represents the clean branch state intended for review and merge.

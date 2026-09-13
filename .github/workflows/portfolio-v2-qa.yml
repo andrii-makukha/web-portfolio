@@ -1,7 +1,7 @@
 name: Portfolio v2 Browser QA
 
-# Includes wide-screen responsive hardening, multilingual text-flow stress coverage,
-# and v2.3 cross-browser stabilization regression coverage.
+# Permanent Chromium regression gate for responsive, accessibility and multilingual text flow.
+# v2.3 remains covered alongside the earlier hardening branches and main.
 on:
   push:
     branches:
