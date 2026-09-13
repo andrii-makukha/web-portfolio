@@ -132,7 +132,10 @@
     });
   }
 
-  requestAnimationFrame(() => body.classList.add('is-ready'));
+  // Do not force an intentionally blank first frame. The hero should be
+  // available to the first meaningful paint; motion then progressively
+  // enhances the already-visible content.
+  body.classList.add('is-ready');
 
   if (!reducedMotion && 'IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver((entries, observer) => {
