@@ -1,7 +1,7 @@
 name: Portfolio v2 Browser QA
 
 # Permanent Chromium regression gate for responsive, accessibility, multilingual text flow,
-# legal completeness and search-indexing prerequisites.
+# legal completeness, footer composition and search-indexing prerequisites.
 on:
   push:
     branches:
@@ -15,6 +15,7 @@ on:
       - portfolio-v2.5.2-smooth-header-collapse
       - portfolio-v2.6-legal-404-search
       - portfolio-v2.7-vercel-seo
+      - portfolio-v2.8-final-audit
       - main
     paths:
       - "README.md"
@@ -31,6 +32,7 @@ on:
       - "js/**"
       - "qa/**"
       - "scripts/build_cv.py"
+      - "scripts/build_cv_v3.py"
       - ".github/workflows/build-cv.yml"
       - ".github/workflows/portfolio-v2-qa.yml"
   workflow_dispatch:
@@ -62,6 +64,7 @@ jobs:
           node --check qa/mobile-typography-qa.mjs
           node --check qa/text-flow-stress-qa.mjs
           node --check qa/header-compact-regression.mjs
+          node --check qa/footer-layout-qa.mjs
           node --check qa/legal-completeness-qa.mjs
           node --check qa/vercel-production-qa.mjs
 
@@ -103,6 +106,12 @@ jobs:
       - name: Run text-flow stress QA
         if: always()
         run: node qa/text-flow-stress-qa.mjs
+        env:
+          QA_ORIGIN: http://127.0.0.1:4173
+
+      - name: Run footer layout QA
+        if: always()
+        run: node qa/footer-layout-qa.mjs
         env:
           QA_ORIGIN: http://127.0.0.1:4173
 
