@@ -37,8 +37,8 @@
     if (!nav || navCompactState === isScrolled) return;
     navCompactState = isScrolled;
     nav.classList.toggle('is-scrolled', isScrolled);
-    nav.style.paddingTop = isScrolled ? '.55rem' : '1.15rem';
-    nav.style.paddingBottom = isScrolled ? '.55rem' : '1.15rem';
+    nav.style.paddingTop = isScrolled ? '.25rem' : '1.15rem';
+    nav.style.paddingBottom = isScrolled ? '.25rem' : '1.15rem';
   };
 
   const harmonizeNavAccessibleNames = () => {
