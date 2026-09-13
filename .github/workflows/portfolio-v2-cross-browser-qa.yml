@@ -12,6 +12,7 @@ on:
       - portfolio-v2.5.1-header-compact-fix
       - portfolio-v2.5.2-smooth-header-collapse
       - portfolio-v2.6-legal-404-search
+      - portfolio-v2.7-vercel-seo
       - main
     paths:
       - "README.md"
@@ -60,6 +61,7 @@ jobs:
           node --check qa/cross-browser-v2.mjs
           node --check qa/header-compact-regression.mjs
           node --check qa/legal-completeness-qa.mjs
+          node --check qa/vercel-production-qa.mjs
 
       - name: Install Playwright browser
         run: |
@@ -81,6 +83,9 @@ jobs:
 
       - name: Run legal and search readiness QA
         run: node qa/legal-completeness-qa.mjs
+
+      - name: Run Vercel production metadata QA
+        run: node qa/vercel-production-qa.mjs
 
       - name: Run cross-browser stress QA
         run: node qa/cross-browser-v2.mjs
