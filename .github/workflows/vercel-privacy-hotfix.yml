@@ -1,0 +1,43 @@
+name: One-off Vercel privacy hotfix
+
+on:
+  push:
+    branches:
+      - portfolio-v2.7-vercel-seo
+    paths:
+      - "scripts/migrate_privacy_to_vercel.py"
+      - ".github/workflows/vercel-privacy-hotfix.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-v2.7-vercel-seo
+
+      - name: Update privacy hosting disclosures
+        run: python3 scripts/migrate_privacy_to_vercel.py
+
+      - name: Validate diff
+        run: |
+          git diff --check
+          git status --short
+
+      - name: Commit privacy changes
+        run: |
+          if git diff --quiet; then
+            echo "No privacy changes required."
+            exit 0
+          fi
+          git config user.name "portfolio-v2-release"
+          git config user.email "actions@users.noreply.github.com"
+          git add de/datenschutz/index.html en/privacy/index.html ru/privacy/index.html
+          git commit -m "Align privacy notices with Vercel hosting"
+          git push origin HEAD:portfolio-v2.7-vercel-seo
