@@ -15,14 +15,36 @@ const viewports = [
   { name: "desktop", width: 1440, height: 900 },
   { name: "mobile", width: 390, height: 844 }
 ];
-const sampleScrollY = [0, 30, 60, 90, 120, 220];
+const collapseDistance = 144;
+const sampleScrollY = [0, 24, 48, 72, 96, 120, 144, 220];
 
+const smoothstep = progress => progress * progress * (3 - 2 * progress);
 const outputDir = path.join("qa-output", "cross-browser", BROWSER_NAME, "header-compact");
 fs.mkdirSync(outputDir, { recursive: true });
 
 const results = [];
 const failures = [];
 const browser = await browserType.launch({ headless: true });
+
+const readNav = page => page.evaluate(() => {
+  const nav = document.querySelector(".site-nav");
+  if (!nav) return null;
+  const style = getComputedStyle(nav);
+  const visibleTargets = [
+    ...nav.querySelectorAll(".site-nav__mark, .site-nav__languages a, .site-nav__menu-toggle")
+  ].filter(element => {
+    const rect = element.getBoundingClientRect();
+    const targetStyle = getComputedStyle(element);
+    return rect.width > 0 && rect.height > 0 && targetStyle.display !== "none" && targetStyle.visibility !== "hidden";
+  });
+  return {
+    height: nav.getBoundingClientRect().height,
+    paddingTop: parseFloat(style.paddingTop) || 0,
+    paddingBottom: parseFloat(style.paddingBottom) || 0,
+    scrolled: nav.classList.contains("is-scrolled"),
+    targetHeights: visibleTargets.map(element => element.getBoundingClientRect().height)
+  };
+});
 
 try {
   for (const locale of locales) {
@@ -53,31 +75,11 @@ try {
 
       await page.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
 
-      const readNav = () => page.evaluate(() => {
-        const nav = document.querySelector(".site-nav");
-        if (!nav) return null;
-        const style = getComputedStyle(nav);
-        const visibleTargets = [
-          ...nav.querySelectorAll(".site-nav__mark, .site-nav__languages a, .site-nav__menu-toggle")
-        ].filter(element => {
-          const rect = element.getBoundingClientRect();
-          const targetStyle = getComputedStyle(element);
-          return rect.width > 0 && rect.height > 0 && targetStyle.display !== "none" && targetStyle.visibility !== "hidden";
-        });
-        return {
-          height: nav.getBoundingClientRect().height,
-          paddingTop: parseFloat(style.paddingTop) || 0,
-          paddingBottom: parseFloat(style.paddingBottom) || 0,
-          scrolled: nav.classList.contains("is-scrolled"),
-          targetHeights: visibleTargets.map(element => element.getBoundingClientRect().height)
-        };
-      });
-
       const samples = [];
       for (const scrollY of sampleScrollY) {
         await page.evaluate(y => scrollTo(0, y), scrollY);
-        await page.waitForTimeout(100);
-        samples.push({ scrollY, nav: await readNav() });
+        await page.waitForTimeout(90);
+        samples.push({ scrollY, nav: await readNav(page) });
       }
 
       const top = samples[0]?.nav ?? null;
@@ -92,13 +94,13 @@ try {
       });
 
       await page.evaluate(() => scrollTo(0, 0));
-      await page.waitForTimeout(100);
+      await page.waitForTimeout(90);
       await page.screenshot({
         path: path.join(outputDir, `${locale}-${viewport.name}-top.png`),
         fullPage: false
       });
       await page.evaluate(() => scrollTo(0, 220));
-      await page.waitForTimeout(100);
+      await page.waitForTimeout(90);
       await page.screenshot({
         path: path.join(outputDir, `${locale}-${viewport.name}-compact.png`),
         fullPage: false
@@ -147,22 +149,24 @@ try {
           }
         }
 
-        const intermediate = samples.filter(sample => sample.scrollY > 0 && sample.scrollY < 120);
-        for (const sample of intermediate) {
-          if (sample.nav.height >= top.height - 1 || sample.nav.height <= compact.height + 1) {
+        for (const sample of samples.filter(item => item.scrollY > 0 && item.scrollY < collapseDistance)) {
+          const raw = Math.max(0, Math.min(1, sample.scrollY / collapseDistance));
+          const expectedHeight = top.height - delta * smoothstep(raw);
+          const error = Math.abs(sample.nav.height - expectedHeight);
+          if (error > 1.2) {
             failures.push({
               scope,
-              reason: "missing-intermediate-collapse-state",
+              reason: "collapse-easing-regression",
               scrollY: sample.scrollY,
-              height: sample.nav.height,
-              topHeight: top.height,
-              compactHeight: compact.height
+              measuredHeight: sample.nav.height,
+              expectedHeight,
+              error
             });
           }
         }
 
-        const earlyStepDeltas = stepDeltas.slice(0, 4).filter(value => value !== null);
-        if (earlyStepDeltas.some(value => value < 3 || value > 10)) {
+        const earlyStepDeltas = stepDeltas.slice(0, 6).filter(value => value !== null);
+        if (earlyStepDeltas.some(value => value < 1 || value > 8)) {
           failures.push({
             scope,
             reason: "collapse-step-too-abrupt",
@@ -171,12 +175,24 @@ try {
           });
         }
 
-        const fullCompactSample = samples.find(sample => sample.scrollY === 120)?.nav;
+        const centerDelta = earlyStepDeltas[2] ?? 0;
+        const edgeDelta = earlyStepDeltas[0] ?? 0;
+        if (centerDelta <= edgeDelta + 1) {
+          failures.push({
+            scope,
+            reason: "collapse-curve-not-eased",
+            edgeDelta,
+            centerDelta,
+            samples
+          });
+        }
+
+        const fullCompactSample = samples.find(sample => sample.scrollY === collapseDistance)?.nav;
         if (!fullCompactSample || Math.abs(fullCompactSample.height - compact.height) > 1) {
           failures.push({
             scope,
             reason: "collapse-distance-regression",
-            at120: fullCompactSample,
+            atCollapseDistance: fullCompactSample,
             compact
           });
         }
@@ -189,6 +205,45 @@ try {
       await context.close();
     }
   }
+
+  const reducedScope = `${BROWSER_NAME}/de/desktop/reduced-motion`;
+  const reducedContext = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    reducedMotion: "reduce"
+  });
+  const reducedPage = await reducedContext.newPage();
+  const reducedResponse = await reducedPage.goto(`${ORIGIN}/de/`, {
+    waitUntil: "networkidle",
+    timeout: 30000
+  });
+
+  if (!reducedResponse?.ok()) {
+    failures.push({ reducedScope, reason: "document-response", status: reducedResponse?.status() ?? null });
+  } else {
+    await reducedPage.addStyleTag({ content: "html{scroll-behavior:auto!important}" });
+    await reducedPage.evaluate(() => scrollTo(0, 0));
+    await reducedPage.waitForTimeout(90);
+    const reducedTop = await readNav(reducedPage);
+    await reducedPage.evaluate(() => scrollTo(0, 48));
+    await reducedPage.waitForTimeout(90);
+    const reducedCompact = await readNav(reducedPage);
+
+    if (!reducedTop || !reducedCompact) {
+      failures.push({ reducedScope, reason: "nav-missing", reducedTop, reducedCompact });
+    } else {
+      const reducedDelta = reducedTop.height - reducedCompact.height;
+      if (reducedDelta < 24 || !reducedCompact.scrolled) {
+        failures.push({
+          reducedScope,
+          reason: "reduced-motion-not-immediate",
+          reducedTop,
+          reducedCompact,
+          reducedDelta
+        });
+      }
+    }
+  }
+  await reducedContext.close();
 } finally {
   await browser.close();
 }
@@ -219,3 +274,4 @@ for (const result of results) {
     .join(" -> ");
   console.log(`${result.scope}: ${progression}`);
 }
+console.log(`PASS: ${BROWSER_NAME} reduced-motion Header collapse is immediate after threshold.`);
