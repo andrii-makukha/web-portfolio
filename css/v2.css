@@ -3938,6 +3938,7 @@ main h4,
 /* v2.3.1 final WebKit DE foundation fit */
 @media (min-width: 901px) {
   html[lang="de"] .foundation__display {
+    max-width: 11.2ch;
     font-size: clamp(3.65rem, min(7.5vw, 7.2rem), 7.9rem);
   }
 }
