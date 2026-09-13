@@ -62,6 +62,7 @@ jobs:
           node --check qa/cross-browser-v2.mjs
           node --check qa/header-compact-regression.mjs
           node --check qa/footer-layout-qa.mjs
+          node --check qa/content-parity-qa.mjs
           node --check qa/legal-completeness-qa.mjs
           node --check qa/vercel-production-qa.mjs
 
@@ -82,6 +83,9 @@ jobs:
           done
           cat /tmp/portfolio-cross-browser-server.log
           exit 1
+
+      - name: Run multilingual content parity QA
+        run: node qa/content-parity-qa.mjs
 
       - name: Run legal and search readiness QA
         run: node qa/legal-completeness-qa.mjs
