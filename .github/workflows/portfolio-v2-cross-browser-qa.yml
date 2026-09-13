@@ -2,6 +2,7 @@ name: Portfolio v2 Cross-Browser QA
 
 # WebKit is the strict Safari-like typography gate; Firefox remains a full runtime,
 # interaction, sticky/resize and user-scrollable overflow gate with source diagnostics.
+# v2.3 final calibration also verifies root horizontal clipping plus measured locale containment.
 on:
   push:
     branches:
