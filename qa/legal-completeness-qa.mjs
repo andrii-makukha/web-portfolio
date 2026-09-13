@@ -14,6 +14,12 @@ const requiredFiles = [
 
 const failures = [];
 const legalAddressParts = ['Am Hackenzaun 8', '83233 Bernau am Chiemsee'];
+const privacyFiles = [
+  'de/datenschutz/index.html',
+  'en/privacy/index.html',
+  'ru/privacy/index.html',
+];
+const vercelPrivacyUrl = 'https://vercel.com/legal/privacy-notice';
 
 for (const file of requiredFiles) {
   if (!fs.existsSync(file)) failures.push(`missing required file: ${file}`);
@@ -42,6 +48,14 @@ if (failures.length === 0) {
     }
   }
 
+  for (const file of privacyFiles) {
+    const html = fs.readFileSync(file, 'utf8');
+    if (!html.includes('Vercel')) failures.push(`${file}: Vercel hosting disclosure is missing`);
+    if (!html.includes(vercelPrivacyUrl)) failures.push(`${file}: Vercel Privacy Notice link is missing`);
+    if (html.includes('GitHub Pages')) failures.push(`${file}: stale GitHub Pages hosting disclosure remains`);
+    if (!html.includes('Vercel Inc.')) failures.push(`${file}: Vercel provider identification is missing`);
+  }
+
   const requiredLegalRoutes = [
     "noticeHref: './impressum/'",
     "privacyHref: './datenschutz/'",
@@ -62,4 +76,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('PASS: legal pages, serviceable address, localized legal links, custom 404 and search-indexing prerequisites are complete.');
+console.log('PASS: legal pages, Vercel hosting disclosures, serviceable address, localized legal links, custom 404 and search-indexing prerequisites are complete.');
