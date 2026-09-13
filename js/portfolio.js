@@ -186,6 +186,7 @@
     const probe = window.innerHeight * 0.5;
     const active = findActiveByProbe(journeyEvents, probe);
     if (!active) return;
+    // Preserve the editorial inactive state without dropping text below WCAG contrast.
     const desktopEditorialState = window.innerWidth > 900;
 
     journeyEvents.forEach((event) => {
