@@ -16,6 +16,13 @@ It rebuilds the committed DE / EN / RU PDFs from source and verifies:
 - exact extracted-text parity between committed and regenerated PDFs;
 - exact 200-dpi PNG render parity between committed and regenerated PDFs.
 
+## Production URL contract
+
+The CV header and footer use the same canonical production host as the portfolio:
+`web-portfolio-woad-two.vercel.app/`.
+
+The release gate verifies that all committed DE / EN / RU PDFs contain the Vercel production URL and that the retired GitHub Pages URL `andrii-makukha.github.io/web-portfolio/` does not return.
+
 ## Visual review
 
 The 200-dpi DE / EN / RU renders were reviewed after the multilingual layout was generated.
@@ -31,4 +38,4 @@ Observed release surfaces:
 
 ## Release status
 
-Production-named PDFs are committed on the CV v3 branch. `main` remains unchanged until explicit release approval.
+Production-named PDFs are committed and are rebuilt deterministically from `scripts/build_cv_v3.py`. Future releases must keep the site and all three CV variants on the same canonical portfolio host.

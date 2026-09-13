@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 
-// Changes to this legal gate intentionally trigger Browser, Cross-Browser and Lighthouse release QA.
+// v2.8 final-audit checkpoint: this shared gate intentionally triggers Browser,
+// Cross-Browser and Lighthouse exact-head QA when release-readiness rules change.
 const requiredFiles = [
   '404.html',
   'sitemap.xml',
