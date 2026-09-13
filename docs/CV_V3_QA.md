@@ -39,3 +39,5 @@ Observed release surfaces:
 ## Release status
 
 Production-named PDFs are committed and are rebuilt deterministically from `scripts/build_cv_v3.py`. Future releases must keep the site and all three CV variants on the same canonical portfolio host.
+
+v2.8 final-audit checkpoint: site/CV host parity is part of the exact-head release gate alongside multilingual content, footer and motion QA.

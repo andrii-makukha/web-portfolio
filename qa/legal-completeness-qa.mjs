@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
-// v2.8 final-audit checkpoint: this shared gate intentionally triggers Browser,
-// Cross-Browser and Lighthouse exact-head QA when release-readiness rules change.
+// v2.8 final release checkpoint: this shared gate intentionally triggers Browser,
+// Cross-Browser and Lighthouse exact-head QA after footer, content and motion polish.
 const requiredFiles = [
   '404.html',
   'sitemap.xml',
