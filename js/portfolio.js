@@ -33,8 +33,10 @@
 
   const NAV_TOP_PADDING_REM = 1.15;
   const NAV_COMPACT_PADDING_REM = 0.25;
-  const NAV_COLLAPSE_DISTANCE = 120;
+  const NAV_COLLAPSE_DISTANCE = 144;
   let navCompactState = null;
+
+  const smoothstep = (progress) => progress * progress * (3 - 2 * progress);
 
   const updateNavScrollState = (scrollY) => {
     if (!nav) return;
@@ -45,9 +47,10 @@
       nav.classList.toggle('is-scrolled', isScrolled);
     }
 
+    const rawProgress = Math.max(0, Math.min(1, scrollY / NAV_COLLAPSE_DISTANCE));
     const collapseProgress = reducedMotion
       ? (isScrolled ? 1 : 0)
-      : Math.max(0, Math.min(1, scrollY / NAV_COLLAPSE_DISTANCE));
+      : smoothstep(rawProgress);
     const paddingRem = NAV_TOP_PADDING_REM -
       (NAV_TOP_PADDING_REM - NAV_COMPACT_PADDING_REM) * collapseProgress;
     const paddingValue = `${paddingRem.toFixed(4)}rem`;
