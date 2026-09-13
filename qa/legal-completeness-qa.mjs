@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 
+// Changes to this legal gate intentionally trigger Browser, Cross-Browser and Lighthouse release QA.
 const requiredFiles = [
   '404.html',
   'sitemap.xml',
@@ -14,6 +15,17 @@ const requiredFiles = [
 
 const failures = [];
 const legalAddressParts = ['Am Hackenzaun 8', '83233 Bernau am Chiemsee'];
+const privacyFiles = [
+  'de/datenschutz/index.html',
+  'en/privacy/index.html',
+  'ru/privacy/index.html',
+];
+const vercelPrivacyUrl = 'https://vercel.com/legal/privacy-notice';
+const vercelProviderParts = [
+  'Vercel Inc.',
+  '440 N Barranca Avenue #4133',
+  'Covina, CA 91723',
+];
 
 for (const file of requiredFiles) {
   if (!fs.existsSync(file)) failures.push(`missing required file: ${file}`);
@@ -42,6 +54,19 @@ if (failures.length === 0) {
     }
   }
 
+  for (const file of privacyFiles) {
+    const html = fs.readFileSync(file, 'utf8');
+    if (!html.includes('Vercel')) failures.push(`${file}: Vercel hosting disclosure is missing`);
+    if (!html.includes(vercelPrivacyUrl)) failures.push(`${file}: Vercel Privacy Notice link is missing`);
+    if (html.includes('GitHub Pages')) failures.push(`${file}: stale GitHub Pages hosting disclosure remains`);
+    for (const providerPart of vercelProviderParts) {
+      if (!html.includes(providerPart)) failures.push(`${file}: Vercel provider identification is incomplete (${providerPart})`);
+    }
+    if (/retention|Speicherdauer|Срок хранения/i.test(html) && /technical data[^<]*GitHub|technischer Daten bei GitHub|технических данных GitHub/i.test(html)) {
+      failures.push(`${file}: stale GitHub retention disclosure remains`);
+    }
+  }
+
   const requiredLegalRoutes = [
     "noticeHref: './impressum/'",
     "privacyHref: './datenschutz/'",
@@ -62,4 +87,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('PASS: legal pages, serviceable address, localized legal links, custom 404 and search-indexing prerequisites are complete.');
+console.log('PASS: legal pages, Vercel hosting disclosures, serviceable address, localized legal links, custom 404 and search-indexing prerequisites are complete.');

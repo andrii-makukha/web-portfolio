@@ -20,6 +20,7 @@ on:
       - "css/**"
       - "js/**"
       - "assets/**"
+      - "qa/legal-completeness-qa.mjs"
       - ".github/workflows/portfolio-v2-lighthouse-audit.yml"
   workflow_dispatch:
 
