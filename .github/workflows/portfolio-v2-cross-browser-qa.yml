@@ -13,6 +13,7 @@ on:
       - portfolio-v2.5.2-smooth-header-collapse
       - portfolio-v2.6-legal-404-search
       - portfolio-v2.7-vercel-seo
+      - portfolio-v2.8-final-audit
       - main
     paths:
       - "README.md"
@@ -60,6 +61,7 @@ jobs:
         run: |
           node --check qa/cross-browser-v2.mjs
           node --check qa/header-compact-regression.mjs
+          node --check qa/footer-layout-qa.mjs
           node --check qa/legal-completeness-qa.mjs
           node --check qa/vercel-production-qa.mjs
 
@@ -93,6 +95,12 @@ jobs:
           QA_ORIGIN: http://127.0.0.1:4173
           QA_BROWSER: ${{ matrix.browser }}
 
+      - name: Run footer layout QA
+        run: node qa/footer-layout-qa.mjs
+        env:
+          QA_ORIGIN: http://127.0.0.1:4173
+          QA_BROWSER: ${{ matrix.browser }}
+
       - name: Run compact Header regression QA
         run: node qa/header-compact-regression.mjs
         env:
@@ -104,6 +112,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: portfolio-v2-cross-browser-${{ matrix.browser }}
-          path: qa-output/cross-browser/${{ matrix.browser }}/
+          path: |
+            qa-output/cross-browser/${{ matrix.browser }}/
+            qa-output/footer-layout/${{ matrix.browser }}/
           if-no-files-found: warn
           retention-days: 14
