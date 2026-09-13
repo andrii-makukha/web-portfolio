@@ -4060,7 +4060,7 @@ html {
 
 .contact__footer > span:nth-child(2) {
   grid-area: transparency;
-  color: rgba(250, 248, 243, .46);
+  color: rgba(250, 248, 243, .50);
 }
 
 .contact__footer .contact__legal {
