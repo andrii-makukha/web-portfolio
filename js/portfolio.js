@@ -25,6 +25,12 @@
   const openingMeta = document.querySelector('.opening__meta');
   const openingScroll = document.querySelector('.opening__scroll');
 
+  if (nav) {
+    nav.style.transition = reducedMotion
+      ? 'color .01ms linear, background-color .01ms linear, border-color .01ms linear, padding .01ms linear'
+      : 'color .35s ease, background-color .35s ease, border-color .35s ease, padding .32s cubic-bezier(.16, 1, .3, 1)';
+  }
+
   const harmonizeNavAccessibleNames = () => {
     nav?.querySelectorAll('a[aria-label]').forEach((link) => {
       const visibleText = link.textContent.replace(/\s+/g, ' ').trim();
@@ -282,7 +288,13 @@
       String(Math.max(0, Math.min(1, scrollY / maxScroll)))
     );
 
-    if (nav) nav.classList.toggle('is-scrolled', scrollY > 24);
+    if (nav) {
+      const isScrolled = scrollY > 24;
+      nav.classList.toggle('is-scrolled', isScrolled);
+      nav.style.paddingTop = isScrolled ? '.55rem' : '1.15rem';
+      nav.style.paddingBottom = isScrolled ? '.55rem' : '1.15rem';
+    }
+
     updateActiveChapter();
     updateWorkflowState();
     updateJourneyState();
