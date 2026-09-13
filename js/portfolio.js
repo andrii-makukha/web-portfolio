@@ -35,6 +35,7 @@
   const NAV_COMPACT_PADDING_REM = 0.25;
   const NAV_COLLAPSE_DISTANCE = 144;
   let navCompactState = null;
+  let navPaddingValue = null;
 
   const smoothstep = (progress) => progress * progress * (3 - 2 * progress);
 
@@ -55,8 +56,11 @@
       (NAV_TOP_PADDING_REM - NAV_COMPACT_PADDING_REM) * collapseProgress;
     const paddingValue = `${paddingRem.toFixed(4)}rem`;
 
-    nav.style.paddingTop = paddingValue;
-    nav.style.paddingBottom = paddingValue;
+    if (navPaddingValue !== paddingValue) {
+      navPaddingValue = paddingValue;
+      nav.style.paddingTop = paddingValue;
+      nav.style.paddingBottom = paddingValue;
+    }
   };
 
   const harmonizeNavAccessibleNames = () => {
